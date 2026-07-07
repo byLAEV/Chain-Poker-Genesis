@@ -401,3 +401,96 @@ Chain Poker Genesis by LAEV is designed with the following objectives:
 - Maintain distributed cryptographic records.
 - Enable interoperable implementations through an open protocol specification.
 
+
+---
+
+# Player-Centric Network Architecture
+
+Unlike traditional online poker platforms, **the player is a first-class network node**.
+
+A player is not represented by a smart contract, a server session, or a centralized account.
+
+Instead, every player participates directly in the protocol as a cryptographically identified node with specific responsibilities.
+
+## Player as a Protocol Node
+
+Each player node is capable of:
+
+- Participating in deterministic protocol execution.
+- Signing protocol actions.
+- Verifying protocol messages.
+- Maintaining protocol state.
+- Validating cryptographic proofs.
+- Participating in decentralized consensus.
+- Auditing completed games.
+- Synchronizing protocol history.
+
+---
+
+## Player Pool Node
+
+Players collectively form a distributed player pool.
+
+This pool provides:
+
+- Protocol participation.
+- Distributed validation.
+- Consensus formation.
+- Peer-to-peer communication.
+- Fault tolerance.
+- Protocol resilience.
+
+No central authority coordinates gameplay.
+
+The protocol emerges from the interaction between independent player nodes.
+
+---
+
+## Ledger Integrity Node
+
+Each player contributes to the integrity of the off-chain ledger.
+
+Player nodes verify:
+
+- Event ordering.
+- State transitions.
+- Cryptographic signatures.
+- Replay consistency.
+- Settlement consistency.
+- Consensus records.
+
+This distributed verification enables every participant to independently audit protocol execution.
+
+---
+
+## Not Smart Contracts
+
+Chain Poker Genesis does not model players as smart contracts.
+
+Instead, players are autonomous protocol nodes capable of:
+
+- Making decisions.
+- Authorizing actions.
+- Signing transactions.
+- Participating in consensus.
+- Verifying protocol execution.
+- Maintaining replicated protocol history.
+
+The protocol distributes responsibility among participating nodes rather than delegating execution to blockchain smart contracts.
+
+---
+
+## Distributed Trust Model
+
+Trust is distributed across the network.
+
+No single participant has unilateral authority over:
+
+- Game execution.
+- Card distribution.
+- Betting validation.
+- Hand resolution.
+- Settlement approval.
+- Historical records.
+
+Protocol correctness emerges from deterministic rules, cryptographic verification, and distributed consensus among independent player nodes.
