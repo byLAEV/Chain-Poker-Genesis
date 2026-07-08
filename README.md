@@ -494,3 +494,123 @@ No single participant has unilateral authority over:
 - Historical records.
 
 Protocol correctness emerges from deterministic rules, cryptographic verification, and distributed consensus among independent player nodes.
+
+
+Architectural Principles of the Chain Poker Genesis Protocol
+
+1. Nature of the Protocol
+
+Chain Poker Genesis is designed as a stable and permanent protocol. Its purpose is not to continuously change, but to preserve a consistent operational framework for the execution of poker tables under defined and verifiable rules.
+
+The protocol does not depend on an operating company to exist, be maintained, or continue functioning. It is not conceived as a centralized service with external technical support, but as an autonomous system governed by its own rules, its own logic, and the consensus among players.
+
+---
+
+2. Absence of Maintenance or Support Company
+
+The protocol does not have a company responsible for technical maintenance, intervention in its execution, or acting as an intermediary between the player and the system.
+
+There is no entity designed to interfere between the protocol and the player. The valid relationship with the protocol occurs exclusively through consensus among players and participating nodes, which constitutes the only legitimate channel of communication with the system.
+
+This means that:
+
+- there is no centralized corporate support,
+- there is no operator that can modify the protocol externally,
+- there is no business layer that replaces the will of consensus,
+- and there are no external intermediaries between the player and the logic of the protocol.
+
+---
+
+3. Immutability of Poker Rules
+
+The poker rules engine is definitive and immutable. This means that the game rules are not versioned, reinterpreted, or updated within the protocol, because poker operates under constant rules.
+
+The fundamental rules of the game are part of the logical core of the system and remain identical across all tables using that format.
+
+---
+
+4. Separation Between Protocol and Engines
+
+The protocol must clearly distinguish between:
+
+- the protocol core,
+- the poker rules engine,
+- and settlement engines or other versionable components.
+
+This separation prevents an improvement in one component from altering the essential operation of the system. The protocol remains the same, even if new compatible engines are added.
+
+---
+
+5. Versionable Engines
+
+Settlement engines may support new versions if there is a technical, operational, or scalability improvement.
+
+If a new engine, for example a version based on a Layer 3 architecture or another compatible mechanism, demonstrates a real advantage, it may be proposed to node consensus for integration.
+
+However, this integration does not modify the base protocol. It only expands the set of available engines.
+
+---
+
+6. Consensus Approval
+
+The inclusion of a new versionable engine does not occur automatically. A proposal reviewed by node consensus must exist, evaluating whether the new engine complies with the protocol requirements.
+
+Consensus does not redefine poker rules nor replace the original protocol. Its function is to determine whether an additional component may become part of the compatible ecosystem.
+
+Consensus among players is the only way to communicate with the protocol. No company, external authority, or centralized structure can replace this mechanism.
+
+---
+
+7. Version Selection When Creating a Table
+
+The protocol includes a table creation selection process where the operating versions are chosen.
+
+This allows:
+
+- one table to use the original engine,
+- another table to use a versioned engine,
+- and both to remain valid within the same protocol.
+
+Compatibility is preserved because the selection is fixed at the moment the table is created and does not alter the general operation of the system.
+
+---
+
+8. Backward Compatibility
+
+Every new version of an engine must respect compatibility with previous operation.
+
+Existing tables are not broken, rewritten, or forced to migrate. The new version only adds another option for future tables or for tables that explicitly choose to adopt it.
+
+---
+
+9. Rake, Authorship, and Social Commitment
+
+The rake wallets are part of the protocol’s recognition structure and are understood as derived from the authorship and creation of the system.
+
+They do not represent a business control layer or a technical intermediary between the player and the protocol. Their purpose is to reflect the origin, authorship, and economic continuity associated with the design of the system.
+
+Additionally, the protocol incorporates a social benefit foundation as part of its commitment to society. This foundation expresses that the structure of the protocol is not only based on technical or economic logic, but also on a social responsibility connected to its existence and impact.
+
+---
+
+10. Principle of Stability
+
+The central principle of Chain Poker Genesis is:
+
+«The protocol remains stable. Poker rules do not change. Only engines defined as versionable may expand through consensus, without affecting the original operation or historical compatibility of the system. There is no support company or external intermediary between the player and the protocol; consensus among players is the only legitimate channel of interaction.»
+
+---
+
+11. Conclusion
+
+Chain Poker Genesis is not designed as a system that constantly redefines itself, but as a stable protocol with interchangeable components where appropriate.
+
+The rule is simple:
+
+- the base protocol remains unchanged,
+- poker rules are definitive,
+- versionable engines may evolve without breaking the essence of the system,
+- there is no maintenance or technical support company acting as an intermediary with the player,
+- and consensus among players is the only path of communication with the protocol.
+
+This approach protects continuity, interoperability, system integrity, and its long-term social commitment.
