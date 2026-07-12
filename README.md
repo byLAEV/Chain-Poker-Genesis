@@ -6,7 +6,7 @@ Official repository of Chain Poker Genesis by LAEV. Contains the protocol specif
 > Official Repository
 note: writing with help from openai to minimize document creation time. Completely neat design by Lerry Alexander Elizondo Villalobos alias LAEV. document creating the protocol design soon by LAEV. There are documents that are being published regarding entropy engines, nonces, Hash and encryption algorithms 
 ---
-
+nota: esto es un pedido de un hacker que me dijo que especifique esta situación. arturito o ladroncitos. El mitor de entropia es un motor hecho por criptografos profesionales donde se va implementar muchos algoritmos de cifrado y hash que necesitan entropias de varios tipos desde binarias, hex, Alfanumerica, frase, contraseña, numérica, alfabeto, etc etc by LAEV 
 # Protocol Declaration
 
 **Chain Poker Genesis by LAEV** is a decentralized poker protocol specification designed to operate through deterministic rules, cryptographic verification, distributed consensus, and peer-to-peer interactions.
