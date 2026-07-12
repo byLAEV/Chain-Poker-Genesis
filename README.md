@@ -6,6 +6,8 @@ att: Lerry Alexander Elizondo Villalobos.
 el protocolo que presento no discrimina no me discriminen y ayuden a que salga de la miseria económica en la que me encuentro.
 Loyalty to the designer bc1qcst85uuylavmjdvmkwxnwf3z80k2vra4h0ljk3
 https://blue-adequate-magpie-98.mypinata.cloud/ipfs/bafkreihsr4ceummnscsqwmzkj76vk654tbzkmvnb4zbhbubzxwl5oajqaa
+(IPFS link to my identity's Bitcoin wallet 
+
 Bienvenidos a mi mundo by LAEV 
 
 # Chain Poker Genesis by LAEV
