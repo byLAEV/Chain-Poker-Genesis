@@ -4,7 +4,7 @@ Official repository of Chain Poker Genesis by LAEV. Contains the protocol specif
 # Chain Poker Genesis by LAEV
 
 > Official Repository
-note: writing with help from openai to minimize document creation time. Completely neat design by Lerry Alexander Elizondo Villalobos alias LAEV. document creating the protocol design soon by LAEV 
+note: writing with help from openai to minimize document creation time. Completely neat design by Lerry Alexander Elizondo Villalobos alias LAEV. document creating the protocol design soon by LAEV. There are documents that are being published regarding entropy engines, nonces, Hash and encryption algorithms 
 ---
 
 # Protocol Declaration
