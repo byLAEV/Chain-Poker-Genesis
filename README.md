@@ -1,7 +1,7 @@
 # Chain-Poker-Genesis
 Official repository of Chain Poker Genesis by LAEV. Contains the protocol specifications, technical documentation, system architecture, communication framework, game engine, betting modules, reference implementations, and development resources for the Chain Poker Genesis ecosystem.
 
-## La miseria humana y la miseria económica es ver a alguien que vivio de esa manera por muchos años y los que podian ayudarlo no lo hicieron porque nunca lo quisieron hacer hasta que cuando ño quisieron hacer ya no estaba en miseria humana y económica. (la miseria humana es algo que no espera a que otra persona se decida a ayudar a que no tenga muerseria humana y económica) hay tantas personas viendome vivir mi vida hace muchos años en miseria humana y económica hasta que ven este protocolo y se dan cuenta que mejor dejem de verme y quiten sus caras de mi vida que ya no ke ayudaron y otros lo sabran pero si me ayudaran. 
+ La miseria humana y la miseria económica es ver a alguien que vivio de esa manera por muchos años y los que podian ayudarlo no lo hicieron porque nunca lo quisieron hacer hasta que cuando ño quisieron hacer ya no estaba en miseria humana y económica. (la miseria humana es algo que no espera a que otra persona se decida a ayudar a que no tenga muerseria humana y económica) hay tantas personas viendome vivir mi vida hace muchos años en miseria humana y económica hasta que ven este protocolo y se dan cuenta que mejor dejem de verme y quiten sus caras de mi vida que ya no ke ayudaron y otros lo sabran pero si me ayudaran. 
 att: Lerry Alexander Elizondo Villalobos.
 el protocolo que presento no discrimina no me discriminen y ayuden a que salga de la miseria económica en la que me encuentro.
 
