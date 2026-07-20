@@ -2,6 +2,8 @@
 Official repository of Chain Poker Genesis by LAEV. Contains the protocol specifications, technical documentation, system architecture, communication framework, game engine, betting modules, reference implementations, and development resources for the Chain Poker Genesis ecosystem.
 
 If I manage to coordinate my financial future, I've already stated that I won't add any risk to the protocol, as long as I manage to sign a clear rake.
+Para ser sincero, yo no quiero ponerle rake porque considero que seria mas clara la intención del protocolo pero no tengo asegurada mi vida económica hoy en día y me parece importante señalar esa situación. Si lograra negociar esa situación por fuera le quito el sistema de rake y el protocolo quedaria sin cobro de nada. 
+by LAEV 
 
 I hadn't planned to share the design process I used to make a documentary later, but I decided that you deserve to see my entire protocol design process and analyze it for yourselves.
 Welcome to my world and that of my digital ruler 
