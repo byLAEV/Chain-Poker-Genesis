@@ -652,3 +652,15 @@ The historical **Installation Engine v1.0** is now structured as a dedicated eng
 - [Versioning Policy](engines/installation-engine/VERSIONING.md)
 
 The original PDF remains the historical source record. The structured documentation explicitly distinguishes documented requirements from implementation details that remain to be specified.
+
+## Engine Architecture — Historical Reconstruction
+
+The repository is progressively consolidating the historical functional specifications into implementation-facing engine documentation.
+
+### 04 — Private Off-Chain Ledger Engine
+
+The Private Off-Chain Ledger Engine provides the protocol's private historical evidence layer: structured event records, cryptographic hashes, Merkle batches, Merkle Roots and Bitcoin anchoring metadata.
+
+- [Engine 04 README](04-private-off-chain-ledger-engine/README.md)
+- [Engine 04 Historical Source Record](04-private-off-chain-ledger-engine/HISTORICAL-SOURCE.md)
+
