@@ -4,21 +4,41 @@
 
 This document defines the architectural boundary of Chain Poker Genesis as a protocol executed by participating nodes.
 
-The protocol is distinct from the generic node infrastructure and from the Node Manager.
+The protocol is distinct from generic node infrastructure, the Node Manager, and any particular application or interface.
+
+## Foundational identity
+
+The historical source **0.0 CHAIN POKER GENESIS — Digital Poker Protocol** establishes the foundational distinction between Chain Poker Genesis and a conventional poker application.
+
+Chain Poker Genesis is defined at protocol level: a set of rules, principles, structures, and interaction boundaries from which multiple compatible implementations, applications, or interfaces may be built.
+
+Therefore:
+
+```
+Protocol
+  ↓
+Compatible implementations
+  ↓
+Applications / interfaces
+```
+
+An implementation may change without automatically changing the identity of the protocol, provided it remains compatible with the published specification.
 
 ## System position
 
-    Node Network
-        ↓
-    Main Consensus
-        ↓
-    Chain Poker Genesis Protocol
-        ↓
-    Protocol Engines
-        ↓
-    Table State / Table Consensus
-        ↓
-    Settlement / Ledger Records
+```
+Node Network
+    ↓
+Main Consensus
+    ↓
+Chain Poker Genesis Protocol
+    ↓
+Protocol Engines
+    ↓
+Table State / Table Consensus
+    ↓
+Settlement / Ledger Records
+```
 
 ## Protocol responsibilities
 
@@ -39,6 +59,23 @@ This includes, subject to detailed specification audit:
 - monetary settlement;
 - protocol-specific ledger events;
 - deterministic replay.
+
+## Protocol vs. application
+
+A poker application normally packages an interface and execution environment for users.
+
+The protocol is the lower-level specification that defines the interoperable behavior expected from compatible implementations.
+
+The protocol therefore does not require one particular:
+
+- user interface;
+- application;
+- hosting provider;
+- programming language;
+- implementation;
+- vendor.
+
+The exact requirements for protocol compatibility must be established by the normative technical specifications.
 
 ## Engines
 
@@ -76,13 +113,15 @@ These scopes must not be conflated. The exact algorithms, thresholds, escalation
 
 Settlement changes protocol state. The Ledger records and verifies the resulting protocol history/state.
 
-    Protocol State Machine
-            ↓
-    Settlement State Transition
-            ↓
-    Ledger Record
-            ↓
-    Verification / Replay
+```
+Protocol State Machine
+        ↓
+Settlement State Transition
+        ↓
+Ledger Record
+        ↓
+Verification / Replay
+```
 
 The Ledger is not automatically equivalent to consensus.
 
@@ -106,9 +145,10 @@ These are documentation/engineering classifications until their normative semant
 ## Historical sources
 
 - [0.0 CHAIN POKER GENESIS — Digital Poker Protocol](../../0.0%20CHAIN%20POKER%20GENESIS__by%20LAEV__Digital%20Poker%20Protocol__.pdf)
+- [Historical audit of source 0.0](../history/00.0-CHAIN-POKER-GENESIS-DIGITAL-POKER-PROTOCOL.md)
 - [CHAIN POKER GENESIS by LAEV](../../CHAIN%20POKER%20GENESIS%20by%20LAEV.pdf)
 - [34.0 Formal Specification of Engine Evolution](../../34.0%20Formal%20Specification%20of%20Engine%20Evolution.pdf)
 
 ## Status
 
-Working structured specification. Normative details remain under historical-document audit.
+Working structured specification. The foundational protocol/application distinction is extracted from source 0.0. Normative technical details remain under historical-document audit.
