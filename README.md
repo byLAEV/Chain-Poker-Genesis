@@ -631,3 +631,17 @@ The rule is simple:
 - and consensus among players is the only path of communication with the protocol.
 
 This approach protects continuity, interoperability, system integrity, and its long-term social commitment.
+
+
+---
+
+# Installation Engine
+
+The historical **Installation Engine v1.0** is now structured as a dedicated engine specification in the repository.
+
+- [Installation Engine README](engines/installation-engine/README.md)
+- [Functional Specification](engines/installation-engine/SPECIFICATION.md)
+- [Security Model](engines/installation-engine/SECURITY.md)
+- [Versioning Policy](engines/installation-engine/VERSIONING.md)
+
+The original PDF remains the historical source record. The structured documentation explicitly distinguishes documented requirements from implementation details that remain to be specified.
