@@ -97,7 +97,7 @@ Engine 07 does **not** own:
 
 It must not itself generate the deck.
 
-If two shuffle/distribution engines exist, exactly one result becomes the canonical card state for a hand. The other may independently verify it or operate under an explicitly defined secondary role.
+Two shuffle/distribution engines are available as alternatives. At table creation, exactly one is selected. Only the selected engine is authoritative for the table. The other does not participate unless a later table-consensus decision selects it.
 
 ### 4.5 Engine 07 ↔ Dealer
 
@@ -153,13 +153,11 @@ Custody/spend authority must remain with the Settlement/Wallet architecture.
 
 **Status:** Open until the two-engine shuffle design is formally specified.
 
-### C05 — Two shuffle engines
+### C05 — Two card engines
 
-**Risk:** Two engines could generate two different authoritative decks.
+**Resolution:** Two compatible card engines are available, but they are alternatives. A table selects exactly one. There is no requirement for both to execute the same hand.
 
-**Resolution:** a hand has exactly one canonical card state. A second engine must be explicitly designated verifier/secondary implementation or otherwise governed so that no competing state can be accepted.
-
-**Status:** Architectural rule established; exact algorithms still open.
+**Status:** Resolved architecturally; individual engine specifications remain open.
 
 ### C06 — Dealer versus randomness
 
@@ -193,7 +191,7 @@ Before card commitments begin, the following must be fixed for a hand:
 - hand_id
 - protocol version
 - rules version
-- selected shuffle/distribution engine(s) and roles
+- active card-engine identifier and version
 - commitment/reveal version
 - dealer version
 - canonicalization version
@@ -227,6 +225,6 @@ The exact state machine must be reconciled with Poker Rules, Dealer, Settlement,
 
 **No Engine 01→07 should be permitted to silently own another engine's domain state.**
 
-The most important unresolved architectural dependency is now the **two-engine Shuffle/Distribution architecture**, because it determines where randomness, canonical deck state, card assignment, independent verification, and replay proofs meet.
+The two-engine architecture is now defined as a table-level selection mechanism. The remaining work is to specify Engine A and Engine B independently and define their common card-engine interface.
 
-The next specification should therefore define the two shuffle/distribution roles before adding further game engines.
+The next specification should define the two card engines independently before adding further game engines.
