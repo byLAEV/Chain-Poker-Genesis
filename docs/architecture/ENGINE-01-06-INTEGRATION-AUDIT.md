@@ -241,3 +241,72 @@ Those documents determine whether the current Engine 06 boundary correctly separ
 ---
 
 **Audit status:** 01–06 structurally aligned with open cross-engine contracts identified.
+
+
+## 5. Finding B — dual shuffle/distribution boundary
+
+**Status: ARCHITECTURAL CORRECTION APPLIED.**
+
+Card generation/distribution must not be owned ambiguously by Engine 06, Dealer, or the ledger. The repository now defines a supporting dual-shuffle architecture with two compatible implementations:
+
+- **Engine A:** native Chain Poker Genesis shuffle/distribution mechanism;
+- **Engine B:** independent verifiable-shuffle / mental-poker adapter.
+
+Only one is authoritative for a given hand. The selected engine is fixed before authoritative card-assignment commitment. The non-selected engine may independently verify the same canonical result where compatibility permits.
+
+The second engine is therefore not a second competing dealer. It reduces implementation monoculture while preserving one canonical hand state.
+
+## 6. Finding C — Engine 06 commitment/reveal boundary
+
+**Status: CORRECTED.**
+
+Engine 06 receives a canonical card-assignment result. It owns private-card commitment, protected-card handling, reveal authorization consumption, and reveal verification. It does not select a shuffle result after seeing private cards.
+
+The selected shuffle engine identifier and version become part of the hand context and are persisted as protocol evidence by Engine 04.
+
+## 7. Finding D — randomness ownership
+
+**Status: OPEN / MUST BE RESOLVED BEFORE FINAL IMPLEMENTATION.**
+
+The existing specifications contain multiple references to randomness: deck generation, cut, random burn, commitment generation, and player participation. These must be separated into explicit domains.
+
+At minimum:
+
+1. **Shuffle randomness:** determines the cryptographic deck/order under the selected shuffle engine.
+2. **Dealer consumption rules:** consume the already committed deck/state and must not silently create a competing shuffle.
+3. **Commitment nonce randomness:** protects commitment hiding and is not the source of deck randomness.
+4. **Protocol-selection randomness, if any:** must be separately specified and committed before it can affect the hand.
+
+No implementation may use a predictable commitment hash as a substitute for secure shuffle randomness.
+
+## 8. Finding E — replay boundary
+
+**Status: OPEN / MUST BE RESOLVED.**
+
+A replay must reproduce the canonical hand state from recorded inputs, selected engine identifier/version, commitments, proofs, and authorized transitions. Replay must never ask the system to regenerate private randomness unless the required seed/material is explicitly part of the replay specification.
+
+## 9. Finding F — Request & Permission boundary
+
+**Status: REQUIRES ALIGNMENT.**
+
+The Request & Permission Engine may authorize engine selection, fallback, reveal requests, and inter-engine operations. It must not become the owner of cryptographic randomness, card assignment, or private-card plaintext.
+
+The permission layer validates the transition; the domain engine performs the cryptographic operation.
+
+## 10. Finding G — ledger boundary
+
+**Status: CORRECTED.**
+
+Engine 04 records evidence of shuffle selection, commitments, proofs, state transitions, reveals, failures, and replay identifiers. It must not become the source of private-card truth or a second card-distribution engine.
+
+Private card plaintext should remain outside the general ledger unless a later protocol rule explicitly requires publication.
+
+## 11. Required integration invariant
+
+The complete card path should converge to one canonical state:
+
+`Shuffle Engine → Card Assignment Contract → Engine 06 → Gameplay/Reveal → Engine 04 Evidence`
+
+with Request & Permission controlling authorized transitions between engines.
+
+The architecture therefore permits two implementations while maintaining one authoritative result per hand.
