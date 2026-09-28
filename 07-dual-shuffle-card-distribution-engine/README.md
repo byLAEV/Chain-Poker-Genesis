@@ -1,7 +1,8 @@
-# 07 — Dual Shuffle & Card Distribution Architecture
+# Dual Shuffle & Card Distribution Architecture
 
 **Chain Poker Genesis by LAEV**  
-**Status:** Architectural specification v1.0
+**Status:** Architectural specification v1.0  
+**Role:** Supporting architecture; does not replace the repository's Engine 07 — Table Creation Engine.
 
 ## 1. Purpose
 
