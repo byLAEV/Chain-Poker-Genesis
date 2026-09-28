@@ -270,3 +270,23 @@ This README separates those historical requirements from implementation details 
 
 © 2026 Lerry Alexander Elizondo Villalobos (LAEV).  
 Chain Poker Genesis by LAEV.
+
+
+## 18. Dual shuffle/distribution compatibility
+
+Engine 06 is deliberately agnostic to the selected card-shuffle/distribution implementation.
+
+The protocol may select one of two compatible mechanisms:
+
+- **Engine A:** native Chain Poker Genesis shuffle/distribution mechanism;
+- **Engine B:** independent verifiable-shuffle / mental-poker adapter.
+
+Only one mechanism is authoritative for a hand. Engine 06 receives the canonical Card Assignment Result and does not choose between competing card assignments.
+
+The selected shuffle engine identifier, version, assignment commitment and verification material become part of the hand context used by Engine 06.
+
+Where the non-authoritative engine can independently verify the same canonical result, its verification may be recorded without changing the authoritative result.
+
+A shuffle-engine change after authoritative commitment is forbidden. A failure before finalization must follow the protocol's explicit fallback/recovery state.
+
+This preserves a single canonical hand state while avoiding dependence on one shuffle implementation.
