@@ -657,6 +657,13 @@ The original PDF remains the historical source record. The structured documentat
 
 The repository is progressively consolidating the historical functional specifications into implementation-facing engine documentation.
 
+
+### 08 — Table Join Engine
+
+The Table Join Engine specification defines deterministic player admission, cryptographic authorization through the table-selected engine, financial authorization, atomic seat reservation, participant creation, table-state updates, and Ledger event submission.
+
+- [Engine 08 README](08-table-join-engine/README.md)
+
 ### 04 — Private Off-Chain Ledger Engine
 
 The Private Off-Chain Ledger Engine provides the protocol's private historical evidence layer: structured event records, cryptographic hashes, Merkle batches, Merkle Roots and Bitcoin anchoring metadata.
