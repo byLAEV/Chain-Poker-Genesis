@@ -128,3 +128,71 @@ Those properties belong to other protocol components or operational assumptions.
 ## 12. Compatibility requirement
 
 Any implementation claiming Engine 06 compatibility must reproduce the same commitment verification result for identical canonical inputs and cryptographic parameters.
+
+
+## 11. Commit Pair / Reveal Pair
+
+The protocol treats private-card commitment and authorized disclosure as two linked cryptographic pairs rather than as a single signature operation.
+
+### 11.1 Commit Pair
+
+A Commit Pair contains two independently verifiable components:
+
+1. **Private Card Commitment** — a canonical commitment to the private card material and hiding nonce.
+2. **Ownership/Identity Proof** — proof that the participant/wallet authorized to receive the card controls the corresponding cryptographic identity.
+
+Conceptually:
+
+\`COMMIT_PAIR = { card_commitment, ownership_proof }\`
+
+The ownership proof does not replace encryption and does not itself reveal the card.
+
+### 11.2 Reveal Pair
+
+A Reveal Pair contains two independently verifiable components:
+
+1. **Card Reveal Data** — the canonical card data and commitment nonce required to reproduce the commitment.
+2. **Reveal Authorization** — the cryptographic authorization required by the protocol to make the private card public.
+
+Conceptually:
+
+\`REVEAL_PAIR = { reveal_data, reveal_authorization }\`
+
+### 11.3 Verification rule
+
+A reveal is accepted only when both members of the Reveal Pair are valid and the revealed data reproduces the original commitment.
+
+The protocol therefore verifies:
+
+\`Commit Pair → ownership valid\`
+
+\`Reveal Pair → authorization valid\`
+
+\`Reveal Data → commitment match\`
+
+Failure of any required component produces \`REVEAL_REJECTED\` and the private card remains non-public.
+
+### 11.4 Why the pair model exists
+
+This separation prevents four different concepts from being conflated:
+
+- possession/control of the wallet key;
+- confidentiality of the private card;
+- commitment integrity;
+- authorization to reveal.
+
+A wallet signature proves an authorization or identity claim according to the defined signature domain; it does not automatically provide confidentiality and does not automatically authorize publication.
+
+### 11.5 Engine boundaries
+
+The flow is:
+
+\`Poker Rules → Request & Permission → Commitment & Reveal → authorized wallet/participant → verification → Public State\`
+
+Engine 06 owns the commitment/reveal objects and verification logic. The Poker Rules Engine determines when a reveal is required. Request & Permission authorizes and routes the operation. The wallet supplies the required cryptographic proof. Engine 04 records the resulting evidence.
+
+### 11.6 Replay requirement
+
+A replay must be able to verify the Commit Pair, Reveal Pair, commitment hash, authorization domain, selected shuffle engine, and canonical hand context without requiring access to the original private wallet session.
+
+The replay verifier must not manufacture a missing authorization or substitute a different reveal.
