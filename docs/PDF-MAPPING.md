@@ -75,3 +75,120 @@ El PDF original seguirá siendo la fuente histórica. Los futuros documentos Mar
 ## Estado
 
 MAPEO INICIAL CREADO — AUDITORÍA DE CONTENIDO PENDIENTE.
+
+## Fase 2 — Auditoría documental
+
+La clasificación de esta tabla sigue siendo **provisional**. La auditoría se realizará sobre el contenido de los PDFs originales, no sobre sus nombres.
+
+### Prioridad 1 — documentos arquitectónicos centrales
+
+1. `0.0 CHAIN POKER GENESIS__by LAEV__Digital Poker Protocol__.pdf`
+   - Función inicial: documento de protocolo.
+   - Preguntas: qué es normativo, qué es permanente, qué depende de motores y qué arquitectura define.
+   - Resultado esperado: frontera entre protocolo, motores e infraestructura.
+
+2. `CHAIN POKER GENESIS by LAEV.pdf`
+   - Función inicial: posible documento maestro/consolidado.
+   - Preguntas: si consolida otros documentos, si contiene una especificación diferente o si representa una etapa histórica.
+   - No se debe asumir que es superior al documento 0.0 hasta compararlo.
+
+3. `34.0 Formal Specification of Engine Evolution.pdf`
+   - Función inicial: evolución/versionado de motores.
+   - Preguntas: reglas de compatibilidad, selección de versiones, permanencia histórica y relación con consenso.
+
+4. `22.0 Security Architecture Specification.pdf`
+   - Función inicial: arquitectura de seguridad.
+   - Preguntas: límites criptográficos, identidad, autorización, verificación, amenazas y responsabilidades del nodo.
+
+5. `23. Basic Infrastructure Installation.pdf`
+   - Función inicial: infraestructura.
+   - Preguntas: qué componentes pertenecen al nodo genérico y cuáles son exclusivamente de CPG.
+
+### Prioridad 2 — arquitectura operacional
+
+- `04. Private Off-Chain Ledger Engine_- Chain Poker Genesis by LAEV.pdf`
+- `12.0 Monetary Settlement Engine__.pdf`
+- `5.0_Rake Engine and Monetary Settlement Flow_CPG.pdf`
+- `6.0 Commitment and Reveal Card Dealing Engine__.pdf`
+- `16.0 Dealer Engine (Crupier Engine)__.pdf`
+- `29.0 Motor de Repartición de Cartas y Motor de Crupier.pdf`
+- `13.0 Motor de Solicitudes y Permisos (Request & Permission Engine)__.pdf`
+- `14.0 P2P Conflict Resolution Engine.pdf`
+- `17. Reputation Engine_Chain Poker Genesis.pdf`
+
+Estos documentos deben cruzarse antes de decidir si cada uno representa un motor independiente, una interfaz, una capacidad del nodo o una parte de otro subsistema.
+
+### Prioridad 3 — mesa y experiencia de protocolo
+
+- `7.0 Table Creation Engine_- CHAIN POKER GENESIS BY LAEV (peroqtdigo).pdf`
+- `8.0 Table Join Engine_- CHAIN POKER GENESIS BY LAEV (peroqtdigo).pdf`
+- `9.0 Table Wallet Engine_- CHAIN POKER GENESIS BY LAEV (peroqtdigo).pdf`
+- `30.0 Table Permission Widget Specification.pdf`
+- `2.0 Graphical Interface Engine - Chain Poker Genesis by LAEV .pdf`
+- `10.0 Player Node Disconnection Management Engine__.pdf`
+
+### Prioridad 4 — estándares, integración e investigación
+
+- `21.0 Multi-Domain Game Protocol_.pdf`
+- `33.0 International Poker Table Standard.pdf`
+- `3.0 Cryptographic Connection Engine__Chain Poker Genesis by LAEV__.pdf`
+- `18.0 Protocol Adoption Engine.pdf`
+- `28.0 Engine Governance Layer (EGL) — Engine of Engines__.pdf`
+- `32.0 Hash Paper Engine_Chain Poker Genesis.pdf`
+- `27.0 Early Access Version Architecture- Lightning Network Interpretation Layer Without Off-Chain Ledger.pdf`
+- `Red Lightning — Mesa CHAIN POKER GENESIS.pdf`
+- `Ejemplo_ Motor de interpretación.pdf`
+- `31.0 HanBot Widget.pdf`
+
+### Prioridad 5 — seguridad especializada, autoría e historia
+
+- `25. Cryptographic Defense of the Dealer.pdf`
+- `24. SWORN DECLARATION OF AUTHORSHIP,.pdf`
+- `18.0 el futuro de Chain Poker Genesis by LAEV .pdf`
+
+## Ficha de auditoría que se aplicará a cada PDF
+
+Para cada documento se registrará:
+
+- **ID documental**
+- **Título**
+- **Estado histórico**
+- **Propósito**
+- **Alcance**
+- **Reglas normativas**
+- **Entradas**
+- **Salidas**
+- **Estados y transiciones**
+- **Dependencias**
+- **Interfaces**
+- **Relación con Node**
+- **Relación con Node Manager**
+- **Relación con el protocolo**
+- **Relación con engines**
+- **Relación con Ledger**
+- **Relación con consenso**
+- **Requisitos criptográficos**
+- **Requisitos temporales**
+- **Persistencia y replay**
+- **Seguridad**
+- **Duplicaciones**
+- **Contradicciones**
+- **Specification gaps**
+- **Implementation blockers**
+- **Destino documental recomendado**
+- **Confianza de la clasificación**
+
+## Regla de migración futura
+
+Ningún PDF se moverá únicamente porque esta tabla le asigne una ruta.
+
+La migración solo será procedente cuando:
+
+1. el PDF haya sido auditado;
+2. sus relaciones con los demás documentos hayan sido comprobadas;
+3. su clasificación haya sido aprobada;
+4. exista un documento Markdown canónico correspondiente;
+5. el destino final esté confirmado;
+6. se conserve el enlace y la trazabilidad con el PDF original.
+
+**Estado de esta fase: MAPEO + PLAN DE AUDITORÍA. No es todavía una migración.**
