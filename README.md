@@ -186,6 +186,13 @@ The applicable license for this repository will be published separately.
 
 ---
 
+
+
+# Engine Documentation
+
+- [Installation Engine](engines/installation-engine/README.md)
+- [Graphical Interface Engine](engines/graphical-interface-engine/README.md)
+
 ## Chain Poker Genesis by LAEV
 
 **Deterministic. Decentralized. Peer-to-Peer. Open Protocol.**
