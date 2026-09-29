@@ -614,7 +614,7 @@ Engine 13 does not execute funds.
 
 # 19. Consensus / Configuration Change Example
 
-A representative multi-stage workflow is a configuration change in which a consensus engine requests that the engine owning table configuration apply a change affecting the table's Card Engine configuration.
+A representative multi-stage workflow is a governance-controlled configuration transition in which a consensus engine requests that the engine owning table configuration apply a permitted change affecting the table's Card Engine selection or configuration. Such a transition must respect the Table Creation Engine's canonical configuration, lifecycle and version-transition rules; Engine 13 must not be interpreted as permitting an arbitrary mutation of an active table or active hand.
 
 The following is a representative conceptual flow; the exact request types, requirement contract, consensus evidence format and configuration-transition rules must be defined by the authoritative Consensus and Table Creation specifications:
 
@@ -651,7 +651,7 @@ independent validation of:
 - configuration state
 - required authorization evidence
         ↓
-CONFIGURATION CHANGE
+EXPLICIT CONFIGURATION / VERSION TRANSITION
         ↓
 RESULT
         ↓
