@@ -2,7 +2,7 @@
 
 # 15 — Poker Rules Engine
 
-## Official Technical Specification v2.1
+## Official Technical Specification v2.2
 
 **Document Class:** CORE ENGINE  
 **Document Status:** INTEGRATION-READY — POST-AUDIT REVISION  
@@ -53,7 +53,7 @@ The Poker Rules Engine determines the normative truth of a poker hand:
 - ties and deterministic pot division;
 - terminal hand state.
 
-For the same valid normative state, ruleset and proposed action, the result MUST be deterministic.
+For the same valid normative state, ruleset, authoritative Card/Dealer State where the transition depends on card state, and proposed action, the result MUST be deterministic.
 
 ## 2. Scope
 
@@ -68,6 +68,7 @@ An external layer may reject an operation for a reason belonging to its own doma
 ~~~text
 Same Valid Normative State
 + Same Ruleset
++ Same Authoritative Card/Dealer State (when card-dependent)
 + Same Proposed Action
 = Same Rule Result
 ~~~
@@ -366,7 +367,7 @@ CardDealerStateResult
 POKER RULES ENGINE
 ~~~
 
-The result MUST identify or deterministically derive `card_state_reference`, `hand_id`, private-card state, community-card state, board stage, card integrity status and deal/reveal status.
+The result MUST identify or deterministically derive `card_state_reference`, `hand_id`, private-card state reference, community-card state, board stage, card integrity status and deal/reveal status. `CardDealerStateResult` is the normalized semantic input contract of Engine 15; it does not create a second card engine or replace the authoritative card/distribution engine.
 
 Engine 15 MUST NOT generate, shuffle or choose among competing card assignments. If incompatible card/dealer results exist, their resolution belongs to the applicable card/dealer conflict or canonicality layer before Engine 15 receives the authoritative state.
 
