@@ -7,8 +7,8 @@
 **Document Class:** CORE ENGINE  
 **Document Status:** INTEGRATION-READY  
 **Architecture Role:** Authorized Monetary Settlement Execution  
-**Previous Specification:** v1.1  
-**Revision:** v1.2  
+**Previous Specification:** v1.3  
+**Revision:** v1.4  
 **Protocol:** Chain Poker Genesis by LAEV
 
 ---
@@ -154,6 +154,53 @@ SETTLEMENT_AUTHORIZED
 The first belongs to admission / buy-in validation.
 
 The second belongs to execution authorization for a specific settlement operation.
+
+# 3B. Relationship to Engine 05 — Rake and Settlement Flow
+
+Engine 05 is the upstream obligation-generation layer for rake and related monetary allocations.
+
+Engine 05 determines:
+
+~~~text
+rake eligibility
+rake calculation
+allocation calculation
+RakeObligation
+SettlementRequest
+~~~
+
+Engine 12 determines:
+
+~~~text
+authorized settlement execution
+submission
+execution result
+settlement evidence
+~~~
+
+The architectural boundary is:
+
+~~~text
+ENGINE 05
+Rake / Obligation Layer
+        ↓
+SettlementRequest
+        ↓
+Authorization Boundary
+        ↓
+ENGINE 12
+Monetary Settlement Execution
+        ↓
+Settlement Result / Evidence
+~~~
+
+Engine 12 does not recalculate rake, reconstruct or replace the canonical RakeObligation, or create a competing settlement obligation.
+
+Engine 05 does not execute the final monetary transfer.
+
+The current Engine 12 therefore represents a functional separation/evolution of the monetary-settlement execution portion that was historically documented together with the Rake Engine and Monetary Settlement Flow. Engine 12 does not replace Engine 05.
+
+This relationship preserves a single upstream monetary obligation and a single execution boundary.
 
 # 4. Table Wallet Boundary
 
