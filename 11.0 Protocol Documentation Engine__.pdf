@@ -3,136 +3,263 @@
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [19 0 R 20 0 R 21 0 R 22 0 R 23 0 R 24 0 R 25 0 R 26 0 R 27 0 R 28 0 R 29 0 R 30 0 R 31 0 R 32 0 R 33 0 R 34 0 R] /Count 16 >>
+<< /Type /Pages /Kids [10 0 R 11 0 R 12 0 R 13 0 R 14 0 R 15 0 R 16 0 R] /Count 7 >>
 endobj
 3 0 obj
-<< /Length 181 >>
+<< /Length 394 >>
 stream
 BT
 /F1 11 Tf
 45 800 Td
 /F1 16 Tf
 (CHAIN POKER GENESIS BY LAEV) Tj
-0 -28 Td
+0 -30 Td
 /F1 10 Tf
-0 -10 Td
 0 -14 Td
-(Protocol Documentation Engine - Official Technical Specification v1.1) Tj
-ET
-endstream
-endobj
-4 0 obj
-<< /Length 404 >>
-stream
-BT
-/F1 11 Tf
-45 800 Td
-/F1 16 Tf
-(0. DOCUMENT CONTROL) Tj
-0 -28 Td
-/F1 10 Tf
-0 -10 Td
+(11.0 PROTOCOL DOCUMENTATION ENGINE) Tj
 0 -14 Td
-(SEQ: 11 | PREV: 10 | SELF: 11 | NEXT: 12) Tj
+(Official Technical Specification v1.1 - Corrected and Audited) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(LCCP: SEQ 11 | PREV 10 | SELF 11 | NEXT 12) Tj
 0 -14 Td
 (CLASS: CORE ENGINE) Tj
 0 -14 Td
 (STATUS: CONSOLIDATED / CORRECTED / AUDITED / INTEGRATION-READY) Tj
-0 -10 Td
+ETendstream
+endobj
+4 0 obj
+<< /Length 612 >>
+stream
+BT
+/F1 11 Tf
+45 800 Td
+/F1 16 Tf
+(1. PURPOSE AND BOUNDARY) Tj
+0 -30 Td
+/F1 10 Tf
 0 -14 Td
-(Audit basis: frozen 01-10 baseline. Final 01-11 freeze remains pending the integrated) Tj
+(The Documentation Engine manages, versions, validates, publishes, distributes and) Tj
 0 -14 Td
-(audit including Engine 11.) Tj
+(preserves official protocol documentation. It is a documentary knowledge layer for users, developers, node operators, researchers) Tj
+0 -14 Td
+(and auditors.) Tj
+0 -14 Td
+(It does not execute poker logic, determine winners, authorize wallet spending, decide ) Tj
+0 -14 Td
+(membership, replace consensus or the ledger, control TABLE_WALLET_INSTANCE lifecycle, or execute monetary settlement.) Tj
 ET
 endstream
 endobj
 5 0 obj
-<< /Length 550 >>
+<< /Length 555 >>
 stream
 BT
 /F1 11 Tf
 45 800 Td
 /F1 16 Tf
-(1. PURPOSE) Tj
-0 -28 Td
+(2. AUTHORITY AND LIFECYCLE) Tj
+0 -30 Td
 /F1 10 Tf
-0 -10 Td
 0 -14 Td
-(The Protocol Documentation Engine manages, organizes, versions, validates, publishes,) Tj
+(Official status requires an authorized document record plus integrity metadata.) Tj
 0 -14 Td
-(distributes and preserves official Chain Poker Genesis documentation.) Tj
-0 -10 Td
+(Authorship, storage, mirroring and communication are separate roles.) Tj
 0 -14 Td
-(It is the documentary knowledge layer for users, developers, node operators, researchers) Tj
+(Lifecycle: DRAFT -> REVIEW -> VALIDATED -> AUTHORIZED -> PUBLISHED -> REPLICATED ->) Tj
 0 -14 Td
-(and auditors. It does not execute poker logic, financial settlement, player membership,) Tj
+(SUPERSEDED -> ARCHIVED. REJECTED and WITHDRAWN are exception states.) Tj
 0 -14 Td
-(table consensus, wallet authorization or card generation.) Tj
-ET
-endstream
+() Tj
+0 -14 Td
+(Document version and protocol version are independent identifiers.) Tj
+ETendstream
 endobj
 6 0 obj
-<< /Length 433 >>
+<< /Length 819 >>
 stream
 BT
 /F1 11 Tf
 45 800 Td
 /F1 16 Tf
-(2. ARCHITECTURAL BOUNDARY) Tj
-0 -28 Td
+(3. DISTRIBUTION, INTEGRITY AND ACCESS) Tj
+0 -30 Td
 /F1 10 Tf
-0 -10 Td
 0 -14 Td
-(OPERATIONAL ENGINES -> DOCUMENTARY INPUT -> VALIDATION -> AUTHORIZATION -> PUBLICATION) Tj
+(The documentary model is logically centralized while physical storage is distributed) Tj
 0 -14 Td
-(-> DISTRIBUTION / ARCHIVE) Tj
-0 -10 Td
+(across repository mirrors, IPFS nodes, cloud nodes and archives. Storage location is) Tj
 0 -14 Td
-(The Documentation Engine manages documentary state only. It does not acquire authority) Tj
+(not authority.) Tj
 0 -14 Td
-(over the operational engine that produced the underlying event or state.) Tj
-ET
-endstream
+() Tj
+0 -14 Td
+(Published content should have a deterministic cryptographic content identifier. An) Tj
+0 -14 Td
+(IPFS CID identifies content but does not alone establish official status.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(The player UI exposes essential documents. Developers and auditors may access the full) Tj
+0 -14 Td
+(index, history and integrity metadata. A communication/press node may distribute) Tj
+0 -14 Td
+(releases and education but cannot alter official technical authority.) Tj
+ETendstream
 endobj
 7 0 obj
-<< /Length 499 >>
+<< /Length 754 >>
 stream
 BT
 /F1 11 Tf
 45 800 Td
 /F1 16 Tf
-(3. DOCUMENT AUTHORITY) Tj
-0 -28 Td
+(4. INTEGRATION 08 -> 09 -> 10) Tj
+0 -30 Td
 /F1 10 Tf
-0 -10 Td
 0 -14 Td
-(Official status is determined by an authorized document record plus cryptographic) Tj
+(Engine 08 retains table-join authority. Engine 11 documents join requirements but does) Tj
 0 -14 Td
-(integrity metadata. Authorship, storage, mirroring and communication are separate roles.) Tj
-0 -10 Td
+(not replace runtime join authority.) Tj
 0 -14 Td
-(DRAFT -> REVIEW -> VALIDATED -> AUTHORIZED -> PUBLISHED -> REPLICATED -> SUPERSEDED ->) Tj
+() Tj
 0 -14 Td
-(ARCHIVED) Tj
-0 -10 Td
+(Engine 09 retains authority over TABLE_WALLET_INSTANCE and its cryptographic) Tj
 0 -14 Td
-(Exception states may include REJECTED and WITHDRAWN.) Tj
-ET
-endstream
+(configuration lifecycle. Engine 11 cannot create, authorize, modify, suspend or close) Tj
+0 -14 Td
+(a TABLE_WALLET_INSTANCE.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Engine 10 retains authority over connection, reconnection, absence, abandonment and) Tj
+0 -14 Td
+(participant-removal workflow. Engine 11 may preserve specifications and historical) Tj
+0 -14 Td
+(evidence without changing operational state.) Tj
+ETendstream
 endobj
 8 0 obj
-<< /Length 488 >>
+<< /Length 940 >>
 stream
 BT
 /F1 11 Tf
 45 800 Td
 /F1 16 Tf
-(4. VERSIONING AND IDENTITY) Tj
-0 -28 Td
+(5. AUDIT AND CLOSURE) Tj
+0 -30 Td
 /F1 10 Tf
-0 -10 Td
 0 -14 Td
-(Document version and protocol version are independent. A documentation correction does)LHX^H™\Ù\™HÜXÚYšXØØ][ÛœÈ[™\ÝÜšXØ[]šY[˜ÙHÚ]Ý]Ú[™Ú[™ÈÜ\˜][Û˜[Ý]Kˆ‚ŒLM‘U™[™Ý™X[B™[™Øš‚ŒMHØš‚Ó[™Ýˆ‚œÝ™X[B•‹ÑŒHLH‚H‹ÑŒHMˆ‚ŠLKˆ“Ô“PUU‘H•STÊH‚ŒLŽ‹ÑŒHL‚ŒLLŒLMŠHØÝ[Y[][Ûˆ[™Ú[™HX[˜YÙ\ÈØÝ[Y[\žHÝ]K›ÝØ[YHÜˆš[˜[˜ÚX[Ý]KŠH‚ŒLMŠHÙ™šXÚX[Ý]\È™\]Z\™\È[ˆ]]Üš^™YX›XØ][Ûˆ™XÛÜ™ŠH‚ŒLMŠHÝÜ˜YÙH\È›Ý]]Üš]KŠH‚ŒLMŠHØÝ[Y[[™›ÝØÛÛ™\œÚ[ÛœÈ\™HÙ\\˜]KŠH‚ŒLMŠHX›\ÚYÛÛ[ÚÝ[]™HHÜž\ÙÜ˜\XÈ[YÜš]HY[YšY\‹ŠH‚ŒLMŠH[™Ú[™H™]Z[œÈ›Ú[ˆ]]Üš]KŠH‚ŒLMŠH[™Ú[™HH™]Z[œÈX›HØ[]]]Üš]KŠH‚ŒLMŠH[™Ú[™HL™]Z[œÈ\ØÛÛ›™XÝ[Ûˆ[™XœÙ[˜ÙH]]Üš]KŠH‚ŒLMŠH[™Ú[™HLHÙ\È›ÝÛÛ›ÛP“WÕÐSUÒS”ÕSÑHY™XÞXÛKŠH‚ŒLMŠH[™Ú[™HLHÙ\È›ÝXÚYHÚ[›™\œËÙ][Y[[[Ý[ËY[X™\œÚ\™[[Ý˜[ÜˆÛÛœÙ[œÝ\ÊH‚ŒLMŠÝ]ÛÛY\ËŠH‚‘U™[™Ý™X[B™[™Øš‚ŒMˆØš‚Ó[™ÝŒ‚œÝ™X[B•‹ÑŒHLH‚H‹ÑŒHMˆ‚ŠL‹ˆUQUPU’VHOˆL
-H‚ŒLŽ‹ÑŒHL‚ŒLLŒLMŠÐÔÜÚ][ÛŽˆTÔÈHÑTHLHÈ‘UˆLÈÑSˆLHÈ‘VLŠKˆ‚ŒLMŠ[™Ú[™H›Ý[™\žNˆTÔËŠH‚ŒLMŠ[™Ú[™HHØ[]›Ý[™\žNˆTÔËŠH‚ŒLMŠ[™Ú[™HL\ØÛÛ›™XÝ[Ûˆ›Ý[™\žNˆTÔËŠH‚ŒLMŠYÙ\ˆ›Ý[™\žNˆTÔËŠH‚ŒLMŠ™\œÚ[Ûš[™ÈÙ\\˜][ÛŽˆTÔËŠH‚ŒLMŠÝÜ˜YÙH™\œÝ\È]]Üš]NˆTÔËŠH‚ŒLMŠ[YÜš]H[Ù[ˆTÔËŠH‚ŒLMŠÛÛ[][šXØ][Ûˆ›ÙHÙ\\˜][ÛŽˆTÔËŠH‚ŒLMŠ^Y\ˆRH›Ý[™\žNˆTÔËŠH‚ŒLLŒLMŠš[˜[HOˆLHœ™Y^™NˆS‘S‘È[YÜ˜]Y]Y][˜ÛY[™È\ÈØÝ[Y[ŠH‚‘U™[™Ý™X[B™[™Øš‚ŒMÈØš‚Ó[™Ýˆ‚œÝ™X[B•‹ÑŒHLH‚H‹ÑŒHMˆ‚ŠLËˆ“ÕÐÓÓSÔÓÔJH‚ŒLŽ‹ÑŒHL‚ŒLLŒLMŠH\ÚYÛˆš[˜Ú\HÛÙHÙ\È›Ý\ØÜš[Z[˜]HˆYX[œÈ]›ÝØÛÛ™Z]š[ÜˆÚÝ[
-H‚ŒLMŠ\HHX›\ÚY]\›Z[š\ÝXÈ[\ÈÛÛœÚ\Ý[HÚ][ˆZ\ˆYš[™YØÛÜKˆ\È\ÊH‚ŒLMŠH\ÚYÛˆš[˜Ú\K›ÝH™\XÙ[Y[›ÜˆXÚšXØ[™\]Z\™[Y[ËYØ[Ø›YØ][ÛœË
-H‚ŒLMŠÙXÝ\š]H™\]Z\™[Y[ÈÜˆ^XÚ]›ÝØÛÛÛÛœÝ˜Z[ËŠH‚ŒLLŒLMŠÛ›ÝÛYÙH\È™X]Y\È\ÙˆH›ÝØÛÛXÛÜÞ\Ý[H™XØ]\ÙH\XÚ\[È]\Ý™HXX›JH‚ŒLMŠÈ[œÜXÝ[\Ë™\œÚ[ÛœÈ[™\ÝÜšXØ[Ú[™Ù\ËŠH‚‘U™[™Ý™X[B™[™Øš‚ŒNØš‚Ó[™ÝÍ‚œÝ™X[B•‹ÑŒHLH‚H‹ÑŒHMˆ‚ŠMˆÒQT”‘HHUQUÔ’PJH‚ŒLŽ‹ÑŒHL‚ŒLLŒLMŠ\ÈÛÜœ™XÝYŒKŒH[˜ÛÜœÜ˜]\ÈHÝXÝ\˜[ÛÜœ™XÝ[ÛœÈY[YšYY\š[™È™]šY]ÈÙŠH‚ŒLMŠ[™Ú[™HLH[™]È›Ý[™\šY\ÈÚ][™Ú[™\ÈH[™LŠH‚ŒLLŒLMŠÕT”‘S•ÕUTÎˆÓÓ”ÓÓQUQÈÓÔ”‘PÕQÈUQUQÈS•QÔUSÓ‹T‘PQJH‚ŒLLŒLMŠ‘V“Ô“PSÕTˆ’SSS•QÔUQUQUHOˆLJH‚ŒLLŒLMŠQˆTÔÑQˆ”“Ö‘SŠH‚‘U™[™Ý™X[B™[™Øš‚ŒNHØš‚Õ\HÔYÙHÔ\™[ˆˆÓYYXP›ÞÌNMH—HÔ™\ÛÝ\˜Ù\ÈÑ›ÛÑŒHHˆˆˆÐÛÛ[ÈÈˆ‚™[™Øš‚
+(Audit baseline: frozen 01-10 chain.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(PASS: LCCP position 11 / 10 / 11 / 12.) Tj
+0 -14 Td
+(PASS: Engine 08 boundary.) Tj
+0 -14 Td
+(PASS: Engine 09 wallet boundary.) Tj
+0 -14 Td
+(PASS: Engine 10 disconnection boundary.) Tj
+0 -14 Td
+(PASS: ledger boundary.) Tj
+0 -14 Td
+(PASS: version separation.) Tj
+0 -14 Td
+(PASS: storage versus authority.) Tj
+0 -14 Td
+(PASS: integrity model.) Tj
+0 -14 Td
+(PASS: communication-node separation.) Tj
+0 -14 Td
+(PASS: player-interface boundary.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(Normative rule: Engine 11 does not decide winners, settlement amounts, membership) Tj
+0 -14 Td
+(removal or consensus outcomes.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(FINAL 01 -> 11 FREEZE: PENDING integrated audit including this Engine 11. Next formal) Tj
+0 -14 Td
+(step: final integrated audit 01 -> 11. If passed: FROZEN.) Tj
+ETendstream
+endobj
+9 0 obj
+<< /Length 596 >>
+stream
+BT
+/F1 11 Tf
+45 800 Td
+/F1 16 Tf
+(6. PROTOCOL PHILOSOPHY) Tj
+0 -30 Td
+/F1 10 Tf
+0 -14 Td
+(The principle "Code does not discriminate" means protocol behavior should apply) Tj
+0 -14 Td
+(published deterministic rules consistently within their defined scope. It is a design) Tj
+0 -14 Td
+(principle, not a replacement for technical, legal, security or explicit protocol) Tj
+0 -14 Td
+(constraints. Knowledge is part of the protocol ecosystem because participants must) Tj
+0 -14 Td
+(inspect rules, versions and historical changes.) Tj
+0 -14 Td
+() Tj
+0 -14 Td
+(End of corrected v1.1 specification.) Tj
+ETendstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 3 0 R >>
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 4 0 R >>
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 5 0 R >>
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 6 0 R >>
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 7 0 R >>
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 8 0 R >>
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 9 0 R >>
+endobj
+17 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+xref
+0 18
+0000000000 65535 f 
+0000000009 00000 n 
+0000000079 00000 n 
+0000000179 00000 n 
+0000000623 00000 n 
+0000001285 00000 n 
+0000001890 00000 n 
+0000002759 00000 n 
+0000003563 00000 n 
+0000004553 00000 n 
+0000005199 00000 n 
+0000005326 00000 n 
+0000005453 00000 n 
+0000005580 00000 n 
+00000005707 00000 n 
+00000005834 00000 n 
+00000005961 00000 n 
+00000006088 00000 n 
+trailer
+<< /Size 18 /Root 17 0 R >>
+startxref
+6138
+%%EOF
