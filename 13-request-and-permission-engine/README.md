@@ -607,7 +607,9 @@ Settlement Execution
 Settlement Result
 ~~~
 
-Engine 13 coordinates and authorizes the inter-engine request path.
+Engine 13 coordinates the inter-engine request path and the applicable authorization workflow.
+
+The authoritative authorization component establishes `SETTLEMENT_AUTHORIZED` according to the settlement authorization contract. Engine 13 must not be interpreted as independently creating that domain authorization merely because it controls the request workflow.
 
 Engine 12 remains responsible for settlement execution and settlement-result reporting.
 
