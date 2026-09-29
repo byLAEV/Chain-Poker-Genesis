@@ -231,6 +231,7 @@ A settlement instruction should contain, at minimum:
 
 ~~~text
 settlement_id
+obligation_id
 table_id
 hand_id
 authorization_reference
@@ -376,12 +377,20 @@ A settlement operation may fail or become externally unknown without automatical
 
 Every settlement operation must have a unique settlement identity.
 
-At minimum:
+The execution identity and the upstream monetary-obligation identity are distinct:
 
 ~~~text
+obligation_id
+    = canonical monetary obligation created upstream
+
 settlement_id
+    = this settlement execution operation
+
 idempotency_key
+    = duplicate/replay protection key for the execution request
 ~~~
+
+A settlement retry for the same obligation must preserve the same `obligation_id`. A retry may use the same execution identity when the transport is retried, or a protocol-defined new execution attempt identity, but it must never create a second monetary obligation for the same upstream obligation.
 
 The engine must reject or safely deduplicate an already executed logical operation.
 
@@ -706,7 +715,7 @@ A published Engine 12 specification does not itself authorize a settlement.
 
 # 22. Events
 
-Settlement-operation events are protocol events produced by Engine 12. They are persisted and cryptographically recorded by the Private Off-Chain Ledger Engine according to its canonical event-record format.
+Settlement-related protocol events are consumed and/or produced across the settlement lifecycle. Engine 12 produces execution events/results for the execution phase. They are persisted and cryptographically recorded by the Private Off-Chain Ledger Engine according to its canonical event-record format.
 
 
 The settlement lifecycle uses the following logical event/state vocabulary:
