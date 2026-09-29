@@ -663,6 +663,7 @@ The repository is progressively consolidating the historical functional specific
 The Table Join Engine specification defines deterministic player admission, cryptographic authorization through the table-selected engine, financial authorization, atomic seat reservation, participant creation, table-state updates, and Ledger event submission.
 
 - [Engine 08 README](08-table-join-engine/README.md)
+- [Engine 16 README](16-dealer-engine/README.md)
 
 ### 04 — Private Off-Chain Ledger Engine
 
