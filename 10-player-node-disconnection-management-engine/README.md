@@ -1021,13 +1021,13 @@ Each transition is handled by its proper architectural authority.
 
 This v1.1 revision incorporates the required corrections identified during architectural review against Engines 05, 08 and 09.
 
-The specification is intended for the subsequent integrated audit of:
+The specification has completed the final integrated audit of:
 
 ~~~text
 01 → 10
 ~~~
 
-It must not be marked FROZEN until that audit confirms:
+The audit confirmed:
 
 - no remaining contradiction with Engine 08;
 - no remaining contradiction with Engine 09;
@@ -1039,7 +1039,7 @@ It must not be marked FROZEN until that audit confirms:
 - consistent active-hand lifecycle;
 - consistent Table Wallet configuration lifecycle.
 
-**Status: CONSOLIDATED / CORRECTED / INTEGRATION-READY**
+**Status: FROZEN — FINAL 01→10 INTEGRATION AUDIT PASSED**
 
 ---
 
