@@ -127,7 +127,7 @@ AUTHORIZATION EVIDENCE
 
 The engine that owns the business object or operation remains authoritative for that operation.
 
-The engine producing a consensus or governance decision remains authoritative for producing that decision and its associated evidence.
+The Table Consensus process remains authoritative for producing the table-level consensus decision and any authorization evidence required by that consensus. The Engine Governance Layer (Engine of Engines) is not part of this operational decision flow; it governs engine registration, audit, availability and ecosystem-level adoption conditions.
 
 Engine 13 controls the request path, validates applicable request permissions, coordinates required conditions, correlates evidence and transports the controlled request between the participating engines.
 
@@ -146,8 +146,11 @@ ENGINE 10
 ENGINE 12
 = authority over settlement execution
 
-CONSENSUS / GOVERNANCE ENGINE
-= authority over the consensus or governance decision it produces
+TABLE CONSENSUS
+= authority over the table-level consensus decision and its associated evidence
+
+ENGINE GOVERNANCE LAYER / ENGINE OF ENGINES
+= authority over engine registration, audit, version/status and availability; not table-operation authorization
 
 TARGET BUSINESS ENGINE
 = authority over the final business-state validation and execution
@@ -672,10 +675,10 @@ ENGINE 13
 TABLE CREATION ENGINE
 = owns final table-configuration validation and execution
 
-The current Table Creation specification identifies Engine 13 as the authorization boundary for creation/lifecycle requests and requires explicit versioned configuration transitions. It does not yet define the full destination-requirements exchange shown above; that interface remains an integration item rather than an assumed existing contract.
+The current Table Creation specification identifies Engine 13 as the authorization boundary for creation/lifecycle requests and requires explicit versioned configuration transitions. The Engine Governance Layer only determines which engine versions are registered/available under its own governance process; it does not authorize an active table configuration change. It does not yet define the full destination-requirements exchange shown above; that interface remains an integration item rather than an assumed existing contract.
 ~~~
 
-Engine 13 must not decide the required consensus threshold, membership set, signature algorithm or final table-configuration rule unless another authoritative specification explicitly assigns that responsibility to Engine 13.
+Engine 13 must not decide the required consensus threshold, membership set, signature algorithm or final table-configuration rule unless another authoritative specification explicitly assigns that responsibility to Engine 13. The Engine Governance Layer must likewise not be interpreted as the authority that selects an engine for an individual table; the provided EGL specification assigns table-level engine selection to Table Consensus.
 
 ---
 
