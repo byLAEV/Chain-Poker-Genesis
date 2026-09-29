@@ -36,6 +36,7 @@ Reviewers should not invent unspecified protocol behavior. Where the specificati
 - [Implementation Readiness](CPG-PROTOCOL-IMPLEMENTATION-READINESS.md)
 - [Review Process](REVIEW-PROCESS.md)
 - [Open Specifications](OPEN-SPECIFICATIONS.md)
+- [GitHub Technical Interest Map](GITHUB-TECHNICAL-INTEREST-MAP.md)
 
 ## Review areas
 
