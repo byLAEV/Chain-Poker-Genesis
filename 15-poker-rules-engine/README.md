@@ -10,7 +10,7 @@
 **Protocol:** Chain Poker Genesis by LAEV  
 **Game:** No-Limit Texas Hold'em Cash Game  
 **Previous Specification:** v2.0  
-**Revision:** v2.1
+**Revision:** v2.2
 
 ---
 
@@ -30,6 +30,12 @@ STATUS: INTEGRATION-READY
 This specification consolidates Engine 15 after normative review of the v2.0 candidate. It is the authoritative poker-rule specification for a No-Limit Texas Hold'em Cash Game hand.
 
 ## 1. Purpose
+
+This specification incorporates the three residual integration corrections identified by the Engine 15 linear audit:
+
+1. normative treatment of uncalled/excess wagers;
+2. explicit Poker Rule Transition Result boundary before event encoding;
+3. explicit Card/Dealer State input contract.
 
 The Poker Rules Engine determines the normative truth of a poker hand:
 
@@ -123,6 +129,13 @@ last_full_raise_amount
 betting_round_state
 hole_card_state
 community_cards
+board_completion_state
+all_in_state
+pot_structure
+pot_eligibility
+hole_card_state_reference
+community_card_state_reference
+card_state_reference
 board_completion_state
 all_in_state
 pot_structure
@@ -236,6 +249,8 @@ Legal only when amount_to_call = 0.
 
 CALL means fully satisfying amount_to_call. If available stack is insufficient, a partial CALL is not accepted as CALL; committing the entire available stack is represented as ALL_IN.
 
+An all-in call produces a final contribution equal to the player's available stack and may create a side-pot boundary.
+
 ## 12. Bet / Raise
 
 ### BET
@@ -286,11 +301,37 @@ Has a full raise occurred since that player's action?
 
 Equivalent representations may use action_sequence, last_full_raise_amount, last_full_raise_actor and reopened_players.
 
-## 16. Betting-Round Closure
+## 16. Uncalled and Excess Wagers
+
+An amount wagered by a player that is not matched by any opposing contribution and is not required to form a contested pot MUST be classified as an uncalled amount.
+
+The normative sequence is:
+
+~~~text
+Proposed / committed wager
+        ↓
+Determine opposing matched contribution
+        ↓
+Identify uncalled excess
+        ↓
+Return uncalled excess to originating player
+        ↓
+Finalize contribution state
+        ↓
+Construct pots
+~~~
+
+The returned amount MUST NOT remain in `TOTAL_HAND_CONTRIBUTION`, `CURRENT_STREET_CONTRIBUTION` or any pot.
+
+Therefore pot construction MUST use **finalized contributions after uncalled amounts have been returned**.
+
+An uncalled amount MUST NOT be resolved by network ordering, consensus preference or settlement policy.
+
+## 17. Betting-Round Closure
 
 A betting round closes when no required betting action remains among players capable of acting. This includes cases where all required players matched the wager, all remaining players are all-in, or only one non-folded player remains.
 
-## 17. Streets and Runout
+## 18. Streets and Runout
 
 Valid street transitions:
 
@@ -311,7 +352,27 @@ BETTING_CLOSED → RUNOUT → BOARD_COMPLETE → SHOWDOWN_READY
 
 The card/dealer subsystem controls actual card generation, shuffle, deal and reveal. Engine 15 validates the normative transition and card-state invariants; it does not replace the card engine.
 
-## 18. Board and Card Invariants
+## 20. Board and Card Invariants
+
+### Card / Dealer State Contract
+
+Engine 15 consumes an authoritative **CardDealerStateResult** produced by the applicable card/dealer subsystem.
+
+~~~text
+CARD / DEALER ENGINE
+        ↓
+CardDealerStateResult
+        ↓
+POKER RULES ENGINE
+~~~
+
+The result MUST identify or deterministically derive `card_state_reference`, `hand_id`, private-card state, community-card state, board stage, card integrity status and deal/reveal status.
+
+Engine 15 MUST NOT generate, shuffle or choose among competing card assignments. If incompatible card/dealer results exist, their resolution belongs to the applicable card/dealer conflict or canonicality layer before Engine 15 receives the authoritative state.
+
+Engine 15 validates the supplied card state against poker-rule invariants.
+
+## 19. Board and Card Invariants
 
 - flop = exactly 3 community cards;
 - turn = exactly 4;
@@ -325,9 +386,11 @@ The card/dealer subsystem controls actual card generation, shuffle, deal and rev
 
 When exactly one non-folded player remains eligible for the unresolved pots, the hand may terminate without showdown. No hand comparison is required for those pots.
 
-## 20. Pot Construction
+## 22. Pot Construction
 
-Let C_i = TOTAL_HAND_CONTRIBUTION(player_i). Let L be the sorted set of distinct positive contribution levels.
+Pot construction MUST use finalized contribution state after all required uncalled amounts have been returned.
+
+Let C_i = FINAL_TOTAL_HAND_CONTRIBUTION(player_i). Let L be the sorted set of distinct positive contribution levels.
 
 For each current_level:
 
@@ -426,7 +489,25 @@ remainder = pot_amount mod N
 
 The applicable table ruleset MUST provide odd_chip_policy_id and define the deterministic recipient order. Network arrival order, node preference or ad-hoc consensus MUST NOT decide odd-chip distribution.
 
-## 29. Hand Result
+## 31. Poker Rule Transition Result
+
+Engine 15 exposes a semantic result distinct from the protocol's global event representation.
+
+~~~text
+ProposedAction
+      ↓
+ValidateAction
+      ↓
+PokerRuleTransitionResult
+~~~
+
+The result MUST contain at minimum `hand_id`, `ruleset_id`, `ruleset_version`, `actor_id`, `action`, `validation_status`, `previous_state_reference`, `resulting_state_reference` and `transition_type`.
+
+When a hand completes it MUST additionally expose or reference the hand result, pot results and termination reason.
+
+`PokerRuleTransitionResult` is a domain result of Engine 15, not a new protocol-wide event registry. The Event/Ledger layer is responsible for encoding an accepted transition into the canonical protocol event schema without changing its semantics.
+
+## 32. Hand Result
 
 The completed result MUST identify:
 
@@ -444,13 +525,13 @@ Each pot result MUST identify pot_id, type, amount, contributors, eligible_winne
 
 The result must be independently reproducible.
 
-## 30. HAND_END
+## 33. HAND_END
 
 HAND_END requires all required pots resolved, all winners and divisions determined, no betting action pending and no board/runout step pending.
 
 HAND_END is terminal for ordinary player actions.
 
-## 31. Engine 13 Boundary
+## 34. Engine 13 Boundary
 
 Engine 13 controls inter-engine request authorization and workflow.
 
@@ -460,15 +541,23 @@ REQUEST_AUTHORIZED ≠ POKER_ACTION_LEGAL
 
 An authorized request must still pass Engine 15 validation before it becomes a legal poker transition.
 
-## 32. Event / Ledger Boundary
+## 35. Event / Ledger Boundary
 
 ~~~text
-Proposed Action → Poker Rules Engine → LEGAL → Accepted Game Event → Event/Ledger
+Proposed Action
+      ↓
+Poker Rules Engine
+      ↓
+PokerRuleTransitionResult
+      ↓
+Canonical Event Encoding
+      ↓
+Event / Ledger
 ~~~
 
 Engine 15 determines poker legality. The Event/Ledger layer preserves accepted history. History does not redefine the rules.
 
-## 33. PCRE / Consensus Boundary
+## 36. PCRE / Consensus Boundary
 
 Engine 15 does not determine event canonicality, node consensus, checkpoints or conflict resolution.
 
@@ -478,7 +567,7 @@ Poker Rules Engine → deterministic normative transition → event/state eviden
 
 During replay, identical valid inputs and the same ruleset MUST reproduce the same normative result.
 
-## 34. Lifecycle, Card and Settlement Boundaries
+## 37. Lifecycle, Card and Settlement Boundaries
 
 Table, seat, player/node and wallet lifecycle belong to their respective engines.
 
@@ -486,7 +575,7 @@ Card generation, shuffle, dealing and reveal belong to the applicable card/deale
 
 Engine 12 performs monetary settlement. Engine 15 may produce a result such as PLAYER_A → MAIN_POT and PLAYER_B → SIDE_POT_1, but does not debit, credit, transfer or settle funds.
 
-## 35. Normative Reproducibility
+## 38. Normative Reproducibility
 
 The state MUST contain or deterministically derive everything necessary to reproduce:
 
@@ -503,7 +592,7 @@ hand result
 
 A canonical semantic state SHOULD expose ruleset identity, hand identity, street, button, participants, player states, stacks, contributions, betting state, board, pots, eligibility and authorized actor.
 
-## 36. Conformance Requirements
+## 39. Conformance Requirements
 
 A conforming implementation MUST be able to:
 
@@ -531,9 +620,9 @@ A conforming implementation MUST be able to:
 22. preserve ruleset identity;
 23. remain independent from network, consensus and settlement authority.
 
-## 37. Normative Test Set
+## 40. Normative Test Set
 
-The implementation SHOULD contain executable tests for at least:
+The implementation MUST contain executable tests for at least:
 
 ~~~text
 TEST-001 CHECK WITH NO BET
@@ -556,9 +645,40 @@ TEST-017 INVALID ACTION STATE IMMUTABILITY
 TEST-018 HAND_END IMMUTABILITY
 TEST-019 RULESET VERSION BINDING
 TEST-020 REPLAY DETERMINISM
+TEST-021 UNCALLED EXCESS RETURN
+TEST-022 UNCALLED EXCESS EXCLUDED FROM POT
+TEST-023 CARD/DEALER STATE ACCEPTANCE
+TEST-024 CARD/DEALER STATE INCONSISTENCY REJECTION
+TEST-025 POKER RULE TRANSITION RESULT DETERMINISM
+TEST-026 EVENT ENCODING PRESERVES RULE RESULT
 ~~~
 
-## 38. Architectural Summary
+### TEST-021 — Uncalled Excess Return
+
+The engine MUST return any uncalled excess to the originating player before final contribution state and pot construction.
+
+### TEST-022 — Uncalled Excess Excluded From Pot
+
+Final contribution, street contribution and pot amounts MUST exclude returned uncalled excess.
+
+### TEST-023 — Card/Dealer State Acceptance
+
+A valid authoritative CardDealerStateResult MUST be accepted for the applicable transition.
+
+### TEST-024 — Card/Dealer State Inconsistency Rejection
+
+Duplicate cards, invalid board counts, invalid hand references or impossible deal/reveal states MUST reject the dependent transition without state mutation.
+
+### TEST-025 — Poker Rule Transition Result Determinism
+
+Identical GameState + Ruleset + CardDealerStateResult + PlayerID + ProposedAction MUST produce an identical semantic PokerRuleTransitionResult.
+
+### TEST-026 — Event Encoding Preserves Rule Result
+
+Canonical event encoding MUST preserve action legality, resulting state, contributions, pots, eligibility, winners and termination reason.
+~~~
+
+## 41. Architectural Summary
 
 ~~~text
 ENGINE 13
@@ -583,7 +703,7 @@ ENGINE 12
     = MONETARY SETTLEMENT EXECUTION
 ~~~
 
-## 39. Final Normative Declaration
+## 42. Final Normative Declaration
 
 The Poker Rules Engine of Chain Poker Genesis is the deterministic normative authority for No-Limit Texas Hold'em Cash Game rules.
 
@@ -591,7 +711,7 @@ It defines what a player may do, when the player may do it, whether the action i
 
 It is not a network engine, consensus engine, ledger, request/permission engine, lifecycle engine, card-dealing engine, wallet engine, settlement engine, cloud infrastructure engine or user interface.
 
-**Current status: INTEGRATION-READY — POST-AUDIT REVISION**
+**Current status: INTEGRATION-READY — AUDIT CORRECTIONS APPLIED**
 
 ---
 
