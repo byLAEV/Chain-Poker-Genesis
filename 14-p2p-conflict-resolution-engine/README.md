@@ -802,6 +802,106 @@ The PCRE therefore provides the conflict-resolution layer required for CHAIN POK
 
 ---
 
-**Document Status:** REVISION 14.1 — AUDIT PENDING  
+# 26. Final Integration Audit — 04 → 14
+
+## 26.1 Audit Scope
+
+This closure audit verifies the integration path from Engine 04 through Engine 14, with particular attention to:
+
+- authority boundaries;
+- lifecycle ownership;
+- event production and observation;
+- event identity and sequencing;
+- hash and state verification;
+- checkpoint and canonical-state semantics;
+- request and permission authority;
+- table-wallet authority;
+- disconnection lifecycle authority;
+- monetary settlement authority;
+- validator-consensus boundaries;
+- conflict-resolution authority;
+- historical immutability;
+- reputation and penalty boundaries.
+
+## 26.2 Linear Integration Result
+
+The final linear review establishes the following authority chain:
+
+```text
+Engine 04
+Private Event Ledger
+    ↓ historical event evidence
+Engine 05–09
+Specialized game / table / wallet processing
+    ↓ protocol-defined events and state transitions
+Engine 10
+Player / Node Disconnection Lifecycle Authority
+    ↓ lifecycle consequences/events
+Engine 11
+Protocol Documentation / Specification Authority
+    ↓ documented protocol contracts
+Engine 12
+Monetary Settlement Authority
+    ↓ settlement result
+Engine 13
+Request & Permission Authority
+    ↓ protocol-authorized events
+Engine 14
+P2P Conflict Resolution
+    ↓ canonical game-state reconstruction
+Validator Consensus
+    ↓ only when deterministic resolution is insufficient
+Canonical Game State
+```
+
+This chain does not transfer specialized authority to Engine 14. The PCRE consumes evidence and authority results produced by the applicable engines and resolves state divergence without redefining those engines' responsibilities.
+
+## 26.3 Residual Contradiction Check
+
+The closure audit found no remaining contradiction requiring a change to Engine 14.1 in the following areas:
+
+- **Authority:** PCRE does not replace Engine 10, Engine 12, Engine 13, or Validator Consensus.
+- **Lifecycle:** Engine 10 remains authoritative for player/node disconnection lifecycle behavior.
+- **Permissions:** Engine 13 remains authoritative for request and permission semantics.
+- **Table wallet:** PCRE does not assume lifecycle authority over `TABLE_WALLET_INSTANCE`.
+- **Settlement:** Engine 12 remains authoritative for monetary settlement.
+- **Ledger:** Engine 04 remains the historical event record; PCRE performs state reconstruction and does not rewrite history.
+- **Evidence:** deterministic evidence is evaluated before consensus escalation; Validator Consensus is not an evidence-priority level.
+- **Checkpoint ordering:** `LATEST_VALID_CHECKPOINT` is selected by protocol-defined sequence and verified state lineage, not arrival time.
+- **Retransmission:** retransmission and duplicate submission are not automatically treated as malicious behavior.
+- **Penalties:** PCRE produces auditable violation evidence but does not directly impose reputation or economic consequences.
+- **Canonical state:** PCRE reconstructs and verifies the canonical state rather than independently creating a competing authority.
+
+## 26.4 Closure Determination
+
+```text
+AUDIT 04 → 14
+
+AUTHORITY            PASS
+LIFECYCLE             PASS
+EVENT FLOW            PASS
+IDENTIFIERS           PASS
+HASH / STATE          PASS
+CHECKPOINT            PASS
+PERMISSIONS           PASS
+TABLE WALLET          PASS
+SETTLEMENT            PASS
+CONSENSUS BOUNDARY    PASS
+LEDGER IMMUTABILITY   PASS
+PENALTY BOUNDARY      PASS
+
+RESIDUAL CONTRADICTIONS: NONE IDENTIFIED
+
+AUDIT RESULT: PASS
+ENGINE 14.1: FROZEN
+```
+
+This audit result applies to the documented integration contracts available in Engines 04–14. It does not claim that implementation code, cryptographic primitives, network transport, or runtime behavior have been independently security-audited.
+
+---
+
+**Document Status:** REVISION 14.1 — FROZEN
+**Next Required Procedure:** Implementation-level verification and subsequent protocol-wide audit when the remaining engine specifications are formally extended.
+**FROZEN:** YES  
 **Next Required Procedure:** Integration Audit 10 → 14 → 12 → 13, followed by complete Audit 01 → 14.  
 **FROZEN:** NO
