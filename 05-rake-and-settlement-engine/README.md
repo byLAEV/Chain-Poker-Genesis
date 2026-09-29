@@ -97,3 +97,50 @@ These are intentionally not invented here.
 The PDF is the historical source. This Markdown specification is an implementation-facing reconstruction.
 
 **Status: STRUCTURED / AUDITABLE / NOT YET PRODUCTION-READY.**
+
+
+---
+
+## Relationship to Engine 12 — Monetary Settlement Engine
+
+Engine 05 is the obligation-generation layer for rake and related monetary allocations. It determines eligibility, performs the deterministic calculation, creates the canonical monetary obligation, and produces the settlement request.
+
+Engine 05 does **not** perform the final monetary transfer.
+
+The execution boundary is:
+
+~~~text
+HAND_COMPLETED
+      ↓
+ENGINE 05
+Rake Eligibility
+      ↓
+Rake Calculation
+      ↓
+RakeObligation
+      ↓
+SettlementRequest
+      ↓
+Authorization Boundary
+      ↓
+ENGINE 12
+Monetary Settlement Execution
+      ↓
+Settlement Result / Evidence
+~~~
+
+Engine 12 therefore represents the execution component that was historically included in the broader "Rake Engine and Monetary Settlement Flow" concept. This is a functional separation/evolution, not a replacement of Engine 05.
+
+Accordingly:
+
+~~~text
+ENGINE 05
+= obligation producer
+
+ENGINE 12
+= authorized settlement executor
+~~~
+
+Engine 05 must not calculate execution results or claim final transfer authority merely because it created a SettlementRequest. Engine 12 must not recalculate the rake, alter the canonical obligation, or create a different monetary obligation in order to execute the request.
+
+The historical PDF remains the source record for the earlier combined flow; this specification documents the current architectural separation.
