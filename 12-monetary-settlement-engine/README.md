@@ -2,7 +2,7 @@
 
 # 12 — Monetary Settlement Engine
 
-## Official Technical Specification v1.3
+## Official Technical Specification v1.4
 
 **Document Class:** CORE ENGINE  
 **Document Status:** INTEGRATION-READY  
@@ -101,6 +101,59 @@ The Monetary Settlement Engine is an executor of authorized financial instructio
 It must not become a second authorization authority by silently changing amount, recipient, asset, network, destination or settlement conditions.
 
 ---
+
+# 3A. Authorization Domains
+
+The protocol distinguishes two different financial authorization contexts.
+
+## Admission / Buy-In Financial Authorization
+
+Engine 08 uses the Monetary Settlement Engine as part of the financial validation required before a player becomes an admitted participant.
+
+This authorization answers:
+
+~~~text
+"May this Join / Buy-In financial condition be accepted?"
+~~~
+
+It produces the admission-facing result:
+
+~~~text
+FINANCIAL_AUTHORIZED
+FINANCIAL_REJECTED
+~~~
+
+This is not equivalent to authorization to execute a post-hand settlement operation.
+
+## Settlement Authorization
+
+A settlement operation requires its own valid settlement authorization context established by the applicable protocol authority, including the Requests and Permissions boundary where applicable.
+
+This authorization answers:
+
+~~~text
+"May this specific monetary settlement instruction be executed?"
+~~~
+
+It is represented by the authorization referenced by:
+
+~~~text
+SETTLEMENT_AUTHORIZED
+~~~
+
+Engine 12 consumes this authorization. It does not create, grant, or silently modify it.
+
+Therefore:
+
+~~~text
+FINANCIAL_AUTHORIZED
+    ≠
+SETTLEMENT_AUTHORIZED
+~~~
+
+The first belongs to admission / buy-in validation.
+
+The second belongs to execution authorization for a specific settlement operation.
 
 # 4. Table Wallet Boundary
 
@@ -608,7 +661,8 @@ A published Engine 12 specification does not itself authorize a settlement.
 
 Settlement-operation events are protocol events produced by Engine 12. They are persisted and cryptographically recorded by the Private Off-Chain Ledger Engine according to its canonical event-record format.
 
-The following event types are the current Engine 12 logical event set:
+
+The settlement lifecycle uses the following logical event/state vocabulary:
 
 ~~~text
 SETTLEMENT_CREATED
@@ -619,9 +673,31 @@ SETTLEMENT_FAILED
 SETTLEMENT_UNKNOWN
 ~~~
 
-These names describe settlement-operation events. They do not replace the canonical event-record schema maintained by the Private Off-Chain Ledger Engine.
+The source authority is significant:
 
-Engine 12 must not create a second or competing event-persistence model.
+~~~text
+SETTLEMENT_CREATED
+    = settlement request / obligation creation boundary
+
+SETTLEMENT_AUTHORIZED
+    = authorization boundary established by the applicable authorization authority
+
+SETTLEMENT_SUBMITTED
+    = execution-submission event produced by Engine 12
+
+SETTLEMENT_CONFIRMED
+    = execution-confirmation result produced by Engine 12
+
+SETTLEMENT_FAILED
+    = execution-failure result produced by Engine 12
+
+SETTLEMENT_UNKNOWN
+    = unresolved external execution result reported by Engine 12
+~~~
+
+Engine 12 must not claim authorship or authority over SETTLEMENT_CREATED or SETTLEMENT_AUTHORIZED merely because those records are consumed as inputs to execution.
+
+The exact externally exposed event set remains subject to the canonical protocol event registry. Engine 12 must not create a second or competing event-persistence model.
 
 Each event should preserve, where applicable:
 
@@ -843,7 +919,9 @@ A settlement operation does not create a new wallet object merely because it exe
 
 # 30. Integration Status
 
-This revision incorporates the architectural boundaries established during the review of Engines 08, 09, 10 and 11.
+This revision incorporates the architectural boundaries established during the review of Engines 04, 05, 08, 09, 10 and 11.
+
+The revision specifically separates admission/buy-in financial authorization from settlement-execution authorization and separates event origin from event consumption.
 
 Integration requirements for the current revision include:
 
