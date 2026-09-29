@@ -137,10 +137,6 @@ pot_eligibility
 hole_card_state_reference
 community_card_state_reference
 card_state_reference
-board_completion_state
-all_in_state
-pot_structure
-pot_eligibility
 hand_result
 ~~~
 
