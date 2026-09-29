@@ -2,13 +2,13 @@
 
 # 09 — Table Wallet Engine
 
-## Official Technical Specification v1.1
+## Official Technical Specification v1.1.1
 
 **Document Class:** CORE ENGINE  
-**Document Status:** CONSOLIDATED / CORRECTED  
+**Document Status:** CONSOLIDATED / INTEGRATED / CORRECTED  
 **Architecture Role:** Temporary Shared-Custody Table Wallet and Hand Settlement Infrastructure  
 **Previous Specification:** v1.0  
-**Revision:** v1.1  
+**Revision:** v1.1.1  
 **Protocol:** Chain Poker Genesis by LAEV
 
 ***
@@ -66,9 +66,9 @@ Its responsibilities are:
 - coordinate real-time monetary movement through an approved Lightning/L2 adapter;
 - receive authorized settlement instructions;
 - execute or coordinate settlement authorization;
-- distribute funds to winner wallet(s);
-- distribute configured rake to rake wallet(s);
-- execute authorized refunds where applicable;
+- authorize settlement outputs to winner wallet(s) according to the Monetary Settlement Engine's authorized settlement plan;
+- authorize the configured rake destination according to the valid rake obligation and settlement plan;
+- authorize applicable refunds according to the valid settlement plan;
 - verify final balance;
 - close the wallet instance;
 - emit complete historical evidence to the Private Off-Chain Ledger Engine.
@@ -144,7 +144,7 @@ The Table Wallet:
 
 A Rake Wallet is an externally defined settlement destination configured by the applicable protocol/rake policy.
 
-The Table Wallet Engine may transfer an authorized rake obligation to the configured rake destination.
+The Table Wallet Engine does not independently transfer or execute the rake. It authorizes the Table Wallet boundary for the rake output specified by the Monetary Settlement Engine's valid settlement plan.
 
 It does not calculate the rake amount.
 
@@ -209,7 +209,11 @@ JOIN REQUEST
      ↓
 TABLE JOIN ENGINE
      ↓
-PLAYER JOINED
+TECHNICAL / CRYPTOGRAPHIC VALIDATION
+     ↓
+FINANCIAL AUTHORIZATION
+     ↓
+PLAYER_JOINED
      ↓
 TABLE STATE UPDATE
      ↓
@@ -220,7 +224,7 @@ AUTHORIZED PARTICIPANT COMPOSITION
 TABLE WALLET CRYPTOGRAPHIC CONFIGURATION
 ```
 
-A successful `PLAYER_JOINED` event therefore does not by itself authorize the new participant to spend from the existing Table Wallet.
+A successful `PLAYER_JOINED` event establishes the admitted participant state but does not by itself authorize the participant to spend from the existing Table Wallet. The applicable table-consensus transition must authorize the participant composition before the corresponding Table Wallet configuration becomes active.
 
 The new participant must become part of the authorized table composition through the applicable consensus transition.
 
@@ -398,7 +402,7 @@ table_wallet_instance_id
 table_id
 hand_id or settlement_cycle_id
 participant_set
-cryptographic_configuration_id
+table_wallet_configuration_id
 configuration_version
 authorized_public_keys
 payment_rail_id
@@ -480,7 +484,9 @@ Historical evidence remains available through the Private Off-Chain Ledger.
 
 ## FAILED
 
-The wallet operation failed.
+A generic Table Wallet operation failed and cannot continue through the normal lifecycle.
+
+`FAILED` is a wallet-operation state; `SETTLEMENT_FAILED` is a settlement-specific event/result and must not be silently treated as a successful settlement.
 
 ## RECOVERY_REQUIRED
 
@@ -739,14 +745,18 @@ RAKE OBLIGATION
      ↓
 MONETARY SETTLEMENT ENGINE
      ↓
-TABLE WALLET
+SETTLEMENT PLAN
+     ↓
+TABLE WALLET AUTHORIZATION
+     ↓
+PAYMENT / SETTLEMENT RAIL
      ↓
 AUTHORIZED OUTPUTS
 ```
 
 The Table Wallet Engine therefore does not replace the Monetary Settlement Engine.
 
-It is the custody/authorization execution boundary used by that settlement process.
+It is the temporary custody and cryptographic authorization boundary used by that settlement process. The Monetary Settlement Engine remains the authority responsible for monetary settlement execution.
 
 ***
 
@@ -795,7 +805,11 @@ RAKE_OBLIGATION_CREATED
         ↓
 SETTLEMENT_REQUESTED
         ↓
-TABLE WALLET
+MONETARY SETTLEMENT ENGINE
+        ↓
+SETTLEMENT PLAN
+        ↓
+TABLE WALLET AUTHORIZATION
         ↓
 RAKE DESTINATION
 ```
@@ -820,7 +834,7 @@ authorized refund(s)
 
 The exact destination set is determined by the settlement plan.
 
-The Table Wallet Engine must not create an unrequested payout.
+The Table Wallet Engine must not create or independently execute an unrequested payout.
 
 ***
 
@@ -1115,9 +1129,9 @@ TABLE_WALLET_INPUT_REGISTERED
 
 TABLE_WALLET_SETTLEMENT_REQUESTED
 TABLE_WALLET_SETTLEMENT_AUTHORIZED
-TABLE_WALLET_PAYOUT_EXECUTED
-TABLE_WALLET_RAKE_EXECUTED
-TABLE_WALLET_REFUND_EXECUTED
+TABLE_WALLET_SETTLEMENT_EXECUTION_CONFIRMED
+TABLE_WALLET_RAKE_AUTHORIZATION_CONFIRMED
+TABLE_WALLET_REFUND_AUTHORIZATION_CONFIRMED
 
 TABLE_WALLET_SETTLEMENT_FAILED
 TABLE_WALLET_RECOVERY_REQUIRED
@@ -1228,6 +1242,12 @@ The complete monetary sequence is:
 ```text
 TABLE JOIN
      ↓
+TECHNICAL / CRYPTOGRAPHIC VALIDATION
+     ↓
+FINANCIAL AUTHORIZATION
+     ↓
+PLAYER_JOINED
+     ↓
 TABLE STATE UPDATE
      ↓
 TABLE CONSENSUS
@@ -1256,7 +1276,11 @@ RAKE OBLIGATION
      ↓
 MONETARY SETTLEMENT ENGINE
      ↓
-TABLE WALLET AUTHORIZED SETTLEMENT
+SETTLEMENT PLAN
+     ↓
+TABLE WALLET AUTHORIZATION
+     ↓
+PAYMENT / SETTLEMENT RAIL
      ↓
 WINNER WALLET(S)
      +
@@ -1267,11 +1291,9 @@ AUTHORIZED REFUNDS
 BALANCE VERIFICATION
      ↓
 TABLE WALLET CLOSED
-     ↓
-PRIVATE OFF-CHAIN LEDGER
 ```
 
-The Ledger records evidence throughout the lifecycle rather than acting only at the end.
+The Ledger records evidence throughout the lifecycle rather than acting only at the end. Each material Table Wallet event is emitted to Engine 04 according to the canonical event model.
 
 ***
 
@@ -1481,9 +1503,8 @@ receivePayment()
 registerInput()
 requestSettlement()
 authorizeSettlement()
-executePayout()
-executeRake()
-executeRefund()
+coordinateSettlementExecution()
+verifySettlementResult()
 verifyBalance()
 closeTableWallet()
 recoverTableWallet()
@@ -1688,9 +1709,9 @@ CLOSED
 HISTORICAL EVIDENCE PRESERVED
 ```
 
-**Document 09 — Table Wallet Engine v1.1 — Consolidated Corrected Specification**
+**Document 09 — Table Wallet Engine v1.1.1 — Consolidated Integrated Corrected Specification**
 
-**Status: READY FOR TECHNICAL INTEGRATION REVIEW**
+**Status: READY FOR FINAL 01→09 INTEGRATION AUDIT**
 
 © 2026 Lerry Alexander Elizondo Villalobos (LAEV)  
 Chain Poker Genesis by LAEV
