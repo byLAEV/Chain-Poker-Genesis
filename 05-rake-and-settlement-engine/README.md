@@ -32,6 +32,7 @@ The exact global state machine remains dependent on Poker Rules, Table Wallet, P
 Conceptual object:
 
 RakeObligation {
+  obligation_id
   protocol_version
   table_id
   hand_id
@@ -45,6 +46,27 @@ RakeObligation {
 }
 
 The final schema remains to be formalized.
+
+The canonical `obligation_id` identifies the monetary obligation independently of any later execution attempt. A settlement retry must retain the same `obligation_id`; a new execution attempt must not create a new obligation.
+
+### SettlementRequest
+
+The settlement request carries the canonical obligation reference into the authorization and execution path:
+
+~~~text
+SettlementRequest {
+  obligation_id
+  settlement_id
+  table_id
+  hand_id
+  source_wallet_context
+  destinations
+  amounts
+  authorization_context
+}
+~~~
+
+`obligation_id` is the bridge between Engine 05's canonical obligation and Engine 12's settlement operation. `settlement_id` identifies the execution operation; it does not replace `obligation_id`.
 
 ## Idempotency
 
