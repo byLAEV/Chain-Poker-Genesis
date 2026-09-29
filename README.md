@@ -1,6 +1,9 @@
 # Chain Poker Genesis by LAEV
 
 > **Open Decentralized Poker Protocol — Technical Architecture, Specification & Implementation Framework**
+>
+> **Don't confuse design with text, don't confuse text with the designer's design.**
+> byLAEV 
 
 **Official repository:** https://github.com/byLAEV/Chain-Poker-Genesis
 
