@@ -5,7 +5,7 @@
 ## Official Technical Specification v1.1.1
 
 **Document Class:** CORE ENGINE  
-**Document Status:** CONSOLIDATED / INTEGRATED / CORRECTED  
+**Document Status:** FROZEN / CONSOLIDATED / INTEGRATED / CORRECTED  
 **Architecture Role:** Temporary Shared-Custody Table Wallet and Hand Settlement Infrastructure  
 **Previous Specification:** v1.0  
 **Revision:** v1.1.1  
@@ -22,7 +22,7 @@ PREV: 8
 SELF: 9
 NEXT: 10
 CLASS: CORE ENGINE
-STATUS: CONSOLIDATED
+STATUS: FROZEN
 [/LCCP]
 ```
 
