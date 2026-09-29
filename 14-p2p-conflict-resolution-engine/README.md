@@ -146,7 +146,7 @@ A duplicate or retransmitted event MUST NOT automatically be classified as malic
 
 The PCRE does not resolve conflicts merely according to message arrival time.
 
-Evidence is processed through the following deterministic validation chain:
+Evidence is processed through the following deterministic validation chain before consensus escalation:
 
 ```text
 1. Cryptographic Validity
@@ -165,12 +165,17 @@ Evidence is processed through the following deterministic validation chain:
         ↓
 8. State-Hash Verification
         ↓
-9. Validator Consensus, if required
+9. Logical Timestamp, only where explicitly protocol-defined
         ↓
-10. Logical Timestamp, only where protocol-defined
+10. Physical Timestamp, informational only
         ↓
-11. Physical Timestamp, informational/fallback only
+Deterministically Resolvable?
+        ├── YES → Canonical Resolution
+        │
+        └── NO → Validator Consensus
 ```
+
+Logical and physical timestamps MUST NOT override stronger cryptographic, sequence, state, event-chain, rule, replay, or state-hash evidence. A timestamp may participate in deterministic resolution only where an authoritative protocol rule explicitly defines it as a valid criterion. Validator Consensus is an escalation mechanism after deterministic evidence has been evaluated; it is not another evidence priority level within the deterministic chain.
 
 ### 6.1 Cryptographic Validity
 
@@ -217,7 +222,7 @@ The resulting state MUST produce the expected canonical state hash.
 
 ## 7. Latest Valid Checkpoint
 
-A `LATEST_VALID_CHECKPOINT` is the highest protocol-valid checkpoint that can be independently verified from the available immutable event history and cryptographic evidence.
+A `LATEST_VALID_CHECKPOINT` is the protocol-valid checkpoint with the greatest protocol-defined checkpoint sequence within the same canonical verified state lineage.
 
 A checkpoint is valid only when all applicable conditions are satisfied:
 
@@ -233,7 +238,9 @@ CHECKPOINT_VALID =
     AND resulting state hash matches checkpoint state hash
 ```
 
-A checkpoint MUST NOT become canonical merely because it is:
+Checkpoint ordering MUST be determined by the authoritative checkpoint sequence and state-lineage rules of the protocol.
+
+A checkpoint MUST NOT become the latest valid checkpoint merely because it is:
 
 - received first;
 - physically newer;
@@ -241,7 +248,9 @@ A checkpoint MUST NOT become canonical merely because it is:
 - stored by a majority of nodes;
 - or locally considered current.
 
-When multiple candidate checkpoints remain valid but incompatible, the PCRE MUST classify the condition as unresolved and invoke the applicable Validator Consensus procedure.
+If two or more checkpoints are valid and belong to incompatible state lineages at the same applicable sequence position, the PCRE MUST classify the condition as unresolved and invoke the applicable Validator Consensus procedure.
+
+A physically newer checkpoint MUST NOT override an earlier checkpoint from the canonical lineage unless the protocol-defined checkpoint sequence and lineage rules establish that the newer checkpoint is the valid successor.
 
 ---
 
