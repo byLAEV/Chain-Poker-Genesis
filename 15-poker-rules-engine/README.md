@@ -5,7 +5,7 @@
 ## Official Technical Specification v2.2
 
 **Document Class:** CORE ENGINE  
-**Document Status:** INTEGRATION-READY — POST-AUDIT REVISION  
+**Document Status:** FROZEN — NORMATIVE SPECIFICATION  
 **Architecture Role:** Deterministic Poker Rule Authority  
 **Protocol:** Chain Poker Genesis by LAEV  
 **Game:** No-Limit Texas Hold'em Cash Game  
@@ -23,7 +23,7 @@ PREV: 14
 SELF: 15
 NEXT: 16
 CLASS: CORE ENGINE
-STATUS: INTEGRATION-READY
+STATUS: FROZEN
 [/LCCP]
 ~~~
 
@@ -712,7 +712,7 @@ It defines what a player may do, when the player may do it, whether the action i
 
 It is not a network engine, consensus engine, ledger, request/permission engine, lifecycle engine, card-dealing engine, wallet engine, settlement engine, cloud infrastructure engine or user interface.
 
-**Current status: INTEGRATION-READY — AUDIT CORRECTIONS APPLIED**
+**Current status: FROZEN — CLOSURE AUDIT PASSED**
 
 ---
 
