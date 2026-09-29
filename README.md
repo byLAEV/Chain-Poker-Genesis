@@ -1,18 +1,7 @@
 # Chain-Poker-Genesis
 Official repository of Chain Poker Genesis by LAEV. Contains the protocol specifications, technical documentation, system architecture, communication framework, game engine, betting modules, reference implementations, and development resources for the Chain Poker Genesis ecosystem.
 
-by LAEV 
-
-I hadn't planned to share the design process I used to make a documentary later, but I decided that you deserve to see my entire protocol design process and analyze it for yourselves.
-Welcome to my world and that of my digital ruler 
-https://chatgpt.com/g/g-p-6a34a10259d0819197195a68f49766d6-chain-poker-genesis/project
-
-
-att: Lerry Alexander Elizondo Villalobos.
-el protocolo que presento no discrimina no discriminen y ayuden a que salga el protocolo publicamente ya desarrollado.
-Loyalty to the designer bc1qcst85uuylavmjdvmkwxnwf3z80k2vra4h0ljk3
-https://blue-adequate-magpie-98.mypinata.cloud/ipfs/bafkreihsr4ceummnscsqwmzkj76vk654tbzkmvnb4zbhbubzxwl5oajqaa
-(IPFS link to my identity's Bitcoin wallet 
+by LAEV  
 
 Bienvenidos a mi mundo by LAEV 
 
