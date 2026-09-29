@@ -2,7 +2,7 @@
 
 # 12 — Monetary Settlement Engine
 
-## Official Technical Specification v1.2
+## Official Technical Specification v1.3
 
 **Document Class:** CORE ENGINE  
 **Document Status:** INTEGRATION-READY  
@@ -204,6 +204,73 @@ The operation state must not be confused with the TABLE_WALLET_INSTANCE lifecycl
 An operation may fail without changing the wallet instance lifecycle.
 
 ---
+
+
+---
+
+# 7A. Relationship Between Settlement Operation and Table Wallet Lifecycle
+
+The lifecycle of a **settlement operation** is distinct from the lifecycle of the **TABLE_WALLET_INSTANCE**.
+
+Engine 09 defines the operational lifecycle of the table wallet. Engine 12 defines the lifecycle of an individual monetary settlement operation.
+
+They must not be treated as equivalent state machines.
+
+~~~text
+TABLE_WALLET_INSTANCE — ENGINE 09
+
+CREATED
+    ↓
+AUTHORIZED
+    ↓
+ACTIVE
+    ↓
+SETTLEMENT_PENDING
+    ↓
+SETTLING
+    ↓
+SETTLED
+    ↓
+BALANCE_VERIFIED
+    ↓
+CLOSED
+~~~
+
+~~~text
+SETTLEMENT_OPERATION — ENGINE 12
+
+CREATED
+    ↓
+AUTHORIZED
+    ↓
+SUBMITTED
+    ↓
+CONFIRMED
+
+FAILED / UNKNOWN
+~~~
+
+The relationship is therefore contextual rather than one-to-one.
+
+For example:
+
+~~~text
+09: SETTLEMENT_PENDING
+        ↓
+12: settlement operation is authorized
+        ↓
+12: SUBMITTED
+        ↓
+12: CONFIRMED
+        ↓
+09: SETTLED
+        ↓
+09: BALANCE_VERIFIED
+~~~
+
+This sequence is an integration model, not a statement that the states are identical.
+
+A settlement operation may fail or become externally unknown without automatically changing the lifecycle of the TABLE_WALLET_INSTANCE.
 
 # 8. Idempotency and Replay Protection
 
@@ -539,9 +606,9 @@ A published Engine 12 specification does not itself authorize a settlement.
 
 # 22. Events
 
-Settlement events should be uniquely identifiable and traceable.
+Settlement-operation events are protocol events produced by Engine 12. They are persisted and cryptographically recorded by the Private Off-Chain Ledger Engine according to its canonical event-record format.
 
-Canonical events include:
+The following event types are the current Engine 12 logical event set:
 
 ~~~text
 SETTLEMENT_CREATED
@@ -552,7 +619,9 @@ SETTLEMENT_FAILED
 SETTLEMENT_UNKNOWN
 ~~~
 
-The exact externally exposed event set must remain consistent with the protocol's canonical event registry.
+These names describe settlement-operation events. They do not replace the canonical event-record schema maintained by the Private Off-Chain Ledger Engine.
+
+Engine 12 must not create a second or competing event-persistence model.
 
 Each event should preserve, where applicable:
 
@@ -567,13 +636,15 @@ timestamp
 event_hash
 ~~~
 
-The Private Off-Chain Ledger Engine remains the historical persistence authority for protocol events.
+The Private Off-Chain Ledger Engine remains the historical persistence authority for protocol events. The event record may additionally contain the standard ledger fields defined by that engine, including node/session/engine identifiers and integrity metadata.
+
+The Engine 12 event set does not imply that every event is externally exposed at every protocol boundary. Publication and replication rules remain subject to the canonical event and ledger specifications.
 
 ---
 
 # 23. Operation vs Wallet Lifecycle
 
-The following are intentionally independent:
+The following are intentionally independent and must not be collapsed into a single state machine:
 
 ~~~text
 SETTLEMENT_OPERATION
@@ -740,7 +811,37 @@ DOCUMENTATION
 
 ---
 
-# 29. Integration Status
+# 29. Canonical Nomenclature
+
+Use the following terms consistently:
+
+~~~text
+Table Wallet
+    = architectural concept
+
+TABLE_WALLET_INSTANCE
+    = concrete table-wallet instance governed by Engine 09
+
+Settlement Operation
+    = one monetary settlement process governed by Engine 12
+
+Settlement Instruction
+    = the financial instruction presented to Engine 12
+
+Settlement Authorization
+    = authorization that permits execution of the instruction
+
+Settlement Result
+    = protocol result returned by Engine 12
+
+Settlement Evidence
+    = evidence proving the execution attempt/result
+
+~~~
+
+A settlement operation does not create a new wallet object merely because it executes against a TABLE_WALLET_INSTANCE.
+
+# 30. Integration Status
 
 This revision incorporates the architectural boundaries established during the review of Engines 08, 09, 10 and 11.
 
