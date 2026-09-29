@@ -65,7 +65,7 @@ Its responsibilities are:
 - represent the active table pot;
 - coordinate real-time monetary movement through an approved Lightning/L2 adapter;
 - receive authorized settlement instructions;
-- execute or coordinate settlement authorization;
+- provide the required custody authorization boundary for the settlement process;
 - authorize settlement outputs to winner wallet(s) according to the Monetary Settlement Engine's authorized settlement plan;
 - authorize the configured rake destination according to the valid rake obligation and settlement plan;
 - authorize applicable refunds according to the valid settlement plan;
@@ -538,7 +538,7 @@ The Table Wallet Engine verifies the monetary movement against the authorized wa
 
 # 15. Payment Rail Adapter
 
-The Table Wallet Engine communicates with a payment abstraction rather than directly embedding one network implementation.
+The Table Wallet Engine communicates with a payment abstraction rather than directly embedding one network implementation. The Table Wallet Engine does not itself execute winner, rake or refund payouts.
 
 Conceptually:
 
@@ -816,7 +816,7 @@ RAKE DESTINATION
 
 The rake destination must be explicitly identified by the settlement configuration.
 
-The Table Wallet Engine only executes the authorized obligation.
+The Table Wallet Engine only authorizes the custody boundary for the authorized obligation; execution remains with the Monetary Settlement Engine and applicable Payment / Settlement Adapter.
 
 ***
 
@@ -1007,7 +1007,7 @@ AND
 Table Wallet authorization valid
 ```
 
-Only then may the wallet proceed to execution.
+Only then may the Table Wallet Engine provide the required authorization boundary to the Monetary Settlement Engine and applicable Payment / Settlement Adapter.
 
 ***
 
@@ -1027,6 +1027,10 @@ PLAYER EXTERNAL HD WALLET(S)
 SIGNATURE(S)
       ↓
 TABLE WALLET AUTHORIZATION
+      ↓
+MONETARY SETTLEMENT ENGINE
+      ↓
+PAYMENT / SETTLEMENT ADAPTER
       ↓
 SETTLEMENT EXECUTION
 ```
@@ -1505,8 +1509,8 @@ receivePayment()
 registerInput()
 requestSettlement()
 authorizeSettlement()
-coordinateSettlementExecution()
-verifySettlementResult()
+submitSettlementAuthorization()
+verifySettlementOutcome()
 verifyBalance()
 closeTableWallet()
 recoverTableWallet()
@@ -1759,7 +1763,7 @@ HISTORICAL EVIDENCE PRESERVED
 
 **Document 09 — Table Wallet Engine v1.1.1 — Consolidated Integrated Corrected Specification**
 
-**Status: READY FOR FINAL 01→09 INTEGRATION AUDIT**
+**Status: FROZEN — FINAL 01→09 INTEGRATION AUDIT PASSED**
 
 © 2026 Lerry Alexander Elizondo Villalobos (LAEV)  
 Chain Poker Genesis by LAEV
