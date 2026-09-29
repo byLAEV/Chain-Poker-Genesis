@@ -444,11 +444,13 @@ TABLE STATE UPDATE
 CONSENSUS / AUTHORIZATION
         ↓
 REMOVED
+        ↓
+SEAT_RELEASED
 ~~~
 
 REMOVED means that the participant is no longer part of the authoritative table participant set.
 
-The seat becomes available only after the removal state has been validly applied.
+The seat becomes available only after the removal state has been validly applied and the Table Join Engine records the corresponding SEAT_RELEASED transition.
 
 A temporary disconnection never directly releases a seat.
 
@@ -568,7 +570,9 @@ composition changed
 new authorized cryptographic configuration required
 ~~~
 
-Whether a new wallet instance is created is governed by the Table Wallet lifecycle and applicable policy.
+Whether a new wallet instance is created is governed exclusively by the Table Wallet Engine lifecycle and applicable Table Wallet policy.
+
+Engine 10 does not select, create, close, replace, or otherwise decide the lifecycle of a TABLE_WALLET_INSTANCE. Engine 10 only supplies the authoritative participant-composition transition that may require downstream Table Wallet reconfiguration.
 
 Engine 10 must never silently change authorized signers.
 
@@ -773,7 +777,9 @@ PLAYER_REMOVED and TABLE_CLOSED are independent states.
 
 # 31. Seat Availability
 
-A seat becomes available only after participant removal has become authoritative.
+A seat becomes available only after participant removal has become authoritative and the corresponding seat-release event has been recorded by the Table Join Engine.
+
+The SEAT_RELEASED event is the explicit bridge between participant removal and seat availability.
 
 ~~~text
 ABANDONED
@@ -783,6 +789,8 @@ REMOVAL REQUESTED
 MEMBERSHIP UPDATE
       ↓
 REMOVED
+      ↓
+SEAT_RELEASED
       ↓
 SEAT AVAILABLE
 ~~~
