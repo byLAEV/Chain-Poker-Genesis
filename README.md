@@ -1,3 +1,263 @@
+# Chain Poker Genesis by LAEV
+
+> **Open Decentralized Poker Protocol — Technical Architecture, Specification & Implementation Framework**
+
+**Official repository:** https://github.com/byLAEV/Chain-Poker-Genesis
+
+**Author / Protocol Architect:** LAEV / byLAEV
+
+---
+
+## Principal Entry Point
+
+Chain Poker Genesis by LAEV (CPG) is an open protocol project for decentralized poker designed around:
+
+- deterministic protocol execution;
+- cryptographic verification;
+- peer-to-peer coordination;
+- distributed event history;
+- replayable protocol state;
+- modular engines;
+- independent implementations;
+- Bitcoin-compatible settlement;
+- auditable and reproducible behavior.
+
+The purpose of this repository is to progressively transform the Chain Poker Genesis architecture into a sufficiently precise protocol for **independent technical review, reference implementation, testing, and interoperability**.
+
+CPG is developed as a protocol rather than as a conventional centralized poker service.
+
+### Core architectural principle
+
+> **The protocol defines the rules and interfaces; implementations execute them.**
+
+An implementation must not silently invent missing normative behavior and then treat that behavior as part of the protocol.
+
+Where the specification is incomplete, the missing requirement must remain identifiable until it is explicitly defined.
+
+---
+
+# Implementation Review
+
+The repository now contains a dedicated framework for international and independent technical review.
+
+### [IMPLEMENTATION-REVIEW](IMPLEMENTATION-REVIEW/README.md)
+
+The review framework is intended for specialists in:
+
+- Bitcoin and cryptography;
+- Lightning and settlement;
+- distributed systems and P2P networking;
+- consensus and conflict resolution;
+- Mental Poker, MPC and zero-knowledge cryptography;
+- cryptographic identifiers and event logs;
+- deterministic poker engines;
+- security auditing;
+- formal verification;
+- property-based and differential testing;
+- systems and reference implementation engineering.
+
+### Main review documents
+
+- [Technical Review Invitation](IMPLEMENTATION-REVIEW/INVITATION.md)
+- [Review Questions](IMPLEMENTATION-REVIEW/REVIEW-QUESTIONS.md)
+- [Reviewer Matrix](IMPLEMENTATION-REVIEW/REVIEWER-MATRIX.md)
+- [Review Process](IMPLEMENTATION-REVIEW/REVIEW-PROCESS.md)
+- [Open Specifications](IMPLEMENTATION-REVIEW/OPEN-SPECIFICATIONS.md)
+- [Implementation Readiness](IMPLEMENTATION-REVIEW/CPG-PROTOCOL-IMPLEMENTATION-READINESS.md)
+
+---
+
+# Protocol Development Path
+
+The project is organized around a separation between protocol rules, engine responsibilities, cryptographic verification, networking, historical records, and settlement.
+
+The intended development path is:
+
+**Protocol Specification → Independent Review → Formalization of Interfaces → Reference Implementation → Deterministic Test Vectors → Independent Implementations → Interoperability Testing**
+
+This repository therefore serves both as a specification archive and as the foundation for implementation preparation.
+
+---
+
+# Engine Architecture
+
+Chain Poker Genesis is being progressively organized into specialized engines with explicit responsibility boundaries.
+
+Examples include:
+
+- Poker Engine
+- Betting Engine
+- Dealer Engine
+- Reputation Engine
+- CID Engine
+- Ledger / Event Model
+- State Machine
+- Communication / P2P Layer
+- Consensus
+- Conflict Resolution
+- Replay
+- Settlement
+- Installation
+- Graphical Interface
+
+Each engine should define what it **does**, what it **does not do**, its inputs and outputs, its dependencies, and the protocol requirements that must be satisfied before implementation.
+
+---
+
+# Deterministic Interoperability
+
+A central objective of CPG is that independent compatible implementations can process the same valid protocol inputs and reach the same deterministic result.
+
+This requires progressively formalizing:
+
+1. canonical data structures;
+2. canonical serialization;
+3. state transitions;
+4. cryptographic formats;
+5. engine interfaces;
+6. communication messages;
+7. synchronization rules;
+8. consensus conditions;
+9. settlement states;
+10. deterministic test vectors.
+
+The implementation-review framework exists specifically to expose gaps in these areas before they become hidden implementation assumptions.
+
+---
+
+# Cryptographic and Historical Architecture
+
+CPG separates game execution from its historical evidence layer.
+
+The architecture includes mechanisms for:
+
+- cryptographic authorization;
+- commitments and reveals;
+- private-card / dealer verification;
+- event hashing;
+- chained records;
+- fragmented event/log structures;
+- replay;
+- Merkle-based evidence structures where specified;
+- distributed synchronization;
+- independent verification.
+
+The exact normative behavior of each mechanism must remain tied to its corresponding formal specification.
+
+---
+
+# Bitcoin and Settlement
+
+CPG is designed to support Bitcoin-compatible monetary settlement while keeping settlement responsibilities separated from poker logic.
+
+The settlement layer should not determine:
+
+- poker hand results;
+- betting decisions;
+- player strategy;
+- game-state interpretation.
+
+Instead, deterministic protocol outputs provide the information required by the appropriate settlement mechanism.
+
+Versionable settlement engines may evolve independently where the protocol explicitly permits this without changing the underlying poker rules.
+
+---
+
+# Open Protocol and Independent Implementations
+
+Chain Poker Genesis is intended to remain implementation-independent and vendor-neutral.
+
+Different software teams may implement compatible components in different programming languages and environments.
+
+Compatibility is determined by adherence to the published protocol specification, not by ownership of a particular implementation.
+
+The long-term objective is to make it possible for independent implementations to be tested against the same canonical protocol vectors and independently verified for convergence.
+
+---
+
+# Technical Review Philosophy
+
+CPG is being prepared for review by specialists rather than relying on a single generalist implementation team.
+
+The project benefits from independent scrutiny because different layers require different expertise.
+
+A reviewer is not expected to validate the entire protocol.
+
+A reviewer may instead examine a specific area such as:
+
+**Bitcoin / Cryptography → Dealer / Mental Poker → CID / Logs → P2P → Consensus → Poker Determinism → Settlement → Security → Formal Verification**
+
+Findings should distinguish documented requirements from interpretation, ambiguity, proposed clarification, and implementation advice.
+
+---
+
+# Current Documentation Principle
+
+The repository contains historical specifications, architectural documents, and implementation-facing material at different levels of maturity.
+
+Therefore:
+
+> **Historical documentation must not automatically be interpreted as a complete normative implementation specification.**
+
+Where an engine or subsystem still has unresolved technical definitions, those definitions should be tracked explicitly through the implementation-review and open-specification framework.
+
+---
+
+# Repository Structure
+
+Important entry points include:
+
+- `IMPLEMENTATION-REVIEW/` — independent technical review framework
+- `engines/` — engine-specific specifications
+- `08-table-join-engine/` — Table Join Engine
+- `04-private-off-chain-ledger-engine/` — Private Off-Chain Ledger Engine
+- `16-dealer-engine/` — Dealer Engine
+- documentation and historical source records maintained throughout the repository
+
+---
+
+# For Developers
+
+Developers should begin with the protocol architecture and relevant formal specifications before implementing an engine.
+
+When a required behavior is not explicitly defined:
+
+1. identify the missing specification;
+2. do not silently invent protocol behavior;
+3. record the issue;
+4. resolve it through formal specification;
+5. only then make the behavior normative.
+
+This discipline is essential for deterministic interoperability.
+
+---
+
+# For Technical Reviewers
+
+Start here:
+
+**[Implementation Review](IMPLEMENTATION-REVIEW/README.md)**
+
+The review framework provides the scope, questions, reviewer matrix, implementation-readiness criteria, and open-specification tracking required to evaluate CPG systematically.
+
+---
+
+# Long-Term Objective
+
+The objective is not merely to produce a software application.
+
+The objective is to establish a sufficiently precise, testable, auditable, and interoperable **decentralized poker protocol** whose compatible implementations can independently reproduce the same defined protocol behavior.
+
+---
+
+## Existing Repository README — Preserved Below
+
+The original README content follows below this section and has been preserved rather than replaced.
+
+---
+
+
+
 # Chain-Poker-Genesis
 Official repository of Chain Poker Genesis by LAEV. Contains the protocol specifications, technical documentation, system architecture, communication framework, game engine, betting modules, reference implementations, and development resources for the Chain Poker Genesis ecosystem.
 
