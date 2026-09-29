@@ -1102,7 +1102,9 @@ It emits protocol events to:
 04 — Private Off-Chain Ledger Engine
 ```
 
-The Ledger records historical evidence.
+The Ledger records historical evidence throughout the Table Wallet lifecycle.
+
+Material events are emitted to Engine 04 from creation, authorization, activation, wager registration, settlement request, settlement authorization/execution result, failure/recovery, balance verification and closure.
 
 It does not become the live monetary authority.
 
@@ -1670,6 +1672,52 @@ The following remain intentionally open and must be specified elsewhere before p
 15. Formal test vectors for wallet creation, funding and settlement.
 
 These are specification tasks, not reasons to collapse the architectural separation established by this document.
+
+***
+
+# 54. Final Integration Boundary
+
+The normative authority sequence for the 09 boundary is:
+
+```text
+08 TABLE JOIN
+      ↓
+TECHNICAL / CRYPTOGRAPHIC VALIDATION
+      ↓
+MONETARY / FINANCIAL AUTHORIZATION
+      ↓
+PLAYER_JOINED
+      ↓
+TABLE STATE UPDATE
+      ↓
+TABLE CONSENSUS
+      ↓
+TABLE WALLET CONFIGURATION
+      ↓
+TABLE WALLET
+      ↓
+HAND_COMPLETED
+      ↓
+ENGINE 05 / RAKE OBLIGATION
+      ↓
+MONETARY SETTLEMENT ENGINE
+      ↓
+SETTLEMENT PLAN
+      ↓
+TABLE WALLET AUTHORIZATION
+      ↓
+PAYMENT / SETTLEMENT RAIL
+      ↓
+OUTPUTS
+      ↓
+BALANCE VERIFIED
+      ↓
+CLOSED
+```
+
+Engine 04 records evidence across this lifecycle in parallel; it is not a terminal-only step and does not become a second live-state authority.
+
+The Table Wallet Engine does not admit players, determine consensus, calculate rake, or independently execute monetary payouts. It provides the temporary custody and cryptographic authorization boundary used by the Monetary Settlement Engine.
 
 ***
 
