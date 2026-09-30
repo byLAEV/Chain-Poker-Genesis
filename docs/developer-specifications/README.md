@@ -1,8 +1,8 @@
-# Especificaciones y Manuales para Desarrolladores
+# Developer Specifications and Manuals
 
-Esta carpeta concentra las especificaciones técnicas y manuales destinados al equipo de desarrollo del repositorio **Chain Poker Genesis by LAEV** y de las capas de infraestructura que lo soportan.
+This directory contains the technical specifications and developer manuals for the **Chain Poker Genesis by LAEV** repository and the infrastructure layers that support it.
 
-## Estructura base
+## Base structure
 
 ```text
 docs/
@@ -21,9 +21,9 @@ docs/
     └── integration/
 ```
 
-Las carpetas futuras se incorporarán mediante sus respectivos manuales README, evitando mezclar infraestructura transversal con motores y aplicaciones superiores.
+Future directories will be introduced with their respective README manuals, keeping shared infrastructure separate from higher-level engines and applications.
 
-## Separación arquitectónica
+## Architectural separation
 
 ```text
 RED DE NODOS BY LAEV
@@ -42,21 +42,21 @@ RED DE NODOS BY LAEV
         └── Application Components
 ```
 
-Las especificaciones de infraestructura de la Red de Nodos by LAEV deben permanecer independientes de Chain Poker Genesis. Los protocolos y motores superiores consumen estas capacidades mediante APIs y contratos definidos.
+The infrastructure specifications of the Red de Nodos by LAEV must remain independent from Chain Poker Genesis. Higher-level protocols and engines consume these capabilities through defined APIs and contracts.
 
-## Directorios documentales
+## Documentation directories
 
-- `storage/` — almacenamiento local, metadata, políticas, sincronización, recuperación e integración Kubo/IPFS.
-- `identity/` — identidad criptográfica del nodo.
-- `synchronization/` — sincronización y distribución.
-- `consensus/` — coordinación y consenso entre nodos.
-- `recovery/` — recuperación, continuidad y respaldos.
-- `security/` — seguridad transversal.
-- `engines/` — especificaciones de motores instalables.
-- `APIs/` — contratos de interfaces entre capas.
-- `testing/` — pruebas y criterios de aceptación.
-- `integration/` — integración entre infraestructura, motores y aplicaciones.
+- `storage/` — local storage, metadata, policies, synchronization, recovery, and Kubo/IPFS integration.
+- `identity/` — node cryptographic identity.
+- `synchronization/` — synchronization and distribution.
+- `consensus/` — coordination and consensus between nodes.
+- `recovery/` — recovery, continuity, and backups.
+- `security/` — cross-cutting security.
+- `engines/` — specifications for installable engines.
+- `APIs/` — interface contracts between layers.
+- `testing/` — tests and acceptance criteria.
+- `integration/` — integration between infrastructure, engines, and applications.
 
-## Estado
+## Status
 
-Esta estructura constituye la base documental para desarrollar las especificaciones formales antes de implementar cada componente.
+This structure is the documentation baseline for developing formal specifications before implementing each component.
