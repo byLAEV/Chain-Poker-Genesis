@@ -1,0 +1,1975 @@
+Manual de Especificaciones para el Equipo de Desarrollo
+
+Infraestructura de Almacenamientos de la Red de Nodos by LAEV
+
+Documento: Especificación técnica de arquitectura y desarrollo
+Versión: 1.1
+Estado: Base de desarrollo
+Ámbito: Infraestructura de almacenamiento, clasificación, integridad, persistencia, sincronización, recuperación e integración con Kubo/IPFS
+Propietario conceptual: Red de Nodos by LAEV
+Dependencias superiores: Ninguna aplicación o protocolo específico
+Protocolos superiores: Pueden utilizar esta infraestructura mediante la API de almacenamiento
+
+
+---
+
+1. Propósito
+
+Este documento define la arquitectura, organización, reglas operativas y especificaciones de desarrollo de la Infraestructura de Almacenamientos de la Red de Nodos by LAEV.
+
+La infraestructura debe funcionar como una capa independiente capaz de proporcionar almacenamiento a diferentes módulos, aplicaciones, motores y protocolos instalados posteriormente sobre la Red de Nodos by LAEV.
+
+La infraestructura debe permitir gestionar de forma separada:
+
+almacenamiento local;
+
+almacenamiento temporal;
+
+almacenamiento público, privado, restringido y personal;
+
+metadatos;
+
+integridad de objetos;
+
+identificación de objetos;
+
+versiones;
+
+sincronización;
+
+colas de operaciones;
+
+recuperación;
+
+distribución;
+
+persistencia;
+
+integración con IPFS;
+
+integración con Kubo;
+
+replicación;
+
+políticas de retención;
+
+estados operativos y de sincronización.
+
+
+La infraestructura no debe depender de Chain Poker Genesis ni de ningún otro protocolo superior.
+
+
+---
+
+2. Principio fundamental de arquitectura
+
+La Red de Nodos by LAEV debe separar claramente:
+
+INFRAESTRUCTURA DEL NODO  
+        │  
+        ├── Almacenamiento  
+        ├── Identidad criptográfica  
+        ├── Sincronización de identidad  
+        └── Servicios base  
+                │  
+                ▼  
+          MOTORES INSTALABLES  
+                │  
+                ├── Motor de Consenso  
+                ├── Motor de Aplicación  
+                ├── Motor de Póker  
+                ├── Motor de Wallet  
+                └── Otros
+
+La infraestructura de almacenamiento pertenece a la capa base.
+
+Un protocolo superior puede utilizarla, pero no debe asumir control directo sobre:
+
+el repositorio interno de Kubo;
+
+las colas internas del sistema de almacenamiento;
+
+las políticas globales;
+
+la integridad interna de los objetos;
+
+la estructura interna del almacenamiento de otros módulos.
+
+
+
+---
+
+3. Principios de diseño
+
+La implementación debe cumplir los siguientes principios:
+
+3.1 Separación de responsabilidades
+
+Debe existir una separación explícita entre:
+
+Storage API  
+Storage Manager  
+Policy Engine  
+Local Storage  
+Synchronization  
+Metadata  
+Kubo Adapter  
+Kubo/IPFS
+
+Ningún módulo superior debe escribir directamente sobre la infraestructura interna de otro componente.
+
+
+---
+
+3.2 Almacenamiento local independiente
+
+El almacenamiento local debe seguir funcionando aunque:
+
+Kubo esté detenido;
+
+IPFS no tenga conectividad;
+
+una operación de sincronización falle;
+
+exista una interrupción temporal de red;
+
+se encuentre saturada una cola de distribución.
+
+
+La indisponibilidad de IPFS no debe provocar automáticamente la pérdida del estado local válido.
+
+
+---
+
+3.3 La sincronización no equivale a almacenamiento
+
+La existencia local de un objeto no significa que deba ser sincronizado.
+
+Debe existir una decisión explícita de política:
+
+OBJETO EXISTE LOCALMENTE  
+        │  
+        ├── NO sincronizar  
+        │  
+        └── SÍ sincronizar  
+                │  
+                ▼  
+        COLA DE SINCRONIZACIÓN
+
+Por tanto:
+
+almacenar ≠ sincronizar ≠ distribuir ≠ replicar ≠ publicar.
+
+
+---
+
+3.4 Integridad independiente de la ubicación
+
+La integridad de un objeto debe poder verificarse independientemente de si se encuentra:
+
+solamente en almacenamiento local;
+
+en una cola;
+
+en Kubo;
+
+en IPFS;
+
+en otro nodo;
+
+en una copia de recuperación.
+
+
+
+---
+
+4. Arquitectura general
+
+La arquitectura lógica será:
+
+APLICACIÓN / MOTOR  
+                           │  
+                           ▼  
+                     STORAGE API  
+                           │  
+                           ▼  
+                    STORAGE MANAGER  
+                           │  
+                    ┌──────┴──────┐  
+                    ▼             ▼  
+              POLICY ENGINE    METADATA  
+                    │  
+          ┌─────────┼──────────┐  
+          ▼         ▼          ▼  
+        LOCAL      SYNC     RECOVERY  
+          │         │  
+          │      QUEUE/RETRY  
+          │         │  
+          │         ▼  
+          │    KUBO ADAPTER  
+          │         │  
+          │         ▼  
+          │        KUBO  
+          │         │  
+          │         ▼  
+          │        IPFS  
+          │  
+          ▼  
+   LOCAL STORAGE
+
+
+---
+
+5. Estructura principal del nodo
+
+La estructura base propuesta es:
+
+NODE/  
+├── storage/  
+├── services/  
+├── applications/  
+├── config/  
+├── runtime/  
+└── logs/
+
+La carpeta storage/ representa el dominio de almacenamiento administrado por la infraestructura.
+
+
+---
+
+6. Estructura de almacenamiento
+
+storage/  
+├── local/  
+├── synchronization/  
+├── distributed/  
+├── metadata/  
+└── recovery/
+
+6.1 local/
+
+Contiene el almacenamiento administrado directamente por la infraestructura del nodo.
+
+6.2 synchronization/
+
+Contiene las operaciones y colas relacionadas con distribución y sincronización.
+
+6.3 distributed/
+
+Representa la abstracción del almacenamiento distribuido.
+
+No debe confundirse con el repositorio interno de Kubo.
+
+6.4 metadata/
+
+Contiene metadatos durables de objetos, operaciones, estados y políticas.
+
+6.5 recovery/
+
+Contiene información necesaria para recuperación, restauración, reconstrucción y operaciones posteriores a fallos.
+
+
+---
+
+7. Almacenamiento local
+
+La estructura base será:
+
+storage/local/  
+├── system/  
+├── shared/  
+├── modules/  
+├── temporary/  
+├── public/  
+├── private/  
+├── restricted/  
+├── personal/  
+└── backup/
+
+Cada directorio tiene una función diferente.
+
+
+---
+
+8. Clases de almacenamiento
+
+8.1 TEMPORARY
+
+Datos temporales utilizados para:
+
+procesamiento;
+
+caché;
+
+importación;
+
+exportación;
+
+ensamblado;
+
+operaciones de sincronización;
+
+recuperación temporal.
+
+
+No debe asumirse persistencia permanente.
+
+
+---
+
+8.2 LOCAL_PUBLIC
+
+Datos que pueden ser utilizados como información local de acceso público.
+
+El carácter LOCAL_PUBLIC no implica publicación automática en IPFS.
+
+
+---
+
+8.3 LOCAL_PRIVATE
+
+Datos destinados al entorno privado del nodo.
+
+No deben ser publicados automáticamente.
+
+
+---
+
+8.4 LOCAL_RESTRICTED
+
+Datos que requieren controles adicionales.
+
+Puede incluir:
+
+material criptográfico;
+
+secretos;
+
+credenciales;
+
+información sensible;
+
+información restringida por política.
+
+
+Esta clase debe tener sincronización desactivada por defecto.
+
+
+---
+
+8.5 LOCAL_PERSONAL
+
+Información vinculada a un usuario o identidad local.
+
+No debe publicarse ni sincronizarse implícitamente.
+
+
+---
+
+9. Aislamiento de módulos
+
+Cada módulo que requiera espacio propio debe disponer de un directorio independiente.
+
+Ejemplo:
+
+storage/local/modules/<module>/  
+├── data/  
+├── temporary/  
+├── public/  
+├── private/  
+├── restricted/  
+├── personal/  
+├── cache/  
+├── metadata/  
+└── sync/
+
+Un módulo no debe escribir directamente dentro de la carpeta de otro módulo.
+
+Cuando dos módulos necesiten compartir información debe utilizarse:
+
+storage/local/shared/
+
+o una API controlada de intercambio de objetos.
+
+
+---
+
+10. API de almacenamiento
+
+Todo módulo superior debe interactuar con la infraestructura mediante una API unificada.
+
+La abstracción conceptual será:
+
+Application  
+      │  
+      ▼  
+Storage API  
+      │  
+      ▼  
+Storage Manager
+
+Ejemplo conceptual:
+
+StorageManager.put(object, policy)
+
+El módulo consumidor no necesita conocer:
+
+cómo está implementado el almacenamiento local;
+
+dónde se encuentra Kubo;
+
+cómo funciona el datastore de Kubo;
+
+cómo se realiza la cola de sincronización;
+
+cómo se ejecutan los reintentos;
+
+cómo se realiza la recuperación.
+
+
+
+---
+
+11. Responsabilidades del Storage Manager
+
+El Storage Manager debe coordinar como mínimo:
+
+CREATE  
+READ  
+UPDATE  
+DELETE  
+CLASSIFY  
+STORE  
+RETRIEVE  
+VERIFY  
+PREPARE_SYNC  
+PUBLISH  
+RECEIVE  
+QUARANTINE  
+RESTORE  
+BACKUP
+
+También debe coordinar las transiciones de estado del objeto.
+
+
+---
+
+12. Storage Policy Engine
+
+Debe existir un componente explícito denominado:
+
+Storage Policy Engine
+
+Su función es decidir qué comportamiento corresponde a cada objeto.
+
+Una política debe poder expresar:
+
+WHERE  
+WHO  
+WHEN  
+HOW LONG  
+ENCRYPTED  
+SYNC  
+PIN  
+REPLICATE  
+DELETE
+
+Ejemplo conceptual:
+
+storage_class = LOCAL_PRIVATE  
+sync = DISABLED  
+encryption = REQUIRED  
+retention = PERSISTENT  
+replication = LOCAL_ONLY
+
+La aplicación no debe poder saltarse las políticas mediante acceso directo a los adaptadores internos.
+
+
+---
+
+13. Modelo de objeto
+
+Cada objeto debe tener una identidad lógica separada de su contenido.
+
+Modelo mínimo:
+
+Object  
+├── object_id  
+├── module_id  
+├── version  
+├── local_location  
+├── content_hash  
+├── cid  
+├── storage_class  
+├── visibility  
+├── encryption  
+├── persistence  
+├── sync_policy  
+├── retention_policy  
+├── replication_policy  
+├── object_state  
+├── sync_state  
+└── distributed_state
+
+
+---
+
+14. Separación de identificadores
+
+Debe diferenciarse claramente:
+
+object_id  
+operation_id  
+version  
+content_hash  
+CID
+
+object_id
+
+Identifica la entidad lógica.
+
+Puede utilizar UUIDv4 u otro identificador equivalente.
+
+UUIDv4 no es determinista.
+
+operation_id
+
+Identifica una operación específica.
+
+Por ejemplo:
+
+upload  
+publish  
+retrieve  
+retry  
+restore  
+delete
+
+version
+
+Identifica una versión concreta del objeto lógico.
+
+content_hash
+
+Identifica criptográficamente el contenido según el algoritmo definido.
+
+CID
+
+Representa la referencia direccionada por contenido utilizada por IPFS.
+
+
+---
+
+15. Regla fundamental sobre CIDs
+
+No debe intentarse eliminar toda repetición de CIDs.
+
+Dos objetos lógicos distintos pueden referenciar exactamente el mismo contenido.
+
+Por tanto:
+
+OBJETO A ─┐  
+          ├── CID X  
+OBJETO B ─┘
+
+puede ser perfectamente válido.
+
+Debe evitarse la duplicación lógica accidental, no la reutilización legítima del mismo contenido.
+
+
+---
+
+16. Nombres físicos de archivos
+
+El nombre de un archivo no debe utilizarse como mecanismo primario de integridad.
+
+Los nombres físicos deben ser estables y seguros.
+
+Ejemplo conceptual:
+
+<object_id>/  
+    v001/  
+        data
+
+o:
+
+<object_id>_v001.dat
+
+La integridad debe verificarse mediante metadatos criptográficos, no por el nombre del archivo.
+
+
+---
+
+17. Manifest
+
+Cada objeto administrado debe poder disponer de un registro de manifiesto.
+
+Ejemplo:
+
+manifest  
+├── object_id  
+├── module_id  
+├── version  
+├── local_path  
+├── content_hash  
+├── cid  
+├── storage_class  
+├── visibility  
+├── encryption  
+├── sync_policy  
+├── persistence_policy  
+├── replication_policy  
+├── object_state  
+├── sync_state  
+├── distributed_state  
+├── created_at  
+├── updated_at  
+└── retention_policy
+
+El manifiesto debe funcionar como registro durable de la relación entre:
+
+objeto  
+↔ almacenamiento local  
+↔ integridad  
+↔ sincronización  
+↔ distribución  
+↔ versión
+
+
+---
+
+18. El manifiesto como fuente de verdad operacional
+
+Las carpetas:
+
+outgoing/  
+incoming/  
+pending/  
+processing/  
+published/  
+failed/  
+quarantine/
+
+son estructuras operativas.
+
+No deben ser la única fuente de verdad.
+
+La fuente de verdad debe ser el registro durable de metadatos y operaciones.
+
+Esto evita que un fallo produzca inconsistencias solamente porque un archivo fue movido entre carpetas.
+
+
+---
+
+19. Transacciones y consistencia
+
+La infraestructura debe implementar transiciones durables de estado.
+
+No debe asumirse que puede existir una transacción única que abarque simultáneamente:
+
+Filesystem local  
++  
+Metadata database  
++  
+Kubo  
++  
+IPFS
+
+Por tanto, la consistencia entre estos sistemas debe manejarse mediante:
+
+registro de operaciones;
+
+estados durables;
+
+recuperación;
+
+reconciliación;
+
+reintentos;
+
+verificación posterior.
+
+
+Cuando el almacenamiento de metadatos lo permita, las transiciones internas deben realizarse de forma transaccional.
+
+
+---
+
+20. Ciclo de vida de un objeto
+
+La máquina de estados mínima será:
+
+CREATED  
+   │  
+   ▼  
+CLASSIFIED  
+   │  
+   ▼  
+STORED_LOCAL  
+   │  
+   ├───────────────┐  
+   │               │  
+   ▼               ▼  
+SYNC_PENDING     NO_SYNC  
+   │  
+   ▼  
+SYNC_PROCESSING  
+   │  
+   ├───────────┐  
+   │           │  
+   ▼           ▼  
+DISTRIBUTED  TEMPORARY_FAILURE  
+                 │  
+                 ▼  
+             RETRY_WAIT  
+                 │  
+                 └──────► SYNC_PROCESSING  
+  
+Cualquier estado  
+       │  
+       ▼  
+INVALID  
+       │  
+       ▼  
+QUARANTINED
+
+
+---
+
+21. Separación de estados
+
+Debe distinguirse al menos:
+
+OBJECT_STATE  
+SYNC_STATE  
+DISTRIBUTED_STATE
+
+Ejemplo:
+
+OBJECT_STATE       = ACTIVE  
+SYNC_STATE         = FAILED_RETRYABLE  
+DISTRIBUTED_STATE  = NOT_CONFIRMED
+
+Esto evita representar múltiples condiciones diferentes mediante un único campo ambiguo.
+
+
+---
+
+22. Estados de sincronización
+
+La carpeta:
+
+storage/synchronization/
+
+debe contener:
+
+storage/synchronization/  
+├── outgoing/  
+├── incoming/  
+├── pending/  
+├── processing/  
+├── published/  
+├── failed/  
+├── retry/  
+├── quarantine/  
+└── manifests/
+
+outgoing/
+
+Objetos autorizados para ser distribuidos.
+
+incoming/
+
+Objetos recibidos.
+
+pending/
+
+Operaciones todavía no ejecutadas.
+
+processing/
+
+Operaciones actualmente en ejecución.
+
+published/
+
+Objetos cuya distribución fue confirmada según la política correspondiente.
+
+failed/
+
+Operaciones con fallo registrado.
+
+retry/
+
+Operaciones con reintento programado.
+
+quarantine/
+
+Objetos que no deben incorporarse funcionalmente hasta completar una validación.
+
+
+---
+
+23. Regla sobre outgoing
+
+El hecho de que un archivo exista localmente no significa que pueda entrar en outgoing.
+
+La entrada a la cola debe ser resultado de una decisión de política:
+
+LOCAL OBJECT  
+     │  
+     ▼  
+POLICY EVALUATION  
+     │  
+     ├── NO DISTRIBUTION  
+     │  
+     └── DISTRIBUTE  
+             │  
+             ▼  
+         OUTGOING
+
+
+---
+
+24. Cola de reintentos
+
+Los reintentos deben utilizar una estructura durable.
+
+Cada operación debe poder registrar:
+
+operation_id  
+attempt  
+next_retry_at  
+last_error  
+backoff  
+created_at  
+updated_at
+
+El sistema debe utilizar:
+
+backoff exponencial;
+
+jitter;
+
+límite de intentos;
+
+clasificación de errores;
+
+backpressure;
+
+estado de operación agotada.
+
+
+
+---
+
+25. Circuit breaker
+
+Cuando Kubo o un servicio distribuido se encuentre persistentemente indisponible, el sistema debe evitar bombardearlo con intentos repetitivos.
+
+Se recomienda:
+
+NORMAL  
+   │  
+   ▼  
+DEGRADED  
+   │  
+   ▼  
+CIRCUIT_OPEN  
+   │  
+   ▼  
+PROBE  
+   │  
+   ├── éxito ──► NORMAL  
+   │  
+   └── fallo ─► CIRCUIT_OPEN
+
+Esto protege tanto al sistema local como al servicio externo.
+
+
+---
+
+26. Saturación de colas
+
+Una cola no debe crecer indefinidamente.
+
+Debe existir:
+
+límite configurable;
+
+medición de utilización;
+
+política de backpressure;
+
+prioridades;
+
+expiración;
+
+dead-letter o estado terminal;
+
+herramientas administrativas de recuperación.
+
+
+Una saturación de sincronización no debe bloquear necesariamente el almacenamiento local.
+
+
+---
+
+27. Recepción de datos
+
+El flujo de recepción debe ser:
+
+REQUEST  
+   │  
+   ▼  
+KUBO / IPFS  
+   │  
+   ▼  
+RECEIVE  
+   │  
+   ▼  
+VERIFY  
+   │  
+   ├── INVALID ──► QUARANTINE  
+   │  
+   └── VALID  
+          │  
+          ▼  
+       INCOMING  
+          │  
+          ▼  
+     LOCAL STORAGE
+
+La infraestructura no debe convertir automáticamente cualquier contenido recibido en contenido funcional confiable.
+
+
+---
+
+28. Verificación de integridad
+
+Antes de aceptar un objeto, deben comprobarse según corresponda:
+
+content_hash  
+CID  
+signature  
+metadata integrity  
+version  
+policy constraints
+
+Cuando exista una inconsistencia, el objeto debe pasar a cuarentena.
+
+
+---
+
+29. Integración con Kubo
+
+Kubo debe tratarse como un servicio externo especializado dentro de la infraestructura.
+
+La integración será:
+
+Application  
+    │  
+    ▼  
+Storage API  
+    │  
+    ▼  
+Storage Manager  
+    │  
+    ▼  
+Distributed Adapter  
+    │  
+    ▼  
+Kubo Adapter  
+    │  
+    ▼  
+Kubo API / RPC  
+    │  
+    ▼  
+Kubo Repository  
+    │  
+    ▼  
+IPFS Network
+
+Kubo dispone de interfaces RPC/API para operaciones sobre contenido y pins; su documentación oficial contempla operaciones de pinning local y mecanismos relacionados con almacenamiento y distribución de contenido.
+
+
+---
+
+30. Regla crítica de integración con Kubo
+
+La aplicación no debe escribir directamente dentro del repositorio interno de Kubo.
+
+El repositorio de Kubo pertenece a Kubo.
+
+Por tanto:
+
+NO:  
+  
+Application  
+   ↓  
+Kubo Repository Files
+
+Debe utilizarse:
+
+Application  
+   ↓  
+Storage API  
+   ↓  
+Kubo Adapter  
+   ↓  
+Kubo API/RPC
+
+Esto mantiene aislada la implementación interna de Kubo y reduce el acoplamiento del sistema.
+
+
+---
+
+31. Kubo Repository
+
+El repositorio de Kubo debe considerarse una infraestructura independiente del almacenamiento lógico de la aplicación.
+
+Conceptualmente puede contener elementos administrados por Kubo como:
+
+KUBO REPOSITORY  
+├── Configuration  
+├── Datastore  
+├── Blocks  
+├── MFS state  
+├── Pins  
+├── IPFS identity  
+└── Other Kubo-managed data
+
+La infraestructura de la Red de Nodos debe almacenar sus propios metadatos y políticas fuera de esa estructura.
+
+
+---
+
+32. Arquitectura física conceptual
+
+En una máquina puede existir:
+
+MACHINE  
+│  
+├── NODE STORAGE  
+│   ├── Temporary  
+│   ├── Public  
+│   ├── Private  
+│   ├── Restricted  
+│   ├── Personal  
+│   ├── Metadata  
+│   └── Recovery  
+│  
+└── KUBO REPOSITORY  
+    ├── Configuration  
+    ├── Datastore  
+    ├── Blocks  
+    ├── MFS  
+    ├── Pins  
+    └── Other Kubo Data
+
+Son sistemas relacionados, pero no equivalentes.
+
+
+---
+
+33. IPFS público y privado
+
+La infraestructura debe distinguir conceptualmente:
+
+IPFS_PUBLIC_NETWORK  
+IPFS_PRIVATE_NETWORK
+
+Una red IPFS pública no debe interpretarse como mecanismo automático de privacidad.
+
+La publicación de contenido en IPFS no implica que el contenido esté cifrado.
+
+Por ello deben existir propiedades independientes:
+
+NETWORK_SCOPE  
+CONTENT_ENCRYPTION  
+ACCESS_POLICY
+
+
+---
+
+34. Cifrado
+
+Debe distinguirse:
+
+IPFS_PUBLIC  
++  
+CONTENT_ENCRYPTED
+
+de:
+
+IPFS_PUBLIC  
++  
+CONTENT_UNENCRYPTED
+
+y de:
+
+IPFS_PRIVATE  
++  
+CONTENT_ENCRYPTED
+
+La red IPFS no debe considerarse responsable de proporcionar por sí sola la confidencialidad del contenido.
+
+Los datos sensibles deben cifrarse antes de distribuirse cuando la política así lo requiera.
+
+
+---
+
+35. CID, cifrado, permisos e identidad
+
+Estos conceptos no deben confundirse:
+
+CID          ≠ Encryption Key  
+CID          ≠ Permission  
+CID          ≠ Identity  
+CID          ≠ Authorization
+
+El CID identifica contenido direccionado por contenido.
+
+Los permisos deben pertenecer a la política de acceso.
+
+La identidad pertenece a la capa criptográfica correspondiente.
+
+El cifrado pertenece a la protección del contenido.
+
+
+---
+
+36. Persistencia
+
+La persistencia debe expresarse como propiedad independiente.
+
+Ejemplos:
+
+EPHEMERAL  
+PERSISTENT  
+PINNED  
+ARCHIVAL
+
+PINNED no constituye por sí mismo una clase de almacenamiento.
+
+Es una propiedad de persistencia/distribución.
+
+
+---
+
+37. Stored, Pinned, Provided y Replicated
+
+La infraestructura debe diferenciar:
+
+STORED  
+PINNED  
+PROVIDED / ANNOUNCED  
+REPLICATED
+
+STORED
+
+El nodo posee los datos localmente.
+
+PINNED
+
+El nodo mantiene el contenido de acuerdo con la política de pinning.
+
+PROVIDED / ANNOUNCED
+
+El nodo participa en la disponibilidad del contenido para la red mediante los mecanismos correspondientes.
+
+REPLICATED
+
+Existen copias adicionales en otros lugares.
+
+Estas propiedades no deben tratarse como sinónimos.
+
+La documentación de IPFS diferencia el pinning de la disponibilidad del contenido y contempla múltiples nodos o servicios de pinning para aumentar la resiliencia.
+
+
+---
+
+38. Políticas de replicación
+
+La infraestructura debe poder representar:
+
+LOCAL_ONLY  
+MULTI_NODE  
+EXTERNAL_PINNING
+
+Una aplicación puede requerir que un objeto exista:
+
+solo localmente
+
+o:
+
+local + múltiples nodos
+
+o:
+
+local + Kubo + servicio externo
+
+según su política.
+
+
+---
+
+39. Integridad y estructura de árbol
+
+La infraestructura puede utilizar estructuras hash encadenadas o árboles para representar integridad de conjuntos de metadatos.
+
+Ejemplo conceptual:
+
+ROOT HASH  
+        /       \  
+       H1       H2  
+      /  \     /  \  
+    H3   H4   H5   H6
+
+Esto puede utilizarse para:
+
+verificar integridad;
+
+detectar alteraciones;
+
+construir índices;
+
+representar conjuntos de objetos;
+
+construir registros verificables.
+
+
+No debe confundirse con el mecanismo de consenso de la Red de Nodos.
+
+Un árbol hash aporta integridad estructural; el consenso determina cómo los nodos coordinan un estado común cuando corresponda.
+
+
+---
+
+40. Almacenamiento y consenso son capas distintas
+
+Debe mantenerse estrictamente:
+
+STORAGE  
+    =  
+where/how data is stored
+
+y:
+
+CONSENSUS  
+    =  
+how nodes coordinate and agree on protocol state
+
+La infraestructura de almacenamiento no debe asumir funciones del futuro Motor de Consenso.
+
+
+---
+
+41. Flujo de creación
+
+El flujo estándar debe ser:
+
+CREATE OBJECT  
+      │  
+      ▼  
+CLASSIFY  
+      │  
+      ▼  
+EVALUATE POLICY  
+      │  
+      ▼  
+STORE LOCAL  
+      │  
+      ▼  
+CALCULATE INTEGRITY  
+      │  
+      ▼  
+DISTRIBUTION DECISION  
+      │  
+      ├── NO  
+      │  
+      └── YES  
+            │  
+            ▼  
+       SYNC QUEUE  
+            │  
+            ▼  
+       KUBO ADAPTER  
+            │  
+            ▼  
+           KUBO  
+            │  
+            ▼  
+           IPFS  
+            │  
+            ▼  
+           CID  
+            │  
+            ▼  
+        UPDATE MANIFEST
+
+
+---
+
+42. Flujo de recuperación
+
+Ante reinicio inesperado del nodo, el sistema debe reconstruir el estado utilizando:
+
+metadata  
++  
+operation records  
++  
+filesystem inspection  
++  
+Kubo verification
+
+No debe depender exclusivamente de la posición física del archivo dentro de una carpeta.
+
+El objetivo es poder determinar:
+
+qué objeto existe;  
+qué versión representa;  
+qué operación estaba ejecutándose;  
+qué se completó;  
+qué no se confirmó;  
+qué debe reintentarse.
+
+
+---
+
+43. Fallos parciales
+
+Debe contemplarse explícitamente que pueda ocurrir:
+
+Local write      = SUCCESS  
+Kubo publish     = SUCCESS  
+Manifest update  = FAIL
+
+o:
+
+Local write      = SUCCESS  
+Manifest update  = SUCCESS  
+Kubo publish     = FAIL
+
+o:
+
+Kubo publish     = SUCCESS  
+Network response = LOST
+
+La recuperación debe poder determinar el estado real sin asumir que la última operación falló simplemente porque no hubo confirmación local.
+
+
+---
+
+44. Regla de recuperación
+
+Las operaciones deben ser reconciliables.
+
+Esto implica que el sistema pueda consultar nuevamente:
+
+Local Metadata  
+Kubo  
+IPFS state  
+Operation Journal
+
+y reconstruir la situación.
+
+
+---
+
+45. Seguridad
+
+La infraestructura debe separar:
+
+IDENTITY  
+AUTHENTICATION  
+AUTHORIZATION  
+ENCRYPTION  
+INTEGRITY  
+STORAGE POLICY
+
+Ninguno debe sustituir automáticamente a los demás.
+
+El acceso administrativo a Kubo debe mantenerse protegido y no debe exponerse indiscriminadamente como servicio público. La documentación oficial de Kubo contempla mecanismos de protección para su RPC.
+
+
+---
+
+46. Datos restringidos
+
+Los elementos pertenecientes a:
+
+restricted/
+
+deben tener como mínimo:
+
+sync = disabled by default  
+publication = disabled by default  
+encryption = required when policy specifies
+
+No debe existir publicación automática de secretos o material criptográfico.
+
+
+---
+
+47. Backup
+
+El backup debe ser una política independiente de:
+
+sync  
+replication  
+pinning  
+IPFS publication
+
+Una copia de respaldo no necesariamente constituye una réplica distribuida.
+
+Ejemplo:
+
+BACKUP ≠ REPLICATION  
+BACKUP ≠ SYNC  
+BACKUP ≠ PINNING
+
+
+---
+
+48. Eliminación
+
+Debe distinguirse:
+
+DELETE LOCAL
+
+de:
+
+DELETE DISTRIBUTED REFERENCE
+
+y:
+
+REMOVE PIN
+
+La eliminación local no significa necesariamente que desaparezcan todas las copias distribuidas.
+
+Asimismo, quitar un pin no debe interpretarse automáticamente como destrucción global del contenido.
+
+
+---
+
+49. Retención
+
+Toda clase de objeto puede disponer de una política de retención:
+
+RETENTION_POLICY
+
+Ejemplos:
+
+UNTIL_DATE  
+TTL  
+PERSISTENT  
+MANUAL_DELETE  
+ARCHIVAL
+
+La retención debe aplicarse independientemente del mecanismo físico usado para almacenar el objeto.
+
+
+---
+
+50. API conceptual mínima
+
+La interfaz de alto nivel debe contemplar operaciones equivalentes a:
+
+create()  
+get()  
+update()  
+delete()  
+  
+classify()  
+validatePolicy()  
+  
+storeLocal()  
+retrieveLocal()  
+  
+prepareSync()  
+enqueueSync()  
+retrySync()  
+  
+publish()  
+unpublish()  
+  
+verify()  
+quarantine()  
+  
+backup()  
+restore()  
+  
+getManifest()  
+updateManifest()  
+  
+getObjectState()  
+getSyncState()  
+getDistributedState()
+
+La API concreta queda sujeta a la tecnología elegida durante la implementación.
+
+
+---
+
+51. Reglas de acceso
+
+Los módulos superiores:
+
+deben:
+
+usar Storage API;  
+respetar políticas;  
+usar identificadores de objetos;  
+usar versiones;  
+registrar operaciones;  
+manejar errores mediante la API.
+
+no deben:
+
+escribir directamente en storage de otro módulo;  
+alterar manifiestos ajenos;  
+escribir directamente en Kubo repository;  
+forzar publicación;  
+forzar sincronización;  
+ignorar quarantine;  
+usar el nombre de archivo como mecanismo de identidad.
+
+
+---
+
+52. Requisitos de observabilidad
+
+La infraestructura debe generar información suficiente para responder:
+
+¿Qué objeto existe?  
+¿Dónde está almacenado?  
+¿Qué versión es?  
+¿Cuál es su hash?  
+¿Tiene CID?  
+¿Fue sincronizado?  
+¿Fue publicado?  
+¿Está pinned?  
+¿Está replicado?  
+¿Cuándo fue la última operación?  
+¿Cuántos reintentos existen?  
+¿Por qué falló?
+
+Los logs deben permitir reconstruir el historial operacional sin convertirse en la única fuente de verdad.
+
+
+---
+
+53. Registro de operación
+
+Se recomienda mantener una estructura equivalente a:
+
+operation/  
+├── operation_id  
+├── object_id  
+├── action  
+├── status  
+├── attempt  
+├── created_at  
+├── updated_at  
+├── next_retry_at  
+├── error_code  
+└── error_message
+
+Las operaciones importantes deben ser trazables.
+
+
+---
+
+54. Requisito de idempotencia
+
+Cuando sea posible, las operaciones de almacenamiento y distribución deben ser idempotentes.
+
+Una repetición accidental de:
+
+publish()
+
+no debería crear incoherencias lógicas.
+
+La implementación debe comprobar:
+
+object_id  
+version  
+content_hash  
+CID  
+operation_id
+
+antes de crear una nueva operación equivalente.
+
+
+---
+
+55. Requisito de concurrencia
+
+Debe contemplarse que dos operaciones intenten modificar simultáneamente el mismo objeto.
+
+La solución debe definir claramente:
+
+locking  
+version check  
+optimistic concurrency  
+operation ordering
+
+El sistema no debe permitir sobrescrituras silenciosas.
+
+
+---
+
+56. Versionado
+
+Un objeto lógico debe poder mantener varias versiones:
+
+object_id = X  
+  
+v001  
+v002  
+v003
+
+Cada versión debe mantener su propia:
+
+content_hash  
+CID  
+metadata  
+creation_time  
+operation history
+
+
+---
+
+57. Duplicación
+
+Deben distinguirse:
+
+logical duplicate  
+content duplicate  
+version duplicate  
+operation duplicate
+
+Dos objetos pueden compartir:
+
+CID
+
+sin ser el mismo objeto lógico.
+
+
+---
+
+58. Independencia del protocolo superior
+
+La infraestructura debe poder ser utilizada por:
+
+Motor de Consenso  
+Motor de Póker  
+Motor de Wallet  
+Motor de Identidad  
+Motor de Registros  
+Motor de Aplicación
+
+sin modificar el modelo fundamental de almacenamiento.
+
+Esto convierte el almacenamiento en una infraestructura general de la Red de Nodos by LAEV.
+
+
+---
+
+59. Relación con la identidad de nodo
+
+La identidad criptográfica del nodo es un componente distinto.
+
+IDENTIDAD  
+   │  
+   └── identifica al nodo  
+  
+STORAGE  
+   │  
+   └── almacena información del nodo  
+  
+SYNC  
+   │  
+   └── distribuye información cuando la política lo autoriza
+
+La identidad no debe utilizarse como sustituto de:
+
+permisos;
+
+almacenamiento;
+
+CID;
+
+consenso;
+
+cifrado.
+
+
+
+---
+
+60. Relación con la sincronización de identidad
+
+La infraestructura de almacenamiento puede transportar o conservar información relacionada con la identidad.
+
+Sin embargo:
+
+STORE IDENTITY DATA
+
+no equivale necesariamente a:
+
+COMMUNICATE WITH PEERS
+
+ni a:
+
+CONSENSUS
+
+La infraestructura de almacenamiento solamente proporciona los medios para conservar y, cuando corresponda, distribuir los datos.
+
+
+---
+
+61. Estados de disponibilidad del nodo
+
+La infraestructura debe poder representar estados como:
+
+LOCAL_STORAGE_READY  
+KUBO_UNAVAILABLE  
+SYNC_DEGRADED  
+IPFS_UNAVAILABLE  
+RECOVERY_REQUIRED
+
+El fallo de un subsistema no debe implicar automáticamente que todo el nodo esté inutilizable.
+
+
+---
+
+62. Requisito de degradación controlada
+
+Ejemplo:
+
+Kubo OFFLINE  
+      │  
+      ▼  
+Local storage continues  
+      │  
+      ▼  
+Sync queue accumulates  
+      │  
+      ▼  
+Retry policy active  
+      │  
+      ▼  
+Kubo returns  
+      │  
+      ▼  
+Synchronization resumes
+
+Este comportamiento debe considerarse parte del diseño, no una excepción improvisada.
+
+
+---
+
+63. Requisito de modularidad
+
+Los adaptadores deben ser reemplazables.
+
+Arquitectura:
+
+Storage Manager  
+      │  
+      ├── Local Adapter  
+      ├── Kubo Adapter  
+      ├── Backup Adapter  
+      └── Future Distributed Adapter
+
+La API superior no debe depender de la implementación concreta.
+
+
+---
+
+64. Kubo como adaptador, no como autoridad global
+
+Kubo es un componente de almacenamiento/distribución de contenido.
+
+No debe convertirse automáticamente en:
+
+consensus authority  
+identity authority  
+application database  
+permission authority  
+global state authority
+
+Su función debe permanecer delimitada por la integración definida.
+
+
+---
+
+65. Criterios mínimos de aceptación
+
+La implementación podrá considerarse funcionalmente conforme cuando:
+
+[ ] Exista Storage API  
+[ ] Exista Storage Manager  
+[ ] Exista Policy Engine  
+[ ] Exista almacenamiento local aislado  
+[ ] Exista metadata durable  
+[ ] Exista object_id  
+[ ] Exista versionado  
+[ ] Exista content_hash  
+[ ] Exista manifest  
+[ ] Exista state machine  
+[ ] Existan estados separados de objeto/sync/distribución  
+[ ] Exista cola de sincronización  
+[ ] Existan reintentos  
+[ ] Exista backoff  
+[ ] Exista control de saturación  
+[ ] Exista mecanismo de recovery  
+[ ] Exista quarantine  
+[ ] Exista Kubo Adapter  
+[ ] No exista escritura directa al repositorio interno de Kubo  
+[ ] Exista diferenciación entre stored/pinned/provided/replicated  
+[ ] Exista separación entre cifrado y red IPFS  
+[ ] Exista separación entre CID e identidad  
+[ ] Exista aislamiento entre módulos  
+[ ] Exista trazabilidad de operaciones  
+[ ] Exista comportamiento degradado
+
+
+---
+
+66. Arquitectura consolidada
+
+La versión consolidada queda:
+
+RED DE NODOS BY LAEV  
+                              │  
+                              ▼  
+                     STORAGE INFRASTRUCTURE  
+                              │  
+                              ▼  
+                         STORAGE API  
+                              │  
+                              ▼  
+                       STORAGE MANAGER  
+                              │  
+                   ┌──────────┴──────────┐  
+                   ▼                     ▼  
+             POLICY ENGINE            METADATA  
+                   │  
+        ┌──────────┼───────────┐  
+        ▼          ▼           ▼  
+      LOCAL       SYNC       RECOVERY  
+                   │  
+            QUEUE / RETRY  
+                   │  
+             CIRCUIT BREAKER  
+                   │  
+                   ▼  
+             KUBO ADAPTER  
+                   │  
+                   ▼  
+                  KUBO  
+                   │  
+                   ▼  
+                  IPFS
+
+
+---
+
+67. Modelo conceptual final
+
+La infraestructura debe entenderse como una serie de capas:
+
+1. OBJECT  
+2. OBJECT IDENTITY  
+3. CONTENT INTEGRITY  
+4. STORAGE CLASS  
+5. STORAGE POLICY  
+6. LOCAL STORAGE  
+7. METADATA  
+8. SYNCHRONIZATION  
+9. DISTRIBUTION  
+10. PERSISTENCE  
+11. REPLICATION  
+12. RECOVERY  
+13. KUBO/IPFS
+
+Cada capa tiene una responsabilidad definida.
+
+
+---
+
+68. Regla central del sistema
+
+La regla fundamental para el equipo de desarrollo es:
+
+> Ninguna operación de almacenamiento debe depender de una interpretación implícita de otra capa.
+
+
+
+Por ejemplo:
+
+CID no significa permiso.  
+PIN no significa consenso.  
+IPFS no significa cifrado.  
+UUID no significa integridad.  
+Storage no significa sincronización.  
+Sync no significa replicación.  
+Replicación no significa backup.  
+Identidad no significa autorización.  
+Kubo no significa consenso.
+
+Cada propiedad debe representarse y validarse explícitamente.
+
+
+---
+
+69. Resultado arquitectónico
+
+Con esta especificación, la Red de Nodos by LAEV dispone de una infraestructura de almacenamiento capaz de servir como base común para futuros motores sin convertir el almacenamiento en un componente dependiente de una aplicación concreta.
+
+La arquitectura queda preparada para que posteriormente puedan instalarse motores especializados sin alterar la base:
+
+RED DE NODOS BY LAEV  
+        │  
+        ├── Storage Infrastructure  
+        │  
+        ├── Cryptographic Identity  
+        │  
+        ├── Identity Synchronization  
+        │  
+        ├── Consensus Engine  
+        │  
+        └── Application Engines
+
+El almacenamiento constituye, por tanto, una infraestructura transversal y neutral, mientras que los motores superiores determinan qué datos utilizan y qué políticas específicas requieren.
+
+
+---
+
+70. Estado de esta especificación
+
+Esta versión puede utilizarse como:
+
+BASELINE ARCHITECTURE  
+        ↓  
+DEVELOPMENT SPECIFICATION  
+        ↓  
+IMPLEMENTATION  
+        ↓  
+TESTING  
+        ↓  
+INTEGRATION
+
+Cualquier modificación futura debe conservar como principio la separación entre:
+
+STORAGE  
+IDENTITY  
+SYNCHRONIZATION  
+CONSENSUS  
+APPLICATION
+
+y documentar explícitamente cualquier nueva dependencia entre estas capas.
+
+Fin del documento.
