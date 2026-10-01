@@ -1,0 +1,26 @@
+{
+  "vector_id": "CPG-EXEC-0001",
+  "description": "Minimal canonical execution record validation vector",
+  "manifest": {
+    "manifest_id": "CPG-MANIFEST-EXECUTION-001",
+    "version": "1.0",
+    "function_id": "CPG.TEST.DETERMINISTIC_EXECUTION",
+    "function_version": "1.0",
+    "inputs": ["input.reference"],
+    "required_state": ["state.reference"],
+    "verification_rules": ["result_reference_present", "result_hash_present"]
+  },
+  "execution": {
+    "execution_id": "CPG-EXEC-0001",
+    "manifest_id": "CPG-MANIFEST-EXECUTION-001",
+    "manifest_version": "1.0",
+    "function_id": "CPG.TEST.DETERMINISTIC_EXECUTION",
+    "function_version": "1.0",
+    "input_reference": "input:example-001",
+    "state_reference": "state:initial-001",
+    "result_reference": "result:example-001",
+    "result_hash": "sha256:REFERENCE_PENDING",
+    "evidence_reference": "evidence:example-001",
+    "execution_status": "VERIFIED"
+  }
+}
