@@ -1,0 +1,29 @@
+name: CPG Execution Vector Validation
+
+on:
+  push:
+    paths:
+      - "docs/protocol/**"
+      - "reference-implementation/**"
+      - ".github/workflows/cpg-execution-validation.yml"
+  pull_request:
+    paths:
+      - "docs/protocol/**"
+      - "reference-implementation/**"
+      - ".github/workflows/cpg-execution-validation.yml"
+
+jobs:
+  verify-execution-vector:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Verify CPG-EXEC-0001
+        run: |
+          python reference-implementation/execution/verify_vector.py             docs/protocol/test-vectors/CPG-EXEC-0001.json
