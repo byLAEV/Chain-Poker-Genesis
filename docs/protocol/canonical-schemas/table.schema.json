@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpg://schema/table/0.1.0",
+  "title": "Chain Poker Genesis Table",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "table_id",
+    "creation_hash",
+    "creation_timestamp",
+    "configuration_hash",
+    "initial_state_hash",
+    "lifecycle_state"
+  ],
+  "properties": {
+    "table_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "creation_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "creation_timestamp": {
+      "type": "string",
+      "minLength": 1
+    },
+    "configuration_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "initial_state_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "CONFIGURED",
+        "READY",
+        "ACTIVE",
+        "PAUSED",
+        "SETTLEMENT",
+        "CLOSED"
+      ]
+    },
+    "protocol_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rules_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "game_variant": {
+      "type": "string",
+      "minLength": 1
+    },
+    "player_capacity": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "blind_configuration": {
+      "type": "object"
+    },
+    "betting_structure": {
+      "type": "string",
+      "minLength": 1
+    },
+    "currency_configuration": {
+      "type": "object"
+    },
+    "network_configuration": {
+      "type": "object"
+    },
+    "selected_card_engine_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "selected_card_engine_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "selected_crypto_engine_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "table_wallet_reference": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
