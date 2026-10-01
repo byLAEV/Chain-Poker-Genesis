@@ -1,6 +1,6 @@
 {
   "vector_id": "CPG-EXEC-0001",
-  "description": "Minimal canonical execution record validation vector",
+  "description": "Minimal deterministic execution vector using the scoped canonical JSON baseline",
   "manifest": {
     "manifest_id": "CPG-MANIFEST-EXECUTION-001",
     "version": "1.0",
@@ -8,7 +8,23 @@
     "function_version": "1.0",
     "inputs": ["input.reference"],
     "required_state": ["state.reference"],
-    "verification_rules": ["result_reference_present", "result_hash_present"]
+    "verification_rules": ["result_reference_present", "result_hash_present", "result_hash_matches_canonical_result"]
+  },
+  "input": {
+    "input_reference": "input:example-001",
+    "value": "CPG-EXEC-0001"
+  },
+  "initial_state": {
+    "state_reference": "state:initial-001",
+    "counter": 0
+  },
+  "expected_result": {
+    "status": "OK",
+    "value": "CPG-EXEC-0001"
+  },
+  "expected_state": {
+    "state_reference": "state:initial-001",
+    "counter": 1
   },
   "execution": {
     "execution_id": "CPG-EXEC-0001",
@@ -19,7 +35,7 @@
     "input_reference": "input:example-001",
     "state_reference": "state:initial-001",
     "result_reference": "result:example-001",
-    "result_hash": "sha256:REFERENCE_PENDING",
+    "result_hash": "sha256:bb61b7af7576d708471c8d930252f251343899b7564c48b79d90f5fdcf270eff",
     "evidence_reference": "evidence:example-001",
     "execution_status": "VERIFIED"
   }
