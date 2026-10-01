@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpg://schema/node/0.1.0",
+  "title": "Chain Poker Genesis Node",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "node_id",
+    "node_version",
+    "node_status",
+    "identity_id"
+  ],
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "node_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "node_status": {
+      "type": "string",
+      "enum": [
+        "INITIALIZING",
+        "READY",
+        "ACTIVE",
+        "DISCONNECTED",
+        "RECONNECTING",
+        "SYNCHRONIZING",
+        "RECONNECTED",
+        "ABSENT",
+        "ABANDONED",
+        "REMOVED"
+      ]
+    },
+    "identity_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "protocol_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "configuration_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state_hash": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
