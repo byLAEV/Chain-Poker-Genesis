@@ -2,9 +2,9 @@
 
 ## Red de Nodos by LAEV
 
-### Version 1.7
+### Version 1.8
 
-**Status:** Architectural Specification
+**Status:** Architectural Specification — Path-Difficulty PoF Extension
 
 ## 1. Purpose
 
@@ -138,6 +138,132 @@ NODE_READY → POF_PENDING → POF_RUNNING → FUNCTIONS VERIFIED → POF_VERIFI
 ```
 
 A failure must never silently become a valid state.
+
+### 3.11 Path-Based Proof of Function
+
+PoF may evaluate not only whether a function produced a valid result, but also whether the function was executed through a valid operational path. A path may traverse local storage, local Kubo/IPFS, or remote decentralized storage.
+
+```text
+FUNCTION
+→ VALID PATH SET
+→ PATH SELECTION
+→ EXECUTION
+→ VERIFICATION
+→ PoF
+```
+
+The function remains deterministic. Path variability changes the route used to perform the function, not the expected functional result.
+
+### 3.12 Path Selection Uncertainty
+
+A nonce or another protocol-defined uncertainty mechanism may select a path from the valid path set defined by the applicable manifest.
+
+```text
+MANIFEST + NONCE / UNCERTAINTY
+→ VALID PATH SELECTION
+→ READ / WRITE / SYNCHRONIZATION
+→ VERIFICATION
+```
+
+The uncertainty mechanism must not be interpreted as making the function or its expected result nondeterministic.
+
+### 3.13 Path Difficulty
+
+The theoretical model requires a configurable **Path Difficulty** mechanism when variable path selection is used as a Proof of Function technique. Path Difficulty defines a computational work factor associated with obtaining or selecting a valid operational path.
+
+The purpose is to establish a relationship between the computational resources applied by a node and the difficulty required to obtain a valid path.
+
+```text
+PATH DIFFICULTY
+→ COMPUTATIONAL WORK FACTOR
+→ NONCE / SELECTION SEARCH
+→ VALID PATH
+→ FUNCTION EXECUTION
+→ VERIFICATION
+```
+
+Difficulty must be represented as an explicit parameter of the applicable manifest or PoF policy. It must not be inferred solely from path length, number of storage systems, number of hops, or elapsed time.
+
+### 3.14 Difficulty and Computational Capacity
+
+A Path Difficulty mechanism may be calibrated so that the computational effort required to obtain a valid path is related to the processing capacity allocated to the operation.
+
+```text
+AVAILABLE COMPUTATIONAL CAPACITY
+                ↕
+         PATH DIFFICULTY
+                ↕
+       PATH-SELECTION WORK
+```
+
+A higher difficulty represents a greater required computational work factor before a valid path selection can be accepted. A lower difficulty represents a lower work factor.
+
+This relationship is a protocol parameter and must be measurable and verifiable. It must not be described as a guarantee that every node will consume an identical amount of physical time or energy.
+
+### 3.15 Difficulty Does Not Define Consensus
+
+Path Difficulty introduces computational work into path selection, but it does not become consensus power, voting weight, mining power, or authority by itself.
+
+```text
+PATH DIFFICULTY ≠ CONSENSUS POWER
+PATH DIFFICULTY ≠ VOTING WEIGHT
+PATH DIFFICULTY ≠ AUTHORITY
+PATH DIFFICULTY ≠ BITCOIN PROOF OF WORK
+```
+
+Its purpose is limited to the functional path-selection mechanism defined by the applicable PoF manifest or policy.
+
+### 3.16 Difficulty Verification
+
+A valid execution should allow an independent verifier to determine at least:
+
+```text
+MANIFEST_ID / VERSION
+FUNCTION_ID / VERSION
+PATH_SET_REFERENCE
+NONCE OR SELECTION REFERENCE
+DIFFICULTY
+SELECTED_PATH
+WORK / VALIDATION EVIDENCE
+FUNCTION_RESULT
+TIMESTAMP
+SIGNATURE / IDENTITY REFERENCE
+```
+
+The verifier must be able to establish that the selected path satisfied the declared difficulty condition and that the resulting function execution remained valid.
+
+### 3.17 Read, Write, and Synchronization Path Difficulty
+
+The same theoretical mechanism may be applied independently to the three principal decentralized storage operations:
+
+```text
+READ
+→ READ PATH DIFFICULTY
+
+WRITE
+→ WRITE PATH DIFFICULTY
+
+SYNCHRONIZATION / PROPAGATION
+→ SYNCHRONIZATION PATH DIFFICULTY
+```
+
+A manifest may therefore define different valid path sets and different difficulty parameters for reading, writing, and synchronization. The specific algorithms and numerical difficulty models remain implementation-dependent and are not fixed by this architectural specification.
+
+### 3.18 Difficulty Adjustment
+
+A future implementation may adjust Path Difficulty according to declared protocol conditions, measured computational capacity, operational load, or other formally defined parameters.
+
+Any adjustment must itself be deterministic and verifiable once its governing parameters are known.
+
+```text
+DIFFICULTY PARAMETERS
+→ DETERMINISTIC ADJUSTMENT RULE
+→ NEW DIFFICULTY
+→ FUTURE PATH SELECTION
+```
+
+Difficulty adjustment must not silently alter a previously recorded PoF execution or invalidate historical evidence that was valid under the difficulty in force at that time.
+
 
 ## 4. Cryptographic Identity
 
@@ -425,7 +551,7 @@ Activity may influence propagation frequency and participation to reduce saturat
 
 ## 22. Propagation Chain
 
-Propagation is a cryptographic event chain, not merely timestamps.
+Propagation is a cryptographic event chain, not merely timestamps. Where the applicable PoF policy uses variable propagation paths, the propagation record may also reference the selected path and the Path Difficulty under which that path was selected.
 
 ```text
 propagation_event_id
@@ -756,6 +882,11 @@ Evidence should verify, when applicable:
 NODE_ID
 MANIFEST_HASH
 VERSION
+FUNCTION_ID / VERSION
+PATH_SET_REFERENCE
+NONCE / SELECTION_REFERENCE
+PATH_DIFFICULTY
+SELECTED_PATH
 SIGNATURE
 PROVENANCE
 TIMESTAMP
@@ -962,6 +1093,8 @@ Synchronization
 Propagation
 Current-State Continuity
 Proof of Functions
+Path-Based PoF
+Path Difficulty
 Backup
 Recovery
 Reconciliation
@@ -980,6 +1113,9 @@ MANIFEST
 
 KEY FUNCTIONAL MODEL
 NODE FUNCTIONS
+→ VALID PATH SET
+→ PATH DIFFICULTY
+→ NONCE / PATH SELECTION
 → FUNCTION EXECUTION
 → FUNCTION EVIDENCE
 → PROOF OF FUNCTIONS
@@ -1012,4 +1148,4 @@ Proof of Functions
 
 The **Merkle Root aggregates the manifest hashes participating in propagation; the resulting propagation block receives a BLOCK_HASH, which can be distributed as compact evidence to additional nodes. The immediate objective remains continuity of the current state, while complete backup and recovery remain separate systems.**
 
-PoF is therefore incorporated as part of the protocol of **Red de Nodos by LAEV**, not as a property specific to Chain Poker Genesis.
+PoF is therefore incorporated as part of the protocol of **Red de Nodos by LAEV**, not as a property specific to Chain Poker Genesis. Path Difficulty is introduced here as an architectural PoF mechanism for variable operational paths; its concrete algorithms, calibration, and implementation remain subject to later formal specifications.
