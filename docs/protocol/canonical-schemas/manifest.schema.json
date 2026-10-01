@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/byLAEV/Chain-Poker-Genesis/blob/main/docs/protocol/canonical-schemas/manifest.schema.json",
+  "title": "CPG Minimal Functional Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_id",
+    "version",
+    "function_id",
+    "function_version",
+    "inputs",
+    "required_state",
+    "verification_rules"
+  ],
+  "properties": {
+    "manifest_id": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "function_id": { "type": "string", "minLength": 1 },
+    "function_version": { "type": "string", "minLength": 1 },
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "required_state": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "verification_rules": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}
