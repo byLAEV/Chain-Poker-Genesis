@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/byLAEV/Chain-Poker-Genesis/blob/main/docs/protocol/canonical-schemas/execution.schema.json",
+  "title": "CPG Canonical Execution Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "execution_id",
+    "manifest_id",
+    "manifest_version",
+    "function_id",
+    "function_version",
+    "input_reference",
+    "state_reference",
+    "result_reference",
+    "result_hash",
+    "evidence_reference",
+    "execution_status"
+  ],
+  "properties": {
+    "execution_id": { "type": "string", "minLength": 1 },
+    "manifest_id": { "type": "string", "minLength": 1 },
+    "manifest_version": { "type": "string", "minLength": 1 },
+    "function_id": { "type": "string", "minLength": 1 },
+    "function_version": { "type": "string", "minLength": 1 },
+    "input_reference": { "type": "string", "minLength": 1 },
+    "state_reference": { "type": "string", "minLength": 1 },
+    "result_reference": { "type": "string", "minLength": 1 },
+    "result_hash": { "type": "string", "pattern": "^[A-Za-z0-9:_-]+$" },
+    "evidence_reference": { "type": "string", "minLength": 1 },
+    "execution_status": {
+      "type": "string",
+      "enum": [
+        "RECEIVED",
+        "VALIDATING",
+        "READY",
+        "EXECUTING",
+        "RESULT_GENERATED",
+        "EVIDENCE_GENERATED",
+        "VERIFIED",
+        "REJECTED",
+        "FAILED",
+        "INVALID_INPUT",
+        "INVALID_MANIFEST",
+        "INVALID_STATE",
+        "VERIFICATION_FAILED",
+        "QUARANTINED"
+      ]
+    }
+  }
+}
