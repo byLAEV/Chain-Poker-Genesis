@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpg://schema/hand/0.1.0",
+  "title": "Chain Poker Genesis Hand Execution Context",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hand_id",
+    "table_id",
+    "protocol_version",
+    "rules_version",
+    "card_engine_id",
+    "card_engine_version",
+    "commitment_version",
+    "canonicalization_version"
+  ],
+  "properties": {
+    "hand_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "table_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "protocol_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rules_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_engine_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "card_engine_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commitment_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonicalization_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dealer_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "participant_set_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "table_configuration_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "randomness_commitment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previous_state_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state_hash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hand_status": {
+      "type": "string",
+      "enum": [
+        "INITIALIZED",
+        "COMMITTING",
+        "DEALING",
+        "BETTING",
+        "REVEALING",
+        "COMPLETED",
+        "SETTLEMENT",
+        "CLOSED"
+      ]
+    }
+  }
+}
