@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cpg://schema/participant/0.1.0",
+  "title": "Chain Poker Genesis Table Participant",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "table_participant_id",
+    "table_id",
+    "player_id",
+    "player_node_id"
+  ],
+  "properties": {
+    "table_participant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "table_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "player_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "player_node_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wallet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wallet_address": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wallet_network": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wallet_currency": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seat_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "participant_status": {
+      "type": "string",
+      "enum": [
+        "REQUESTED",
+        "VALIDATING",
+        "AUTHORIZED",
+        "SEAT_RESERVED",
+        "ADMITTED",
+        "ACTIVE",
+        "DISCONNECTED",
+        "REMOVED",
+        "REJECTED",
+        "CANCELLED"
+      ]
+    },
+    "protocol_version": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
