@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"cpg://node-core/schema/recovery/0.1.0",
+  "title":"Node Core Recovery Metadata",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["status","format_version","last_valid_bootstrap_state"],
+  "properties":{
+    "status":{"type":"string","enum":["READY","FAILED","REQUIRED"]},
+    "format_version":{"type":"string"},
+    "last_valid_bootstrap_state":{"type":"string"},
+    "recovery_source":{"type":"string","enum":["LOCAL_METADATA","EXTERNAL_BACKUP","NONE"]}
+  }
+}
