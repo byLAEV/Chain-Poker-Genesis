@@ -1,0 +1,21 @@
+name: CPG Protocol Structure Validation
+
+on:
+  push:
+    branches: [ main, "migration/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-cpg-protocol:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate CPG Protocol structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in "CPG Protocol/specifications" "CPG Protocol/contracts" "CPG Protocol/manifests" "CPG Protocol/engines" "CPG Protocol/reference-implementation" "CPG Protocol/tests" "CPG Protocol/test-vectors" "CPG Protocol/integration" "CPG Protocol/runtime" "CPG Protocol/state" "CPG Protocol/ledger" "CPG Protocol/consensus" "CPG Protocol/table"; do
+            test -d "$path" || { echo "MISSING: $path"; exit 1; }
+          done
+          echo "CPG Protocol structure: PASS"

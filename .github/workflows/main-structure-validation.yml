@@ -1,0 +1,32 @@
+name: Main Structure Validation
+
+on:
+  push:
+    branches: [ main, "migration/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-main-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate canonical root
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            "README.md"
+            "LICENSE.md"
+            "COPYRIGHT.md"
+            "MAIN-STATE-MANIFEST-v1.json"
+            "Main Temporal"
+            "Node Core"
+            "CPG Protocol"
+            ".github"
+            ".devcontainer"
+          )
+          for path in "${required[@]}"; do
+            test -e "$path" || { echo "MISSING: $path"; exit 1; }
+          done
+          echo "Canonical root structure: PASS"

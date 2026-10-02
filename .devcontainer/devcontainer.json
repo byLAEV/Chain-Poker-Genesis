@@ -1,0 +1,10 @@
+{
+  "name": "Chain Poker Genesis by LAEV",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "customizations": {
+    "vscode": {
+      "extensions": []
+    }
+  },
+  "postCreateCommand": "python --version"
+}
