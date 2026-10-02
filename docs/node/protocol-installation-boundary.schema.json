@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Protocol Installation Boundary",
+  "type": "object",
+  "required": ["boundary_state","protocol_associations","cpg_protocol","synchronization"],
+  "properties": {
+    "boundary_state": {"const": "ARMED"},
+    "protocol_associations": {"type":"array","maxItems":0},
+    "cpg_protocol": {"const":"NOT_INSTALLED"},
+    "synchronization": {"const":"NOT_EVALUATED"}
+  },
+  "additionalProperties": false
+}
