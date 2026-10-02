@@ -57,3 +57,14 @@ Kubo installation, peer networking, replication policy, and CPG protocol associa
 The first implementation synchronizes one registered object at a time. It does not yet provide durable queues, conflict resolution, retry/backoff, distributed replication, or peer-to-peer propagation.
 
 These are subsequent Full Node Core requirements.
+
+
+## Divergence and conflict policy
+
+Before writing an object to Kubo, the synchronizer MUST inspect the existing distributed representation.
+
+- If no distributed representation exists, the object MAY be written and verified.
+- If the distributed representation exists and its content hash matches the local canonical hash, synchronization MAY complete without rewriting the object.
+- If the distributed representation exists and its content hash differs, the synchronizer MUST NOT overwrite it automatically.
+- A divergent representation MUST be recorded in the Object Registry with `location_state=CONFLICT` and `synchronization_state=CONFLICT`, retaining the observed distributed CID as evidence.
+- Conflict resolution is a separate operation and requires an explicit policy; synchronization itself is not allowed to silently choose a winner.
