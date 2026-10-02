@@ -6,6 +6,7 @@ on:
     paths:
       - "docs/node/**"
       - "reference-implementation/node-installation/**"
+      - "tests/node-installation/**"
       - ".github/workflows/node-installation-validation.yml"
   pull_request:
     paths:
@@ -135,7 +136,7 @@ jobs:
 
       - name: Start pinned Kubo integration node
         run: |
-          docker run -d --name cpg-kubo -p 5001:5001 ipfs/kubo:v0.43.1 daemon
+          docker run -d --name cpg-kubo -p 5001:5001 ipfs/kubo:v0.43.1 daemon --api /ip4/0.0.0.0/tcp/5001
           for i in $(seq 1 30); do
             if curl --fail --silent -X POST "http://127.0.0.1:5001/api/v0/version" >/tmp/kubo-version.json; then
               cat /tmp/kubo-version.json
