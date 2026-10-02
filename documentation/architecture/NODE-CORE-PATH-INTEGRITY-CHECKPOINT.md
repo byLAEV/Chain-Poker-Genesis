@@ -56,3 +56,8 @@ After that baseline is recorded, the implementation can be relocated as one isol
 ## Clean Validation Trigger
 
 This marker triggers a fresh Node Core baseline validation after the documented path repairs. It does not modify Node Core runtime behavior.
+
+
+## Classification correction
+
+The release-integrity artifact list was corrected to keep Node Core audit/completion evidence under `docs/node/` until those artifacts receive their own canonical migration decision. This prevents the release verifier from asserting paths that do not yet exist.
