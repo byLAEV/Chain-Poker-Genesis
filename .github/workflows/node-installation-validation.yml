@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "docs/node/**"
+      - "documentation/node-core/**"
       - "reference-implementation/node-installation/**"
       - ".github/workflows/node-installation-validation.yml"
   pull_request:
     paths:
-      - "docs/node/**"
+      - "documentation/node-core/**"
       - "reference-implementation/node-installation/**"
       - ".github/workflows/node-installation-validation.yml"
 
