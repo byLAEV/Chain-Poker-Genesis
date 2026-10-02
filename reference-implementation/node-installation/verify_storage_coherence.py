@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -50,6 +51,24 @@ def main():
     ]:
         if not (root / relative).is_file():
             return fail('MISSING_OBJECT')
+
+    registry_path = root / 'node-storage/state/object-registry.json'
+    if registry_path.is_file():
+        try:
+            registry = json.loads(registry_path.read_text(encoding='utf-8'))
+        except (OSError, json.JSONDecodeError):
+            return fail('REGISTRY_INVALID')
+        if not isinstance(registry, dict):
+            return fail('REGISTRY_INVALID')
+        for object_id, entry in registry.items():
+            if entry.get('object_id') != object_id:
+                return fail('REGISTRY_INVALID')
+            object_path = root / entry['relative_path']
+            if not object_path.is_file():
+                return fail('MISSING_OBJECT')
+            digest = hashlib.sha256(object_path.read_bytes()).hexdigest()
+            if digest != entry['content_hash']:
+                return fail('HASH_MISMATCH')
     print('status = VERIFIED')
     print('coherence = COHERENT')
     print('network_synchronization = NOT_EVALUATED')
