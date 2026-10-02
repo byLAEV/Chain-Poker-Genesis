@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"cpg://node-core/schema/configuration/0.1.0",
+  "title":"Node Core Configuration",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["node_core_version","decentralized_storage","protocol_associations","cpg_protocol"],
+  "properties":{
+    "node_core_version":{"type":"string"},
+    "decentralized_storage":{
+      "type":"object",
+      "required":["status"],
+      "properties":{"status":{"type":"string","enum":["NOT_PROVISIONED","READY","FAILED"]}},
+      "additionalProperties":false
+    },
+    "protocol_associations":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "cpg_protocol":{"type":"string","enum":["NOT_INSTALLED","INSTALLED","ACTIVE"]}
+  }
+}
