@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "docs/node/**"
-      - "reference-implementation/node-installation/**"
+      - "documentation/node-core/**"
+      - "implementation/reference/node-core/**"
       - ".github/workflows/node-installation-validation.yml"
   pull_request:
     paths:
-      - "docs/node/**"
-      - "reference-implementation/node-installation/**"
+      - "documentation/node-core/**"
+      - "implementation/reference/node-core/**"
       - ".github/workflows/node-installation-validation.yml"
 
 jobs:
@@ -27,50 +27,50 @@ jobs:
 
       - name: Bootstrap clean Node Core
         run: |
-          python reference-implementation/node-installation/bootstrap_node.py /tmp/cpg-node-test
+          python implementation/reference/node-core/bootstrap_node.py /tmp/cpg-node-test
 
       - name: Verify Node Core
         run: |
-          python reference-implementation/node-installation/verify_node_installation.py /tmp/cpg-node-test
+          python implementation/reference/node-core/verify_node_installation.py /tmp/cpg-node-test
 
       - name: Verify Node Core runtime lifecycle
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_runtime_lifecycle.py
 
       - name: Verify Health and Recovery
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_health_recovery.py
 
       - name: Verify End-to-End Node Installation
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_node_installation_e2e.py
 
       - name: Verify canonical Installation Manifest
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_installation_manifest.py
 
       - name: Run Final Node Core Audit
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python final_node_core_audit.py
 
       - name: Verify Protocol Installation Boundary
         run: |
           rm -rf /tmp/cpg-node-boundary-test
-          python reference-implementation/node-installation/bootstrap_node.py /tmp/cpg-node-boundary-test
-          python reference-implementation/node-installation/protocol_installation_boundary.py /tmp/cpg-node-boundary-test
+          python implementation/reference/node-core/bootstrap_node.py /tmp/cpg-node-boundary-test
+          python implementation/reference/node-core/protocol_installation_boundary.py /tmp/cpg-node-boundary-test
 
       - name: Verify Release Integrity
         run: |
-          python reference-implementation/node-installation/release_integrity.py .
+          python implementation/reference/node-core/release_integrity.py .
 
       - name: Verify runtime readiness output
         run: |
-          python reference-implementation/node-installation/node_runtime.py /tmp/cpg-node-test
+          python implementation/reference/node-core/node_runtime.py /tmp/cpg-node-test
 
       - name: Verify protocol isolation
         run: |
@@ -82,47 +82,47 @@ jobs:
           data["protocol_associations"] = ["chain-poker-genesis"]
           p.write_text(json.dumps(data, indent=2))
           PY
-          if python reference-implementation/node-installation/verify_node_installation.py /tmp/cpg-node-test; then
+          if python implementation/reference/node-core/verify_node_installation.py /tmp/cpg-node-test; then
             echo "Protocol isolation test unexpectedly passed"
             exit 1
           fi
 
       - name: Verify Storage Manager
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_storage_manager.py
 
       - name: Verify Storage Coherence
         run: |
-          python reference-implementation/node-installation/verify_storage_coherence.py /tmp/cpg-node-test
+          python implementation/reference/node-core/verify_storage_coherence.py /tmp/cpg-node-test
 
       - name: Verify Storage Provider
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_storage_provider.py
 
       - name: Verify Storage Locator
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_storage_locator.py
 
       - name: Verify Installation Manifest Schema
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_installation_manifest.py /tmp/cpg-node-test
           python validate_installation_manifest_schema.py /tmp/cpg-node-test
 
       - name: Verify Specification Coverage
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_specification_coverage.py
 
       - name: Verify Object Registry
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_object_registry.py
 
       - name: Verify Synchronization State Machine
         run: |
-          cd reference-implementation/node-installation
+          cd implementation/reference/node-core
           python test_synchronization_state.py
