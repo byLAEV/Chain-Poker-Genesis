@@ -136,6 +136,11 @@ jobs:
           cd reference-implementation/node-installation
           python test_identity_node_network.py
 
+      - name: Verify FN-025 Capability Discovery
+        run: |
+          cd reference-implementation/node-installation
+          python test_capability_discovery.py
+
       - name: Verify Object Registry
         run: |
           cd reference-implementation/node-installation
