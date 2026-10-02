@@ -367,3 +367,125 @@ The following remain outside this generic transport layer:
 - Lightning settlement logic.
 
 Those may consume the Node Data Networking / Transport substrate later.
+
+
+## 9. FN-025 → FN-026 Interface Reconciliation
+
+FN-024A is now CI-verified and FN-025 is now CI-verified. Before FN-026 implementation, the interface between capability evidence, transport state and propagation evidence is explicitly fixed.
+
+### 9.1 Capability evidence is not transport execution
+
+FN-025 answers:
+
+```text
+"What does this Identity Node declare that its Node Core supports?"
+```
+
+FN-024A answers:
+
+```text
+"Can this Node Core represent and operate a transport session with a peer?"
+```
+
+Therefore:
+
+```text
+network.transport capability
+        ≠
+CONNECTED transport session
+```
+
+Capability evidence must not be used as proof that a remote peer is reachable or that a transport session is currently connected.
+
+### 9.2 FN-026 dependency on transport
+
+FN-026 may use a transport session to exchange propagation data, but propagation evidence is a separate object.
+
+The minimum dependency chain is:
+
+```text
+Identity Node
+    ↓
+Peer Relationship
+    ↓
+Transport Session
+    ↓
+Data Exchange
+    ↓
+Propagation Record
+    ↓
+Peer Evidence
+    ↓
+Synchronization Threshold
+```
+
+A transport message is not automatically a propagation record.
+
+A propagation record must carry the historical node-bound evidence required by V1.8.
+
+### 9.3 Minimum propagation handoff
+
+FN-026 must consume, at minimum:
+
+- source Node Identity;
+- destination Node Identity;
+- transport/session context sufficient to identify the communication path;
+- manifest version;
+- manifest hash;
+- propagation role;
+- timestamp;
+- signature;
+- provenance;
+- previous propagation hash where required by the propagation chain.
+
+FN-026 must not derive CPG player, table, wallet, consensus or settlement semantics from this handoff.
+
+### 9.4 Failure boundaries
+
+Transport failure belongs to FN-024A.
+
+Propagation validation failure belongs to FN-026.
+
+Capability description belongs to FN-025.
+
+Therefore a failed transport session must not become propagation evidence merely because a propagation attempt was initiated.
+
+Likewise, valid capability evidence must not be treated as proof that propagation occurred.
+
+### 9.5 Correct interface model
+
+```text
+FN-024
+Identity / Peer
+      │
+      ▼
+FN-024A
+Transport / Data Exchange
+      │
+      ├──────────────┐
+      ▼              │
+FN-025              │
+Capability           │
+Evidence             │
+      │              │
+      └──────┬───────┘
+             ▼
+          FN-026
+ Propagation / Peer Evidence
+             │
+             ▼
+    Synchronization Threshold
+```
+
+FN-026 may inspect FN-025 capability evidence when propagation policy requires capability compatibility, but FN-026 must not assume that capability evidence proves transport connectivity.
+
+### 9.6 Gate before FN-026 implementation
+
+The interface is now considered architecturally reconciled. FN-026 may proceed to its own specification and implementation cycle, while retaining the following invariants:
+
+1. transport remains protocol-neutral;
+2. capability evidence remains descriptive;
+3. propagation evidence remains cryptographically attributable to Node Identity;
+4. storage coherence remains distinct from network synchronization;
+5. CPG application semantics remain outside the generic Node Core propagation layer.
+
