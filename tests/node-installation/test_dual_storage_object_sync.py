@@ -55,7 +55,9 @@ class TestSynchronizationReliability(unittest.TestCase):
         self.assertEqual(policy.state, "HALF_OPEN")
         self.assertEqual(policy.execute(lambda: "recovered"), "recovered")
         self.assertEqual(policy.state, "CLOSED")
-\n\nclass FakeKubo(BaseHTTPRequestHandler):
+
+
+class FakeKubo(BaseHTTPRequestHandler):
     files: dict[str, bytes] = {}
     cids: dict[str, str] = {}
     stat_missing_status: int = 500
