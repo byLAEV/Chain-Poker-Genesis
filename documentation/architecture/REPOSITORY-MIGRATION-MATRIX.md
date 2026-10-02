@@ -54,3 +54,36 @@ These are clearly protocol-specific candidates unless detailed audit proves othe
 ## Next audit
 
 Inspect the contents of engines/, reference-implementation/, docs/, IMPLEMENTATION-REVIEW/, and deterministic-manifest-based-node-and-protocol-storage-architecture/, then complete the root-PDF classification.
+
+## Node Core Correct Migration Procedure
+
+The Node Core migration is defined as six isolated gates.
+
+### Gate 0 — Freeze baseline
+Protect the current reference implementation and record observable invariants. No executable relocation.
+
+### Gate 1 — Canonical documentation
+Move only canonical Node Core specifications and test vectors. Keep audits, completion records, reconciliation evidence, and historical artifacts in their existing evidence boundary until separately classified.
+
+### Gate 2 — Path integrity
+Repair every consumer of moved documentation, schemas, release manifests, CI triggers, and verification scripts. A clean current-state validation is required.
+
+### Gate 3 — Flat executable relocation
+Move `reference-implementation/node-installation/` to `implementation/reference/node-core/` as one flat compatibility boundary. Do not subdivide modules or change import semantics in the same commit.
+
+### Gate 4 — Behavioral revalidation
+Run the complete Node Core validation suite and compare every baseline invariant. Any unexplained change blocks further migration.
+
+### Gate 5 — Internal modularization
+Only after Gate 4 passes, introduce deeper runtime/storage/recovery/identity package boundaries. Each sub-migration receives its own baseline and validation.
+
+### Rollback rule
+Every gate is independently revertible. A failed gate returns to the immediately preceding validated state.
+
+### Current state
+Gate 0: PASS  
+Gate 1: PASS  
+Gate 2: IN PROGRESS  
+Gate 3: LOCKED  
+Gate 4: LOCKED  
+Gate 5: LOCKED
