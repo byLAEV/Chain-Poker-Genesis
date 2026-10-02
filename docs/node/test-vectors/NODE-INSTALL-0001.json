@@ -1,0 +1,15 @@
+{
+  "vector_id": "NODE-INSTALL-0001",
+  "purpose": "Verify a clean protocol-neutral Node Core bootstrap.",
+  "input": {
+    "clean_target": true,
+    "protocol_installation": false
+  },
+  "expected": {
+    "node_status": "NODE_CORE_READY",
+    "cpg_protocol": "NOT_INSTALLED",
+    "protocol_associations": [],
+    "integrity": "VERIFIED",
+    "recovery": "READY"
+  }
+}
