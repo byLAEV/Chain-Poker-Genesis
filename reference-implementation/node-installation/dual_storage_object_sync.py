@@ -126,22 +126,56 @@ class KuboObjectSync:
     def _read(self, path: str) -> bytes:
         return self._request("files/read", params={"arg": path})
 
+    def _stat_optional(self, path: str) -> dict | None:
+        try:
+            return self._stat(path)
+        except ObjectSynchronizationError as exc:
+            if "HTTP 404" in str(exc):
+                return None
+            raise
+
+    def _mark_conflict(self, object_id: str, *, cid: str, version: str) -> None:
+        self.registry.update_distribution_state(
+            object_id,
+            cid=cid,
+            version=version,
+            location_state="CONFLICT",
+            synchronization_state="CONFLICT",
+        )
+
     def synchronize(self, object_id: str) -> ObjectSynchronizationResult:
         entry = self._entry(object_id)
         data = self._local_bytes(entry)
         local_hash = _sha256(data)
         mfs_path = self._mfs_path(entry)
 
-        self._write(mfs_path, data)
-        remote = self._read(mfs_path)
-        remote_hash = _sha256(remote)
-        if remote_hash != local_hash:
-            raise ObjectSynchronizationError("remote object hash mismatch after reconciliation")
-
-        stat = self._stat(mfs_path)
-        cid = stat.get("Hash")
-        if not isinstance(cid, str) or not cid:
-            raise ObjectSynchronizationError("Kubo did not return an object CID")
+        existing = self._stat_optional(mfs_path)
+        if existing is not None:
+            remote = self._read(mfs_path)
+            remote_hash = _sha256(remote)
+            remote_cid = existing.get("Hash")
+            if not isinstance(remote_cid, str) or not remote_cid:
+                raise ObjectSynchronizationError("Kubo returned an invalid existing object CID")
+            if remote_hash != local_hash:
+                self._mark_conflict(
+                    object_id,
+                    cid=remote_cid,
+                    version=entry["storage_version"],
+                )
+                raise ObjectSynchronizationError(
+                    "distributed object diverges from local canonical content; conflict recorded"
+                )
+            cid = remote_cid
+        else:
+            self._write(mfs_path, data)
+            remote = self._read(mfs_path)
+            remote_hash = _sha256(remote)
+            if remote_hash != local_hash:
+                raise ObjectSynchronizationError("remote object hash mismatch after synchronization")
+            stat = self._stat(mfs_path)
+            cid = stat.get("Hash")
+            if not isinstance(cid, str) or not cid:
+                raise ObjectSynchronizationError("Kubo did not return an object CID")
 
         self.registry.update_distribution_state(
             object_id,
