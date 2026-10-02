@@ -1,0 +1,10 @@
+{
+  "vector_id": "NODE-RELEASE-0001",
+  "description": "Node Core release acceptance gate",
+  "requirements": {
+    "end_to_end_test": "PASS",
+    "installation_manifest": "VALID",
+    "protocol_associations": [],
+    "cpg_protocol": "NOT_INSTALLED"
+  }
+}
