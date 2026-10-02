@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
 import threading
+import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
@@ -48,21 +50,29 @@ def run_server():
     return server
 
 
-def test_manifest_is_reconciled_into_kubo(tmp_path: Path):
-    initialize_local(tmp_path)
-    server = run_server()
-    try:
-        api = f"http://127.0.0.1:{server.server_port}"
-        manifest = load_local_manifest(tmp_path)
-        result = KuboManifestSync(api).synchronize_manifest(manifest)
-        assert result.state == "SYNCED"
-        assert result.remote_hash == manifest_hash(manifest)
-    finally:
-        server.shutdown()
+class ManifestSynchronizationTests(unittest.TestCase):
+    def test_manifest_is_reconciled_into_kubo(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            initialize_local(root)
+            server = run_server()
+            try:
+                api = f"http://127.0.0.1:{server.server_port}"
+                manifest = load_local_manifest(root)
+                result = KuboManifestSync(api).synchronize_manifest(manifest)
+                self.assertEqual(result.state, "SYNCED")
+                self.assertEqual(result.remote_hash, manifest_hash(manifest))
+            finally:
+                server.shutdown()
+
+    def test_manifest_hash_is_deterministic(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            initialize_local(root)
+            manifest = load_local_manifest(root)
+            reordered = json.loads(json.dumps(manifest))
+            self.assertEqual(manifest_hash(manifest), manifest_hash(reordered))
 
 
-def test_manifest_hash_is_deterministic(tmp_path: Path):
-    initialize_local(tmp_path)
-    manifest = load_local_manifest(tmp_path)
-    reordered = json.loads(json.dumps(manifest))
-    assert manifest_hash(manifest) == manifest_hash(reordered)
+if __name__ == "__main__":
+    unittest.main()
