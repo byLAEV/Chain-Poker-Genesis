@@ -12,6 +12,10 @@ class StoragePolicyEngineTests(unittest.TestCase):
     def test_private_is_local_and_sync_disabled_by_default(self):
         policy = self.engine.evaluate("LOCAL_PRIVATE")
         self.assertEqual(policy.storage_class, "LOCAL_PRIVATE")
+        self.assertEqual(policy.where, "NODE_LOCAL")
+        self.assertEqual(policy.who, "NODE_LOCAL")
+        self.assertEqual(policy.when, "IMMEDIATE")
+        self.assertEqual(policy.how_long, "PERSISTENT")
         self.assertEqual(policy.placement, "LOCAL_ONLY")
         self.assertEqual(policy.sync, "DISABLED")
         self.assertEqual(policy.encryption, "REQUIRED")
