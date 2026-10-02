@@ -151,4 +151,4 @@ Therefore those concepts must not be silently inserted into FN-024. They remain 
 
 `V1.8 → inventory → historical requirements → classification → minimum FN-024` is now complete.
 
-The next implementation artifact is intentionally limited to the protocol-neutral Identity Node networking substrate. FN-025 capability discovery and FN-026 propagation remain closed until FN-024 is independently implemented and CI-verified.
+The minimum FN-024 implementation is now CI-verified by Node Installation Baseline Validation #267 (run 36983968563). FN-025 capability discovery and FN-026 propagation remain closed until their own historical requirements are reconciled and independently implemented.
