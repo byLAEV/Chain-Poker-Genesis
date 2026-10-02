@@ -114,6 +114,27 @@ The Node architecture must support execution and replay of historical protocol a
 
 This is the structured architecture layer. Exact requirements are still being reconciled against the historical infrastructure and security PDFs.
 
+
+## Current Implementation Baseline
+
+The repository now defines an executable **Node Core Installation Baseline** that intentionally stops before protocol installation.
+
+See:
+
+- [Node Core Installation Baseline](INSTALLATION-BASELINE.md)
+- [Node Core Bootstrap Specification](NODE-CORE-BOOTSTRAP-SPECIFICATION.md)
+- [Node Readiness State Model](NODE-READINESS-STATE-MODEL.md)
+- [Node Installation Manifest Schema](node-installation-manifest.schema.json)
+- [Node Installation Test Vector](test-vectors/NODE-INSTALL-0001.json)
+- [Node Installation Reference Implementation](../../reference-implementation/node-installation/README.md)
+
+The acceptance boundary is:
+
+`NODE_CORE_READY + CPG_PROTOCOL = NOT_INSTALLED + PROTOCOL_ASSOCIATIONS = []`
+
+The installation workflow is validated automatically by GitHub Actions.
+
+
 ## Historical source
 
 - [23.0 Basic Infrastructure Installation](../../23.0%20Basic%20Infrastructure%20Installation.pdf)
