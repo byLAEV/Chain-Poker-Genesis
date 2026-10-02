@@ -1,0 +1,6 @@
+{
+  "vector_id":"NODE-INSTALL-0005",
+  "purpose":"Reject a node whose CPG protocol status is changed from NOT_INSTALLED during baseline installation.",
+  "input":{"cpg_protocol":"INSTALLED"},
+  "expected":{"status":"FAILED","reason":"CPG protocol isolation invariant failed"}
+}
