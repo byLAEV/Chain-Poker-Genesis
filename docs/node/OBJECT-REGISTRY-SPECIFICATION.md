@@ -21,6 +21,8 @@ The Object Registry is the authoritative Node Core index of managed storage obje
 - location_state
 - object_state
 - synchronization_state
+- distributed_cid (populated after verified distributed synchronization)
+- distributed_version (version verified at distributed synchronization)
 
 ## Separation
 

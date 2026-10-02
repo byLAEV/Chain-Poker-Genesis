@@ -55,6 +55,35 @@ class ObjectRegistry:
             encoding="utf-8",
         )
 
+    def update_distribution_state(self, object_id, *, cid, version, location_state, synchronization_state):
+        if object_id not in self.entries:
+            raise RegistryError("object not registered")
+        entry = dict(self.entries[object_id])
+        if version != entry["storage_version"]:
+            raise RegistryError("version does not match canonical registry entry")
+        entry["location_state"] = location_state
+        entry["synchronization_state"] = synchronization_state
+        entry["distributed_cid"] = cid
+        entry["distributed_version"] = version
+        self.entries[object_id] = entry
+        self.path.write_text(
+            json.dumps(self.entries, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+    def record_conflict(self, object_id, *, cid):
+        if object_id not in self.entries:
+            raise RegistryError("object not registered")
+        entry = dict(self.entries[object_id])
+        entry["location_state"] = "CONFLICT"
+        entry["synchronization_state"] = "CONFLICT"
+        entry["distributed_cid"] = cid
+        self.entries[object_id] = entry
+        self.path.write_text(
+            json.dumps(self.entries, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
     def get(self, object_id):
         if object_id not in self.entries:
             raise RegistryError("object not registered")
