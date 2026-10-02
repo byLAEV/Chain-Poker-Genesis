@@ -62,3 +62,18 @@ jobs:
         run: |
           cd reference-implementation/node-installation
           python test_storage_provider.py
+
+      
+      - name: Verify Object Registry
+        run: |
+          cd reference-implementation/node-installation
+          python test_object_registry.py
+
+      - name: Verify Synchronization State Machine
+        run: |
+          cd reference-implementation/node-installation
+          python test_synchronization_state.py
+
+      - name: Verify Storage Coherence
+        run: |
+          python reference-implementation/node-installation/verify_storage_coherence.py /tmp/cpg-node-test
