@@ -76,22 +76,22 @@ class ObjectSynchronizationTests(unittest.TestCase):
             data = (root / "node-storage/state/state-001.json").read_bytes()
             registry = ObjectRegistry(root)
             registry.register({
-                    "object_id": "state-001",
-                    "object_class": "state",
-                    "relative_path": "node-storage/state/state-001.json",
-                    "content_hash": hashlib.sha256(data).hexdigest(),
-                    "storage_version": "0.1.0",
-                    "provider_type": "LOCAL",
-                    "location_state": "SYNC_PENDING",
-                    "object_state": "PRESENT",
-                    "synchronization_state": "NOT_SYNCHRONIZED",
+                "object_id": "state-001",
+                "object_class": "state",
+                "relative_path": "node-storage/state/state-001.json",
+                "content_hash": hashlib.sha256(data).hexdigest(),
+                "storage_version": "0.1.0",
+                "provider_type": "LOCAL",
+                "location_state": "SYNC_PENDING",
+                "object_state": "PRESENT",
+                "synchronization_state": "NOT_SYNCHRONIZED",
             })
 
             server = run_server()
             try:
                 result = KuboObjectSync(root, f"http://127.0.0.1:{server.server_port}").synchronize("state-001")
                 self.assertEqual(result.content_hash, hashlib.sha256(data).hexdigest())
-                    self.assertEqual(result.version, "0.1.0")
+                self.assertEqual(result.version, "0.1.0")
                 self.assertTrue(result.cid.startswith("bafy-test-"))
                 self.assertEqual(result.location_state, "LOCAL_AND_DISTRIBUTED")
                 self.assertEqual(result.synchronization_state, "SYNCHRONIZED")
