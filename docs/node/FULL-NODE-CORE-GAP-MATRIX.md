@@ -27,12 +27,12 @@
 | FN-011 | Health/readiness | Node Core | Implemented and tested | CI | VERIFIED |
 | FN-012 | Recovery | Node Core | Implemented and tested | CI | VERIFIED |
 | FN-013 | Protocol isolation | Node/CPG boundary | Implemented and tested | CI | VERIFIED |
-| FN-014 | IPFS/Kubo operational adapter | Dual-storage/storage infrastructure | No complete implementation evidence | adapter tests + CI | NOT_IMPLEMENTED |
-| FN-015 | IPFS/Kubo logical canonical namespace | Dual-storage bootstrap | Specification exists; implementation pending | bootstrap test + CI | IN_PROGRESS |
-| FN-016 | Dual-storage structural verification | Dual-storage bootstrap | Not implemented for live Kubo | cross-domain test + CI | NOT_IMPLEMENTED |
-| FN-017 | Canonical storage manifest across both domains | Dual-storage bootstrap | Local manifest exists; cross-domain manifest pending | deterministic cross-storage test | NOT_IMPLEMENTED |
-| FN-018 | Local/IPFS synchronization engine | Dual-storage/storage infrastructure | State model exists; live dual-domain synchronization pending | integration test + CI | NOT_IMPLEMENTED |
-| FN-019 | Conflict detection | Storage infrastructure | Model documented; live dual-domain implementation pending | conflict test + CI | NOT_IMPLEMENTED |
+| FN-014 | IPFS/Kubo operational adapter | Dual-storage/storage infrastructure | Adapter implemented; live Kubo CI verification pending | adapter tests + CI | IN_PROGRESS |
+| FN-015 | IPFS/Kubo logical canonical namespace | Dual-storage bootstrap | Namespace initialization/verification implemented; live Kubo CI verification pending | bootstrap test + CI | IN_PROGRESS |
+| FN-016 | Dual-storage structural verification | Dual-storage bootstrap | Local + Kubo structural paths implemented; live Kubo verification pending | cross-domain test + CI | IN_PROGRESS |
+| FN-017 | Canonical storage manifest across both domains | Dual-storage bootstrap | Deterministic local manifest + Kubo reconciliation implemented | deterministic cross-storage test + CI | IN_PROGRESS |
+| FN-018 | Local/IPFS synchronization engine | Dual-storage/storage infrastructure | Manifest-level synchronization implemented; full object synchronization remains open | integration test + CI | IN_PROGRESS |
+| FN-019 | Conflict detection | Storage infrastructure | Model documented; live dual-domain conflict handling pending | conflict test + CI | NOT_IMPLEMENTED |
 | FN-020 | Durable synchronization queue | Storage infrastructure | Not demonstrated | queue/restart test + CI | NOT_IMPLEMENTED |
 | FN-021 | Retry/backoff/circuit-breaker behavior | Storage infrastructure | Not demonstrated | failure-injection test + CI | NOT_IMPLEMENTED |
 | FN-022 | Storage Policy Engine | Storage infrastructure | Not demonstrated | policy tests + CI | NOT_IMPLEMENTED |
@@ -68,15 +68,19 @@ SYNCHRONIZATION
 STORAGE_READY
 ```
 
+The current branch now implements the first manifest-level Local ↔ Kubo synchronization step. This does **not** claim full object replication or durable distributed synchronization.
+
 The following layers depend on that foundation:
 
-1. synchronization queues;
-2. policy engine;
-3. replication;
-4. network substrate;
-5. capability discovery;
-6. propagation evidence;
-7. Proof of Functions.
+1. conflict detection;
+2. synchronization queues;
+3. retry/backoff/circuit-breaker behavior;
+4. policy engine;
+5. replication;
+6. network substrate;
+7. capability discovery;
+8. propagation evidence;
+9. Proof of Functions.
 
 ## Completion Rule
 
