@@ -268,3 +268,102 @@ This is supported by the historical V1.8 architecture.
 The Player Identity Node belongs after protocol association, and the Channel Node belongs after the protocol defines its channel/table semantics.
 
 FN-025 and FN-026 therefore remain NOT_IMPLEMENTED until their minimum implementations are separately specified and CI-verified. No CPG player/channel semantics are opened by this reconciliation.
+
+
+## 8. Node Data Networking / Internet Transport Reconciliation
+
+The historical V1.8 source was reviewed specifically for the distinction between logical node networking and the transport of data between nodes.
+
+### 8.1 What V1.8 explicitly defines
+
+V1.8 defines or references the following network-relevant concepts:
+
+- cryptographic Node Identity and concrete Node Instance;
+- source and destination nodes in propagation records;
+- peer evidence;
+- connectivity;
+- availability;
+- capacity;
+- latency;
+- propagation paths;
+- network synchronization as distinct from storage coherence;
+- IPFS/Kubo as a distributed-storage/network integration path.
+
+These establish that node-to-node distribution and network conditions are part of the infrastructure model.
+
+### 8.2 What V1.8 does not define as a complete transport specification
+
+The recovered V1.8 document does not provide a standalone normative data-transport specification for:
+
+- IP addressing;
+- network endpoint semantics beyond the generic endpoint/reference needed by the node substrate;
+- TCP/UDP/QUIC or equivalent transport selection;
+- connection/session framing;
+- byte/message transport;
+- LAN/WAN/Internet transport behavior;
+- NAT traversal;
+- firewall traversal;
+- relay behavior;
+- transport retry/timeout semantics;
+- bandwidth measurement/management;
+- transport-level encryption/session security;
+- a concrete P2P transport stack.
+
+Therefore the historical source supports the existence of the networking substrate, but does not justify claiming that the Internet/data-transport layer is already fully specified.
+
+### 8.3 Important separation
+
+The V1.8 storage path through Kubo/IPFS describes distributed storage networking. It must not be interpreted as the complete Node Identity data-network transport layer.
+
+Likewise, STORAGE COHERENCE ≠ NETWORK SYNCHRONIZATION means that a storage adapter reaching the IPFS network does not, by itself, define the transport substrate used by Identity Nodes for protocol/network messages.
+
+### 8.4 Architectural conclusion
+
+The Full Node Core therefore requires an explicit Node Data Networking / Transport sublayer inside the Node Identity Core:
+
+NODE IDENTITY CORE
+├── Cryptographic Identity
+├── Node Instance
+├── Peer Networking
+├── Endpoint / Addressing
+├── Data Transport
+├── Connection Lifecycle
+├── Connectivity
+├── Availability
+├── Capacity / Bandwidth
+└── Latency / Network State
+
+The transport layer remains protocol-neutral. It must exist before CPG Player Identity or Channel semantics and must not install or infer Chain Poker Genesis.
+
+### 8.5 Gap classification
+
+This review identifies a previously unformalized Full Node Core requirement:
+
+FN-024
+Node networking substrate
+        ↓
+FN-024A
+Node data networking / transport substrate
+        ↓
+FN-025
+Capability discovery
+        ↓
+FN-026
+Propagation / peer evidence
+
+FN-024A is a specification/reconciliation gap at this stage. It is not implemented and must not be counted as verified merely because FN-024 peer relationships are verified.
+
+This does not invalidate the FN-024 verification. It narrows the claim: FN-024 verifies the minimum logical Identity Node/peer substrate, while FN-024A covers the still-open data-transport layer.
+
+### 8.6 Scope boundary
+
+The following remain outside this generic transport layer:
+
+- Player Identity Node semantics;
+- Channel Node / poker table semantics;
+- table wallet semantics;
+- CPG consensus;
+- CPG settlement;
+- Lightning settlement logic.
+
+Those may consume the Node Data Networking / Transport substrate later.
