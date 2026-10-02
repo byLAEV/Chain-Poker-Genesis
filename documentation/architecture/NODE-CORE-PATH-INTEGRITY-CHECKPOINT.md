@@ -61,3 +61,10 @@ This marker triggers a fresh Node Core baseline validation after the documented 
 ## Classification correction
 
 The release-integrity artifact list was corrected to keep Node Core audit/completion evidence under `docs/node/` until those artifacts receive their own canonical migration decision. This prevents the release verifier from asserting paths that do not yet exist.
+
+
+## Artifact reconciliation result
+
+The only missing release artifact was `documentation/node-core/node-core-installation-manifest.schema.json`. The canonical schema has now been established there from the existing schema content. The original `docs/node/node-core-installation-manifest.schema.json` remains temporarily preserved as a compatibility source until `$id` and consumer reconciliation are completed.
+
+**Gate 2 remains OPEN/PENDING validation; no executable move is authorized yet.**
