@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 from dual_storage_object_sync import KuboObjectSync
+from synchronization_queue import DurableSynchronizationQueue
 from object_registry import ObjectRegistry
 from storage_manager import StorageManager
 from dual_storage_bootstrap import initialize_local
@@ -123,6 +124,51 @@ class ObjectSynchronizationTests(unittest.TestCase):
                 self.assertEqual(persisted["distributed_version"], "0.1.0")
                 self.assertEqual(persisted["location_state"], "LOCAL_AND_DISTRIBUTED")
                 self.assertEqual(persisted["synchronization_state"], "SYNCHRONIZED")
+            finally:
+                server.shutdown()
+
+    def test_pending_synchronization_survives_restart_and_resumes(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            initialize_local(root)
+            StorageManager(root).put_json("state", "state-restart", {"value": "canonical"})
+            data = (root / "node-storage/state/state-restart.json").read_bytes()
+            registry = ObjectRegistry(root)
+            registry.register({
+                "object_id": "state-restart",
+                "object_class": "state",
+                "relative_path": "node-storage/state/state-restart.json",
+                "content_hash": hashlib.sha256(data).hexdigest(),
+                "storage_version": "0.1.0",
+                "provider_type": "LOCAL",
+                "location_state": "SYNC_PENDING",
+                "object_state": "PRESENT",
+                "synchronization_state": "NOT_SYNCHRONIZED",
+            })
+
+            first_queue = DurableSynchronizationQueue(root)
+            first_queue.enqueue(
+                "state-restart",
+                content_hash=hashlib.sha256(data).hexdigest(),
+                storage_version="0.1.0",
+            )
+            first_queue.mark_processing("state-restart")
+
+            restarted_queue = DurableSynchronizationQueue(root)
+            self.assertEqual(restarted_queue.pending()[0]["object_id"], "state-restart")
+            self.assertEqual(restarted_queue.pending()[0]["status"], "PENDING")
+
+            server = run_server()
+            try:
+                sync = KuboObjectSync(root, f"http://127.0.0.1:{server.server_port}")
+                results = sync.synchronize_pending()
+                self.assertEqual([item.object_id for item in results], ["state-restart"])
+                self.assertEqual(DurableSynchronizationQueue(root).entries["state-restart"]["status"], "COMPLETED")
+                persisted = ObjectRegistry(root).get("state-restart")
+                self.assertEqual(persisted["synchronization_state"], "SYNCHRONIZED")
+                self.assertEqual(persisted["location_state"], "LOCAL_AND_DISTRIBUTED")
+                self.assertIn("/node-storage/state/state-restart.json", FakeKubo.files)
             finally:
                 server.shutdown()
 
