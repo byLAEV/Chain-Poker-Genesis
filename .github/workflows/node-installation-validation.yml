@@ -46,3 +46,9 @@ jobs:
             echo "Protocol isolation test unexpectedly passed"
             exit 1
           fi
+
+      
+      - name: Verify Storage Manager
+        run: |
+          cd reference-implementation/node-installation
+          python test_storage_manager.py
