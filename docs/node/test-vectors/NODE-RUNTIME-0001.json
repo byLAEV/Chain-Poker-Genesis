@@ -1,0 +1,9 @@
+{
+  "vector_id": "NODE-RUNTIME-0001",
+  "description": "Clean Node Core reaches READY without protocol installation",
+  "initial_state": "UNINITIALIZED",
+  "expected_state": "READY",
+  "expected_health": "HEALTHY",
+  "expected_readiness": "READY",
+  "cpg_protocol": "NOT_INSTALLED"
+}
