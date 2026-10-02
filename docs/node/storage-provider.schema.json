@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"cpg://node-core/schema/storage-provider/0.1.0",
+  "title":"Node Core Storage Provider Status",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["provider_type","status"],
+  "properties":{
+    "provider_type":{"type":"string","enum":["LOCAL","DECENTRALIZED","EXTERNAL"]},
+    "status":{"type":"string","enum":["READY","NOT_PROVISIONED","UNAVAILABLE","FAILED"]}
+  }
+}
