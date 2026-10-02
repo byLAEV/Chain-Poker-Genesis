@@ -10,6 +10,7 @@ from pathlib import Path
 MANIFEST_VERSION = "0.1.0"
 NODE_CORE_VERSION = "0.1.0"
 STORAGE_STRUCTURE_VERSION = "0.1.0"
+STORAGE_MANIFEST_VERSION = "0.1.0"
 
 REQUIRED_PATHS = [
     "node-storage",
@@ -56,6 +57,8 @@ def main() -> int:
                 "decentralized_storage": {
                     "status": "NOT_PROVISIONED"
                 },
+                "protocol_associations": [],
+                "cpg_protocol": "NOT_INSTALLED",
             },
             indent=2,
             sort_keys=True,
@@ -89,6 +92,17 @@ def main() -> int:
         encoding="utf-8",
     )
 
+    storage_manifest = {
+        "storage_structure_version": STORAGE_STRUCTURE_VERSION,
+        "root": "node-storage",
+        "required_paths": REQUIRED_PATHS,
+    }
+
+    (target / "node-storage/state/storage-manifest.json").write_text(
+        json.dumps(storage_manifest, indent=2, sort_keys=True) + "\\n",
+        encoding="utf-8",
+    )
+
     manifest = {
         "manifest_version": MANIFEST_VERSION,
         "node": {
@@ -98,6 +112,7 @@ def main() -> int:
         "storage": {
             "storage_structure_version": STORAGE_STRUCTURE_VERSION,
             "required_paths": REQUIRED_PATHS,
+            "storage_manifest_version": STORAGE_MANIFEST_VERSION,
         },
         "readiness": {
             "state": "NODE_CORE_READY",
