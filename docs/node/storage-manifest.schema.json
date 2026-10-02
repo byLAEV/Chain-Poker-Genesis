@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/byLAEV/Chain-Poker-Genesis/blob/main/docs/node/storage-manifest.schema.json",
+  "title": "Node Canonical Storage Manifest",
+  "type": "object",
+  "required": ["storage_structure_version", "root", "required_paths"],
+  "properties": {
+    "storage_structure_version": {"type": "string"},
+    "root": {"type": "string", "const": "node-storage"},
+    "required_paths": {
+      "type": "array",
+      "minItems": 8,
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}
