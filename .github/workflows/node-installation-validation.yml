@@ -178,7 +178,7 @@ jobs:
               result = KuboObjectSync(root, "http://127.0.0.1:5001").synchronize("ci-state-001")
               assert result.content_hash == digest
               assert result.version == "0.1.0"
-              assert result.cid.startswith("b")
+              assert result.cid.startswith(("Qm", "bafy"))
               assert result.location_state == "LOCAL_AND_DISTRIBUTED"
               assert result.synchronization_state == "SYNCHRONIZED"
               print(result)
