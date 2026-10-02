@@ -10,6 +10,7 @@ from pathlib import Path
 from dual_storage_object_sync import KuboObjectSync
 from object_registry import ObjectRegistry
 from storage_manager import StorageManager
+from dual_storage_bootstrap import initialize_local
 
 
 class FakeKubo(BaseHTTPRequestHandler):
@@ -72,6 +73,7 @@ class ObjectSynchronizationTests(unittest.TestCase):
         import tempfile
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
+            initialize_local(root)
             StorageManager(root).put_json("state", "state-001", {"value": "canonical"})
             data = (root / "node-storage/state/state-001.json").read_bytes()
             registry = ObjectRegistry(root)
