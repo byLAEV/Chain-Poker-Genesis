@@ -44,12 +44,12 @@ ARTIFACTS = [
     "documentation/node-core/OBJECT-REGISTRY-SPECIFICATION.md",
     "documentation/node-core/STORAGE-LOCATOR-SPECIFICATION.md",
     "documentation/node-core/SYNCHRONIZATION-STATE-MACHINE.md",
-    "documentation/node-core/FINAL-NODE-CORE-AUDIT.md",
-    "documentation/node-core/NODE-CORE-COMPLETION-GATE.md",
+    "docs/node/FINAL-NODE-CORE-AUDIT.md",
+    "docs/node/NODE-CORE-COMPLETION-GATE.md",
     "documentation/node-core/NODE-CORE-RELEASE-ARTIFACT-SPECIFICATION.md",
     "documentation/node-core/NODE-CORE-RELEASE-INTEGRITY.md",
-    "documentation/node-core/PROTOCOL-INSTALLATION-BOUNDARY.md",
-    "documentation/node-core/NODE-CORE-SPECIFICATION-COVERAGE-AUDIT.md",
+    "docs/node/PROTOCOL-INSTALLATION-BOUNDARY.md",
+    "docs/node/NODE-CORE-SPECIFICATION-COVERAGE-AUDIT.md",
     ".github/workflows/node-installation-validation.yml",
 ]
 def digest(path: Path) -> str:
