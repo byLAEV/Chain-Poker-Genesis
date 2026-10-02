@@ -141,6 +141,11 @@ jobs:
           cd reference-implementation/node-installation
           python test_capability_discovery.py
 
+      - name: Verify FN-024A Node data networking / transport substrate
+        run: |
+          cd reference-implementation/node-installation
+          python test_node_data_transport.py
+
       - name: Verify Object Registry
         run: |
           cd reference-implementation/node-installation
