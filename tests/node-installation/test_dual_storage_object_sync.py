@@ -23,7 +23,7 @@ class FakeKubo(BaseHTTPRequestHandler):
         for part in body.split(marker):
             if b"filename=" in part and b"\r\n\r\n" in part:
                 payload = part.split(b"\r\n\r\n", 1)[1]
-                return payload.rstrip(b"\r\n")
+                if payload.endswith(b"\r\n"):\n                    payload = payload[:-2]\n                return payload
         raise ValueError("multipart file part not found")
 
     def do_POST(self):  # noqa: N802
