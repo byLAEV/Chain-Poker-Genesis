@@ -135,13 +135,7 @@ class KuboObjectSync:
             raise
 
     def _mark_conflict(self, object_id: str, *, cid: str, version: str) -> None:
-        self.registry.update_distribution_state(
-            object_id,
-            cid=cid,
-            version=version,
-            location_state="CONFLICT",
-            synchronization_state="CONFLICT",
-        )
+        self.registry.record_conflict(object_id, cid=cid)
 
     def synchronize(self, object_id: str) -> ObjectSynchronizationResult:
         entry = self._entry(object_id)
