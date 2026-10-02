@@ -32,7 +32,7 @@
 | FN-016 | Dual-storage structural verification | Dual-storage bootstrap | Local + Kubo structural paths implemented; live Kubo verification pending | cross-domain test + CI | IN_PROGRESS |
 | FN-017 | Canonical storage manifest across both domains | Dual-storage bootstrap | Deterministic local manifest + Kubo reconciliation implemented | deterministic cross-storage test + CI | IN_PROGRESS |
 | FN-018 | Local/IPFS synchronization engine | Dual-storage/storage infrastructure | Manifest synchronization and single registered-object synchronization implemented; durable full-object synchronization remains open | integration test + CI | IN_PROGRESS |
-| FN-019 | Conflict detection | Storage infrastructure | Model documented; live dual-domain conflict handling pending | conflict test + CI | NOT_IMPLEMENTED |
+| FN-019 | Conflict detection | Storage infrastructure | Divergence detection, conflict state persistence, and regression test implemented; CI verification pending | conflict test + CI | IN_PROGRESS |
 | FN-020 | Durable synchronization queue | Storage infrastructure | Not demonstrated | queue/restart test + CI | NOT_IMPLEMENTED |
 | FN-021 | Retry/backoff/circuit-breaker behavior | Storage infrastructure | Not demonstrated | failure-injection test + CI | NOT_IMPLEMENTED |
 | FN-022 | Storage Policy Engine | Storage infrastructure | Not demonstrated | policy tests + CI | NOT_IMPLEMENTED |
@@ -68,7 +68,7 @@ SYNCHRONIZATION
 STORAGE_READY
 ```
 
-The current branch now implements manifest synchronization and a first registered-object Local ↔ Kubo synchronization path with content-hash verification and CID evidence. This does **not** claim durable queues, conflict resolution, retry policy, full object-set reconciliation, or distributed replication.
+The current branch implements manifest synchronization, registered-object Local ↔ Kubo synchronization, content-hash verification, CID evidence, multi-object reconciliation, and conservative divergence detection. A divergent distributed object is recorded as CONFLICT rather than overwritten. This does **not** claim durable queues, conflict resolution policies that choose a winner, retry policy, or distributed replication.
 
 The following layers depend on that foundation:
 
