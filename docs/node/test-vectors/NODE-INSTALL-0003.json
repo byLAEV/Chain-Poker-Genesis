@@ -1,0 +1,12 @@
+{
+  "vector_id": "NODE-INSTALL-0003",
+  "purpose": "Reject a missing canonical storage path.",
+  "input": {
+    "required_path": "node-storage/recovery",
+    "present": false
+  },
+  "expected": {
+    "status": "FAILED",
+    "reason": "required path missing"
+  }
+}
