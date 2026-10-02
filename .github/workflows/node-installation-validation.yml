@@ -12,6 +12,7 @@ on:
     paths:
       - "docs/node/**"
       - "reference-implementation/node-installation/**"
+      - "tests/node-installation/**"
       - ".github/workflows/node-installation-validation.yml"
 
 jobs:
@@ -131,8 +132,8 @@ jobs:
 
       - name: Verify dual-storage manifest and object synchronization primitives
         run: |
-          python tests/node-installation/test_dual_storage_sync.py
-          PYTHONPATH=reference-implementation/node-installation python tests/node-installation/test_dual_storage_object_sync.py
+          PYTHONPATH=reference-implementation/node-installation python -m unittest discover -s tests/node-installation -p "test_dual_storage_sync.py"
+          PYTHONPATH=reference-implementation/node-installation python -m unittest discover -s tests/node-installation -p "test_dual_storage_object_sync.py"
 
       - name: Start pinned Kubo integration node
         run: |
