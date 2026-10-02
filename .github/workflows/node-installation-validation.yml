@@ -1,3 +1,4 @@
+# Post-merge Node Core validation marker
 name: CPG Node Installation Baseline Validation
 
 on:
