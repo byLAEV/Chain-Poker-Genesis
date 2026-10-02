@@ -34,8 +34,8 @@
 | FN-018 | Local/IPFS synchronization engine | Dual-storage/storage infrastructure | Registered-object synchronization, content-hash verification, persistent distributed evidence, and multi-object reconciliation implemented and CI-verified | integration test + CI | VERIFIED |
 | FN-019 | Conflict detection | Storage infrastructure | Divergence detection, CONFLICT state persistence, and no-overwrite regression test implemented and CI-verified | conflict test + CI | VERIFIED |
 | FN-020 | Durable synchronization queue | Storage infrastructure | Durable local queue, restart recovery, pending resumption, and completion persistence implemented and CI-verified | queue/restart test + CI | VERIFIED |
-| FN-021 | Retry/backoff/circuit-breaker behavior | Storage infrastructure | Not demonstrated | failure-injection test + CI | NOT_IMPLEMENTED |
-| FN-022 | Storage Policy Engine | Storage infrastructure | Not demonstrated | policy tests + CI | NOT_IMPLEMENTED |
+| FN-021 | Retry/backoff/circuit-breaker behavior | Storage infrastructure | Retry/backoff, failure threshold, circuit open/half-open recovery, and durable queue return-to-pending implemented and CI-verified | failure-injection test + CI | VERIFIED |
+| FN-022 | Storage Policy Engine | Storage infrastructure | Minimal policy decision layer implemented for canonical storage classes; policy tests and CI verification pending | policy tests + CI | IN_PROGRESS |
 | FN-023 | Replication policy | Storage infrastructure | Not demonstrated | replication tests + CI | NOT_IMPLEMENTED |
 | FN-024 | Node networking substrate | Node architecture | Not demonstrated | node-network tests + CI | NOT_IMPLEMENTED |
 | FN-025 | Capability discovery | Red de Nodos | Not demonstrated | capability evidence + CI | NOT_IMPLEMENTED |
@@ -68,14 +68,13 @@ SYNCHRONIZATION
 STORAGE_READY
 ```
 
-The current branch implements manifest synchronization, registered-object Local ↔ Kubo synchronization, content-hash verification, CID evidence, persistent distributed evidence, multi-object reconciliation, conservative divergence detection, and a durable local synchronization queue with restart recovery. A divergent distributed object is recorded as CONFLICT rather than overwritten. This does **not** claim conflict resolution policies that choose a winner, retry policy, circuit breakers, or distributed replication.
+The current branch implements manifest synchronization, registered-object Local ↔ Kubo synchronization, content-hash verification, CID evidence, persistent distributed evidence, multi-object reconciliation, conservative divergence detection, and a durable local synchronization queue with restart recovery. A divergent distributed object is recorded as CONFLICT rather than overwritten. This does **not** claim conflict resolution policies that choose a winner or distributed replication. Retry/backoff/circuit-breaker reliability is now separately implemented and CI-verified.
 
 The following layers depend on that foundation:
 
 1. conflict detection;
 2. synchronization queues;
-3. retry/backoff/circuit-breaker behavior;
-4. policy engine;
+3. policy engine;
 5. replication;
 6. network substrate;
 7. capability discovery;
