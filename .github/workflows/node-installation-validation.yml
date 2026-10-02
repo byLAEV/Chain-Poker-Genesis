@@ -131,6 +131,11 @@ jobs:
           cd reference-implementation/node-installation
           python test_replication_policy_engine.py
 
+      - name: Verify FN-024 Identity Node networking substrate
+        run: |
+          cd reference-implementation/node-installation
+          python test_identity_node_network.py
+
       - name: Verify Object Registry
         run: |
           cd reference-implementation/node-installation
