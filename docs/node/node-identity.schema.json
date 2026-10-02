@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"cpg://node-core/schema/identity/0.1.0",
+  "title":"Node Core Identity Metadata",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["identity_status","identity_class","node_id"],
+  "properties":{
+    "identity_status":{"type":"string","enum":["INITIALIZED","VALIDATED","FAILED"]},
+    "identity_class":{"type":"string","enum":["REFERENCE_NODE_IDENTITY","IMPORTED_NODE_IDENTITY","RECOVERED_NODE_IDENTITY"]},
+    "node_id":{"type":"string","minLength":1},
+    "public_identity_reference":{"type":"string"},
+    "key_management_status":{"type":"string","enum":["NOT_PROVISIONED","EXTERNAL","PROVISIONED"]}
+  }
+}
