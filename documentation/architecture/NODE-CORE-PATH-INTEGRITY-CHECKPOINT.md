@@ -51,3 +51,8 @@ The next operation is not yet a physical move.
 The remaining requirement is to establish a **behavioral baseline run** from the current reference implementation and capture its expected outputs before changing its path.
 
 After that baseline is recorded, the implementation can be relocated as one isolated structural change and validated against the captured baseline.
+
+
+## Clean Validation Trigger
+
+This marker triggers a fresh Node Core baseline validation after the documented path repairs. It does not modify Node Core runtime behavior.
