@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+import tempfile
+from pathlib import Path
+from bootstrap_node import main as bootstrap_main
+from object_registry import ObjectRegistry, RegistryError
+from storage_manager import StorageManager
+
+def bootstrap(target):
+    import sys
+    old = sys.argv
+    try:
+        sys.argv = ["bootstrap_node.py", str(target)]
+        assert bootstrap_main() == 0
+    finally:
+        sys.argv = old
+
+def main():
+    with tempfile.TemporaryDirectory() as temp:
+        target = Path(temp) / "node"
+        bootstrap(target)
+        manager = StorageManager(target)
+        metadata = manager.put_json("record", "registry-record-0001", {"status": "VALID"})
+        registry = ObjectRegistry(target)
+        registry.register({
+            **metadata,
+            "provider_type": "LOCAL",
+            "location_state": "LOCAL_ONLY",
+            "object_state": "PRESENT",
+            "synchronization_state": "NOT_SYNCHRONIZED",
+        })
+        assert registry.get("registry-record-0001")["location_state"] == "LOCAL_ONLY"
+        try:
+            registry.register({"object_id": "cpg-test", "object_class": "protocol-reserved"})
+        except RegistryError:
+            pass
+        else:
+            raise AssertionError("protocol-reserved object was registered")
+        print("status = VERIFIED")
+        print("registry = READY")
+
+if __name__ == "__main__":
+    main()
