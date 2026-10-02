@@ -102,7 +102,7 @@ def main() -> int:
     }
 
     (target / "node-storage/state/storage-manifest.json").write_text(
-        json.dumps(storage_manifest, indent=2, sort_keys=True) + "\\n",
+        json.dumps(storage_manifest, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
 
