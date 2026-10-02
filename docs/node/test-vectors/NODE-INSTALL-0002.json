@@ -1,0 +1,13 @@
+{
+  "vector_id": "NODE-INSTALL-0002",
+  "purpose": "Reject protocol association during Node Core baseline verification.",
+  "input": {
+    "node_status": "NODE_CORE_READY",
+    "cpg_protocol": "NOT_INSTALLED",
+    "protocol_associations": ["chain-poker-genesis"]
+  },
+  "expected": {
+    "status": "FAILED",
+    "reason": "protocol association list is not empty"
+  }
+}
