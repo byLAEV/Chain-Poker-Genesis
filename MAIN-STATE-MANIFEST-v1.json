@@ -1,0 +1,73 @@
+{
+  "manifest_id": "CPG-MAIN-STATE-MANIFEST-v1",
+  "repository": "byLAEV/Chain-Poker-Genesis",
+  "branch": "main",
+  "snapshot": {
+    "commit": "f33755a10b725ac11e702aa1dd0ac1f3d6f9818b",
+    "state": "PRE-CANONICAL-MIGRATION"
+  },
+  "operation": {
+    "target_root": [
+      "README.md",
+      "LICENSE.md",
+      "COPYRIGHT.md",
+      "MAIN-STATE-MANIFEST-v1.json",
+      "Main Temporal",
+      ".github",
+      ".devcontainer",
+      "Node Core",
+      "CPG Protocol"
+    ],
+    "archive_container": "Main Temporal",
+    "archive_policy": "Preserve the complete pre-migration main tree under Main Temporal without modifying its contents.",
+    "canonical_infrastructure": "Node Core and CPG Protocol are new architectural domains; GitHub and Codespaces infrastructure is rebuilt at root."
+  },
+  "current_root_paths": [
+    ".github",
+    "04-private-off-chain-ledger-engine",
+    "05-rake-and-settlement-engine",
+    "06-commitment-reveal-card-dealing-engine",
+    "07-dual-shuffle-card-distribution-engine",
+    "08-table-join-engine",
+    "09-table-wallet-engine",
+    "10-player-node-disconnection-management-engine",
+    "11-protocol-documentation-engine",
+    "12-monetary-settlement-engine",
+    "13-request-and-permission-engine",
+    "14-p2p-conflict-resolution-engine",
+    "15-poker-rules-engine",
+    "16-dealer-engine",
+    "17-reputation-engine",
+    "18-cid-engine",
+    "Background and History",
+    "IMPLEMENTATION-REVIEW",
+    "My Vision with CPG by LAEV",
+    "README.md",
+    "decentralized-theories",
+    "deterministic-manifest-based-node-and-protocol-storage-architecture",
+    "docs",
+    "documentation",
+    "engines",
+    "poker-table-viewer-creation-engine",
+    "reference-implementation"
+  ],
+  "canonical_root_paths": [
+    "README.md",
+    "LICENSE.md",
+    "COPYRIGHT.md",
+    "MAIN-STATE-MANIFEST-v1.json",
+    "Main Temporal",
+    "Node Core",
+    "CPG Protocol",
+    ".github",
+    ".devcontainer"
+  ],
+  "migration_status": {
+    "pre_migration_snapshot_verified": true,
+    "temporal_archive_created": false,
+    "canonical_root_created": false,
+    "github_infrastructure_created": false,
+    "codespaces_infrastructure_created": false,
+    "content_migration_started": false
+  }
+}
