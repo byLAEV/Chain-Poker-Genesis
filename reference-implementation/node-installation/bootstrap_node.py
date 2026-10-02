@@ -42,6 +42,8 @@ def main() -> int:
                 "identity_status": "INITIALIZED",
                 "identity_class": "REFERENCE_NODE_IDENTITY",
                 "node_id": "NODE-REFERENCE-0001",
+                "public_identity_reference": "NODE-REFERENCE-0001",
+                "key_management_status": "NOT_PROVISIONED",
             },
             indent=2,
             sort_keys=True,
@@ -71,6 +73,7 @@ def main() -> int:
         json.dumps(
             {
                 "state": "RECOVERY_READY",
+                "node_id": "NODE-REFERENCE-0001",
             },
             indent=2,
             sort_keys=True,
