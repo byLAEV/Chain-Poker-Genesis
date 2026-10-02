@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Node Core Installation Manifest",
+  "type": "object",
+  "required": ["manifest_version","node","storage","readiness","provider","coherence","synchronization","recovery","integrity","protocol_associations","cpg_protocol"],
+  "properties": {
+    "manifest_version": {"type": "string"},
+    "node": {
+      "type": "object",
+      "required": ["node_core_version","status"],
+      "properties": {
+        "node_core_version": {"type": "string"},
+        "status": {"const": "READY"}
+      },
+      "additionalProperties": false
+    },
+    "storage": {
+      "type": "object",
+      "required": ["storage_structure_version"],
+      "properties": {"storage_structure_version": {"type": "string"}},
+      "additionalProperties": false
+    },
+    "readiness": {
+      "type": "object",
+      "required": ["state"],
+      "properties": {"state": {"const": "NODE_CORE_READY"}},
+      "additionalProperties": false
+    },
+    "provider": {
+      "type": "object",
+      "required": ["type","status"],
+      "properties": {"type": {"const": "LOCAL"}, "status": {"const": "READY"}},
+      "additionalProperties": false
+    },
+    "coherence": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {"status": {"const": "COHERENT"}},
+      "additionalProperties": false
+    },
+    "synchronization": {
+      "type": "object",
+      "required": ["state"],
+      "properties": {"state": {"const": "NOT_EVALUATED"}},
+      "additionalProperties": false
+    },
+    "recovery": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {"status": {"const": "READY"}},
+      "additionalProperties": false
+    },
+    "integrity": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {"status": {"const": "VERIFIED"}},
+      "additionalProperties": false
+    },
+    "protocol_associations": {
+      "type": "array",
+      "maxItems": 0,
+      "items": {}
+    },
+    "cpg_protocol": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {"status": {"const": "NOT_INSTALLED"}},
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
