@@ -121,4 +121,37 @@ class ObjectSynchronizationTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    unittest.main()    def test_divergent_distributed_object_is_recorded_as_conflict(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            initialize_local(root)
+            StorageManager(root).put_json("state", "state-conflict", {"value": "local"})
+            data = (root / "node-storage/state/state-conflict.json").read_bytes()
+            registry = ObjectRegistry(root)
+            registry.register({
+                "object_id": "state-conflict",
+                "object_class": "state",
+                "relative_path": "node-storage/state/state-conflict.json",
+                "content_hash": hashlib.sha256(data).hexdigest(),
+                "storage_version": "0.1.0",
+                "provider_type": "LOCAL",
+                "location_state": "SYNC_PENDING",
+                "object_state": "PRESENT",
+                "synchronization_state": "NOT_SYNCHRONIZED",
+            })
+            server = run_server()
+            try:
+                path = "/node-storage/state/state-conflict.json"
+                FakeKubo.files[path] = b'{"value":"remote"}\n'
+                FakeKubo.cids[path] = "bafy-test-conflict"
+                with self.assertRaisesRegex(Exception, "conflict recorded"):
+                    KuboObjectSync(root, f"http://127.0.0.1:{server.server_port}").synchronize("state-conflict")
+                persisted = ObjectRegistry(root).get("state-conflict")
+                self.assertEqual(persisted["location_state"], "CONFLICT")
+                self.assertEqual(persisted["synchronization_state"], "CONFLICT")
+                self.assertEqual(persisted["distributed_cid"], "bafy-test-conflict")
+            finally:
+                server.shutdown()
+
+
