@@ -34,6 +34,7 @@ FULL NODE CORE
 ├── Runtime Lifecycle
 ├── Health / Readiness
 ├── Node Networking Substrate
+├── Node Data Networking / Transport
 ├── Capability Discovery
 ├── Propagation / Peer Evidence
 └── Proof of Functions / Node Evidence
