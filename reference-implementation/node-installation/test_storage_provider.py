@@ -29,6 +29,11 @@ def main():
         metadata = provider.put('record', 'provider-record-0001', {'type':'NODE_CORE_PROVIDER_TEST','status':'VALID'})
         assert provider.exists('record', 'provider-record-0001')
         assert provider.verify('record', 'provider-record-0001', metadata['content_hash'])
+        description = provider.describe('record', 'provider-record-0001')
+        assert description['provider_type'] == 'LOCAL'
+        assert description['content_hash'] == metadata['content_hash']
+        assert provider.delete('record', 'provider-record-0001') is True
+        assert provider.exists('record', 'provider-record-0001') is False
         print('status = VERIFIED')
         print('provider = LOCAL')
         print('external_provider = NOT_PROVISIONED')
