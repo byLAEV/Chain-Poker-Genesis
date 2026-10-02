@@ -60,7 +60,9 @@ jobs:
 
       - name: Verify Protocol Installation Boundary
         run: |
-          python reference-implementation/node-installation/protocol_installation_boundary.py /tmp/cpg-node-test
+          rm -rf /tmp/cpg-node-boundary-test
+          python reference-implementation/node-installation/bootstrap_node.py /tmp/cpg-node-boundary-test
+          python reference-implementation/node-installation/protocol_installation_boundary.py /tmp/cpg-node-boundary-test
 
       - name: Verify runtime readiness output
         run: |
