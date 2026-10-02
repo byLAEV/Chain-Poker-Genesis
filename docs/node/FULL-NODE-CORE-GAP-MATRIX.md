@@ -38,7 +38,7 @@
 | FN-022 | Storage Policy Engine | Storage infrastructure | Minimal policy decision layer reconciled to the storage specification, implemented for canonical storage classes, and CI-verified | policy tests + CI | VERIFIED |
 | FN-023 | Replication policy | Storage infrastructure | Minimal policy decision layer reconciled to canonical LOCAL_ONLY, MULTI_NODE, and EXTERNAL_PINNING policies; execution remains separate; CI-verified by Node Installation Baseline Validation #258 | replication policy tests + CI | VERIFIED |
 | FN-024 | Node networking substrate | Red de Nodos V1.8 / Node architecture | Protocol-neutral Identity Node + peer relationship substrate implemented and CI-verified by Node Installation Baseline Validation #267 (run 36983968563) | identity-node network tests + CI | VERIFIED |
-| FN-025 | Capability discovery | Red de Nodos | Not demonstrated | capability evidence + CI | NOT_IMPLEMENTED |
+| FN-025 | Capability discovery | Red de Nodos V1.8 / Node Core | Minimum protocol-neutral capability discovery implemented; awaiting CI verification | capability evidence + CI | IN_PROGRESS |
 | FN-026 | Propagation/peer evidence | Red de Nodos | Not demonstrated | propagation tests + CI | NOT_IMPLEMENTED |
 | FN-027 | Proof of Functions | Red de Nodos | Not demonstrated | PoF generation/verification + CI | NOT_IMPLEMENTED |
 | FN-028 | Remote installation synchronization | Installation Engine | Historical requirement; scope must be reconciled | source mapping + integration test | SOURCE_RECONCILIATION_REQUIRED |
