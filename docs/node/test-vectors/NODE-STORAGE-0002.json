@@ -1,0 +1,8 @@
+{
+  "vector_id":"NODE-STORAGE-0002",
+  "purpose":"Reject writes to protocol-reserved storage during Node Core installation.",
+  "expected":{
+    "status":"FAILED",
+    "reason":"protocol-reserved storage is not writable by Node Core"
+  }
+}
