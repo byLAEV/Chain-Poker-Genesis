@@ -16,6 +16,7 @@ from dual_storage_bootstrap import initialize_local
 class FakeKubo(BaseHTTPRequestHandler):
     files: dict[str, bytes] = {}
     cids: dict[str, str] = {}
+    stat_missing_status: int = 500
 
     def _multipart_file(self, body: bytes, content_type: str) -> bytes:
         boundary = content_type.split("boundary=", 1)[1].encode("ascii")
@@ -57,8 +58,13 @@ class FakeKubo(BaseHTTPRequestHandler):
 
         if self.path.startswith("/api/v0/files/stat"):
             if arg not in self.__class__.files:
-                self.send_response(404)
-                self.end_headers()
+                if self.__class__.stat_missing_status == 500:
+                    self.send_response(500)
+                    self.end_headers()
+                    self.wfile.write(b'{"Message":"file does not exist","Code":0}')
+                else:
+                    self.send_response(404)
+                    self.end_headers()
                 return
             payload = json.dumps({"Hash": self.__class__.cids[arg]}).encode()
             self.send_response(200)
@@ -76,6 +82,7 @@ class FakeKubo(BaseHTTPRequestHandler):
 def run_server():
     FakeKubo.files = {}
     FakeKubo.cids = {}
+    FakeKubo.stat_missing_status = 500
     server = HTTPServer(("127.0.0.1", 0), FakeKubo)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
