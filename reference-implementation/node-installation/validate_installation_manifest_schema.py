@@ -7,18 +7,32 @@ import json
 import sys
 from pathlib import Path
 
-def validate(manifest, schema):
-    required = schema["required"]
-    for key in required:
-        if key not in manifest:
-            raise AssertionError(f"missing required manifest field: {key}")
-    if schema.get("additionalProperties") is False:
-        extra = set(manifest) - set(schema["properties"])
-        if extra:
-            raise AssertionError(f"unexpected manifest fields: {sorted(extra)}")
-    for key, spec in schema["properties"].items():
-        if "const" in spec and manifest.get(key) != spec["const"]:
-            raise AssertionError(f"{key}: expected {spec['const']!r}")
+def validate(manifest, schema, path="manifest"):
+    if schema.get("type") == "object":
+        if not isinstance(manifest, dict):
+            raise AssertionError(f"{path}: expected object")
+        required = schema.get("required", [])
+        for key in required:
+            if key not in manifest:
+                raise AssertionError(f"{path}: missing required field {key}")
+        properties = schema.get("properties", {})
+        if schema.get("additionalProperties") is False:
+            extra = set(manifest) - set(properties)
+            if extra:
+                raise AssertionError(f"{path}: unexpected fields {sorted(extra)}")
+        for key, spec in properties.items():
+            if key in manifest:
+                validate(manifest[key], spec, f"{path}.{key}")
+    elif schema.get("type") == "array":
+        if not isinstance(manifest, list):
+            raise AssertionError(f"{path}: expected array")
+        if "maxItems" in schema and len(manifest) > schema["maxItems"]:
+            raise AssertionError(f"{path}: too many items")
+    elif schema.get("type") == "string":
+        if not isinstance(manifest, str):
+            raise AssertionError(f"{path}: expected string")
+    if "const" in schema and manifest != schema["const"]:
+        raise AssertionError(f"{path}: expected {schema['const']!r}")
     return True
 
 def main():
