@@ -56,7 +56,7 @@ Kubo installation, peer networking, replication policy, and CPG protocol associa
 
 The synchronization layer now includes a durable local queue for synchronization intent. Queue entries persist the canonical object identifier, content hash, storage version, and lifecycle status. A PROCESSING entry is recovered to PENDING when a new queue instance is created, allowing a restarted Node Core process to resume unfinished synchronization. Completion is persisted only after successful Local ↔ Kubo synchronization and verification.
 
-This does not implement retry/backoff, circuit breakers, conflict resolution policies that choose a winner, distributed replication, or peer-to-peer propagation. These remain subsequent Full Node Core requirements.
+This does not implement conflict resolution policies that choose a winner, distributed replication, or peer-to-peer propagation. Retry/backoff/circuit-breaker reliability is now implemented as a separate policy wrapper around queued synchronization.
 
 
 ## Divergence and conflict policy
@@ -99,3 +99,21 @@ CI verification covers:
 - Local ↔ Kubo content verification;
 - persistent COMPLETED queue state;
 - persistent SYNCHRONIZED Object Registry state.
+
+
+## Synchronization reliability
+
+The Node Core reliability wrapper provides:
+
+- bounded retries;
+- exponential backoff;
+- failure-threshold circuit opening;
+- recovery-time half-open probing;
+- successful-probe reset to CLOSED;
+- durable queue return to PENDING after an exhausted synchronization attempt.
+
+The reliability policy is intentionally separate from the durable synchronization queue. Queue persistence is the durable source of unfinished work; the retry/circuit-breaker state is reconstructed by the process when needed.
+
+CI verification covers transient retry with backoff, failure-threshold circuit opening, recovery timeout, half-open probing, and successful reset.
+
+This layer does not add peer networking, distributed replication, automatic conflict resolution, or CPG behavior.
