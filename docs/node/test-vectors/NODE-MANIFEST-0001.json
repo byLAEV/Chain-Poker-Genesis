@@ -1,0 +1,15 @@
+{
+  "vector_id": "NODE-MANIFEST-0001",
+  "description": "Canonical Node Core installation manifest baseline",
+  "expected": {
+    "node_status": "READY",
+    "readiness": "NODE_CORE_READY",
+    "provider": "READY",
+    "coherence": "COHERENT",
+    "synchronization": "NOT_EVALUATED",
+    "recovery": "READY",
+    "integrity": "VERIFIED",
+    "protocol_associations": [],
+    "cpg_protocol": "NOT_INSTALLED"
+  }
+}
