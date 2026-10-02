@@ -1,0 +1,16 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"cpg://node-core/schema/storage-object/0.1.0",
+  "title":"Node Core Storage Object",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["object_id","object_class","relative_path","content_hash","content_encoding","storage_version"],
+  "properties":{
+    "object_id":{"type":"string","minLength":1},
+    "object_class":{"type":"string","enum":["identity","cryptography","configuration","state","record","recovery","protocol-reserved"]},
+    "relative_path":{"type":"string","minLength":1},
+    "content_hash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "content_encoding":{"type":"string","const":"utf-8"},
+    "storage_version":{"type":"string","minLength":1}
+  }
+}
