@@ -2,7 +2,7 @@
 
 **Project:** Chain Poker Genesis by LAEV  
 **Component:** Node Core  
-**Status:** NODE_CORE_COMPLETE
+**Status:** NODE_CORE_COMPLETE_FOR_REPOSITORY_SPECIFICATION
 
 ## Verification Evidence
 
@@ -22,6 +22,10 @@ Required protocol-boundary invariants remain:
     protocol_associations = []
     cpg_protocol = NOT_INSTALLED
     synchronization = NOT_EVALUATED
+
+## Historical Specification Reconciliation
+
+The executable Node Core is complete and CI-verified against the current repository specification baseline. A separate historical reconciliation remains required before claiming that every historical LAEV Node/Infrastructure/Security requirement has been fully reconciled. The historical source PDFs are referenced by `docs/node/README.md` but are not decoded by the current GitHub text-file interface.
 
 ## Explicit Boundary
 
