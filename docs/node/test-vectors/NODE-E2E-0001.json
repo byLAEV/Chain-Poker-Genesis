@@ -1,0 +1,11 @@
+{
+  "vector_id": "NODE-E2E-0001",
+  "description": "Clean installation reaches Node Core READY, passes health and recovery, and leaves CPG uninstalled",
+  "expected": {
+    "node_core": "READY",
+    "health": "HEALTHY",
+    "recovery": "VERIFIED",
+    "cpg_protocol": "NOT_INSTALLED",
+    "protocol_associations": []
+  }
+}
