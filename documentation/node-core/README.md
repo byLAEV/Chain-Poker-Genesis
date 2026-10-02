@@ -140,3 +140,6 @@ The installation workflow is validated automatically by GitHub Actions.
 - [23.0 Basic Infrastructure Installation](../../23.0%20Basic%20Infrastructure%20Installation.pdf)
 - [22.0 Security Architecture Specification](../../22.0%20Security%20Architecture%20Specification.pdf)
 - [0.0 CHAIN POKER GENESIS — Digital Poker Protocol](../../0.0%20CHAIN%20POKER%20GENESIS__by%20LAEV__Digital%20Poker%20Protocol__.pdf)
+
+
+<!-- Node Core structural migration validation marker: no runtime semantics changed. -->
