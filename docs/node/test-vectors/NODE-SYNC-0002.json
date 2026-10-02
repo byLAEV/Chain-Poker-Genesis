@@ -1,0 +1,6 @@
+{
+  "vector_id":"NODE-SYNC-0002",
+  "purpose":"Allow synchronized state only after provider readiness and threshold evidence.",
+  "input":{"provider_ready":true,"threshold_reached":true,"proposed_state":"SYNCHRONIZED"},
+  "expected":{"accepted":true}
+}
