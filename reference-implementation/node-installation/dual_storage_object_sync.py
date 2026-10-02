@@ -233,8 +233,7 @@ class KuboObjectSync:
             except Exception:
                 # Return the durable item to PENDING after an exhausted
                 # reliability policy. A future process/run can resume it.
-                queue.entries[object_id]["status"] = "PENDING"
-                queue._persist()
+                queue.mark_pending(object_id)
                 raise
             queue.mark_completed(object_id)
             results.append(result)
