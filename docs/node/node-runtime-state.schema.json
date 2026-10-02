@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Node Core Runtime State",
+  "type": "object",
+  "required": ["state", "health", "readiness", "cpg_protocol"],
+  "properties": {
+    "state": {
+      "type": "string",
+      "enum": ["UNINITIALIZED","INITIALIZING","VERIFYING","READY","RUNNING","DEGRADED","RECOVERY","SHUTTING_DOWN","STOPPED","INITIALIZATION_FAILED","VERIFICATION_FAILED","RECOVERY_FAILED"]
+    },
+    "health": {
+      "type": "string",
+      "enum": ["HEALTHY","DEGRADED","FAILED"]
+    },
+    "readiness": {
+      "type": "string",
+      "enum": ["NOT_READY","READY"]
+    },
+    "cpg_protocol": {
+      "type": "string",
+      "const": "NOT_INSTALLED"
+    }
+  },
+  "additionalProperties": false
+}
