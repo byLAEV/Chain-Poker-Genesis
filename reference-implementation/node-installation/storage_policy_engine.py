@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Minimal, protocol-neutral Node Core storage policy engine.
-
-This layer decides storage treatment; it does not perform synchronization,
-replication, encryption, publication, or deletion. Those actions remain
-separate infrastructure concerns until their specifications are reconciled.
-"""
+"""Minimal, protocol-neutral Node Core storage policy engine."""
 
 from __future__ import annotations
 
@@ -33,82 +28,51 @@ class StoragePolicy:
     retention: str
 
 
+def _policy(where, who, when, how_long, sync, placement, visibility,
+            persistence, encryption, pin, replicate, delete, retention):
+    return {
+        "where": where,
+        "who": who,
+        "when": when,
+        "how_long": how_long,
+        "sync": sync,
+        "placement": placement,
+        "visibility": visibility,
+        "persistence": persistence,
+        "encryption": encryption,
+        "pin": pin,
+        "replicate": replicate,
+        "delete": delete,
+        "retention": retention,
+    }
+
+
 _DEFAULTS = {
-    "TEMPORARY": {
-        "where": "NODE_LOCAL",
-        "who": "NODE_LOCAL",
-        "when": "IMMEDIATE",
-        "how_long": "TEMPORARY",
-        "where": "NODE_LOCAL",
-        "who": "NODE_LOCAL",
-        "when": "IMMEDIATE",
-        "how_long": "PERSISTENT",
-        "where": "NODE_LOCAL",
-        "who": "NODE_LOCAL",
-        "when": "IMMEDIATE",
-        "how_long": "PERSISTENT",
-        "where": "NODE_LOCAL",
-        "who": "AUTHORIZED_ONLY",
-        "when": "IMMEDIATE",
-        "how_long": "PERSISTENT",
-        "where": "NODE_LOCAL",
-        "who": "LOCAL_IDENTITY",
-        "when": "IMMEDIATE",
-        "how_long": "PERSISTENT",
-        "sync": "DISABLED",
-        "placement": "LOCAL_ONLY",
-        "visibility": "LOCAL",
-        "persistence": "TEMPORARY",
-        "encryption": "POLICY_DEFINED",
-        "pin": "DISABLED",
-        "replicate": "DISABLED",
-        "delete": "POLICY_DEFINED",
-        "retention": "TEMPORARY",
-    },
-    "LOCAL_PUBLIC": {
-        "sync": "DISABLED",
-        "placement": "LOCAL_ONLY",
-        "visibility": "PUBLIC_LOCAL",
-        "persistence": "PERSISTENT",
-        "encryption": "POLICY_DEFINED",
-        "pin": "DISABLED",
-        "replicate": "DISABLED",
-        "delete": "POLICY_DEFINED",
-        "retention": "PERSISTENT",
-    },
-    "LOCAL_PRIVATE": {
-        "sync": "DISABLED",
-        "placement": "LOCAL_ONLY",
-        "visibility": "PRIVATE",
-        "persistence": "PERSISTENT",
-        "encryption": "REQUIRED",
-        "pin": "DISABLED",
-        "replicate": "LOCAL_ONLY",
-        "delete": "POLICY_DEFINED",
-        "retention": "PERSISTENT",
-    },
-    "LOCAL_RESTRICTED": {
-        "sync": "DISABLED",
-        "placement": "LOCAL_ONLY",
-        "visibility": "RESTRICTED",
-        "persistence": "PERSISTENT",
-        "encryption": "REQUIRED",
-        "pin": "DISABLED",
-        "replicate": "LOCAL_ONLY",
-        "delete": "POLICY_DEFINED",
-        "retention": "PERSISTENT",
-    },
-    "LOCAL_PERSONAL": {
-        "sync": "DISABLED",
-        "placement": "LOCAL_ONLY",
-        "visibility": "PERSONAL",
-        "persistence": "PERSISTENT",
-        "encryption": "POLICY_DEFINED",
-        "pin": "DISABLED",
-        "replicate": "LOCAL_ONLY",
-        "delete": "POLICY_DEFINED",
-        "retention": "PERSISTENT",
-    },
+    "TEMPORARY": _policy(
+        "NODE_LOCAL", "NODE_LOCAL", "IMMEDIATE", "TEMPORARY",
+        "DISABLED", "LOCAL_ONLY", "LOCAL", "TEMPORARY",
+        "POLICY_DEFINED", "DISABLED", "DISABLED", "POLICY_DEFINED", "TEMPORARY",
+    ),
+    "LOCAL_PUBLIC": _policy(
+        "NODE_LOCAL", "NODE_LOCAL", "IMMEDIATE", "PERSISTENT",
+        "DISABLED", "LOCAL_ONLY", "PUBLIC_LOCAL", "PERSISTENT",
+        "POLICY_DEFINED", "DISABLED", "DISABLED", "POLICY_DEFINED", "PERSISTENT",
+    ),
+    "LOCAL_PRIVATE": _policy(
+        "NODE_LOCAL", "NODE_LOCAL", "IMMEDIATE", "PERSISTENT",
+        "DISABLED", "LOCAL_ONLY", "PRIVATE", "PERSISTENT",
+        "REQUIRED", "DISABLED", "LOCAL_ONLY", "POLICY_DEFINED", "PERSISTENT",
+    ),
+    "LOCAL_RESTRICTED": _policy(
+        "NODE_LOCAL", "AUTHORIZED_ONLY", "IMMEDIATE", "PERSISTENT",
+        "DISABLED", "LOCAL_ONLY", "RESTRICTED", "PERSISTENT",
+        "REQUIRED", "DISABLED", "LOCAL_ONLY", "POLICY_DEFINED", "PERSISTENT",
+    ),
+    "LOCAL_PERSONAL": _policy(
+        "NODE_LOCAL", "LOCAL_IDENTITY", "IMMEDIATE", "PERSISTENT",
+        "DISABLED", "LOCAL_ONLY", "PERSONAL", "PERSISTENT",
+        "POLICY_DEFINED", "DISABLED", "LOCAL_ONLY", "POLICY_DEFINED", "PERSISTENT",
+    ),
 }
 
 
@@ -123,8 +87,7 @@ class StoragePolicyEngine:
 
         values = dict(_DEFAULTS[storage_class])
         if overrides:
-            allowed = set(values)
-            unknown = set(overrides) - allowed
+            unknown = set(overrides) - set(values)
             if unknown:
                 raise StoragePolicyError(
                     f"unsupported policy fields: {', '.join(sorted(unknown))}"
