@@ -1,5 +1,6 @@
 name: CPG Node Installation Baseline Validation
 # Full Node Core policy/reliability validation gate.
+# Replication policy baseline is validated before advancing FN-024.
 
 on:
   workflow_dispatch:
