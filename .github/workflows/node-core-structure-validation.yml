@@ -1,0 +1,21 @@
+name: Node Core Structure Validation
+
+on:
+  push:
+    branches: [ main, "migration/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-node-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Node Core structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in "Node Core/specifications" "Node Core/contracts" "Node Core/engines" "Node Core/reference-implementation" "Node Core/tests" "Node Core/test-vectors" "Node Core/storage" "Node Core/runtime" "Node Core/installation"; do
+            test -d "$path" || { echo "MISSING: $path"; exit 1; }
+          done
+          echo "Node Core structure: PASS"
