@@ -121,6 +121,11 @@ jobs:
           python test_specification_coverage.py
 
       - name: Verify Storage Policy Engine
+      - name: Verify Replication Policy Engine
+        run: |
+          cd reference-implementation/node-installation
+          python test_replication_policy_engine.py
+
         run: |
           cd reference-implementation/node-installation
           python test_storage_policy_engine.py
