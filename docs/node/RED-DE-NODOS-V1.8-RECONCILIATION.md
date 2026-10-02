@@ -152,3 +152,119 @@ Therefore those concepts must not be silently inserted into FN-024. They remain 
 `V1.8 → inventory → historical requirements → classification → minimum FN-024` is now complete.
 
 The minimum FN-024 implementation is now CI-verified by Node Installation Baseline Validation #267 (run 36983968563). FN-025 capability discovery and FN-026 propagation remain closed until their own historical requirements are reconciled and independently implemented.
+
+
+## 7. FN-025 / FN-026 historical reconciliation
+
+The exact V1.8 source was checked directly at commit 4a99738de06fd3fee7952391fcb382c5053bb566, including sections 4, 15–30, 55–57 and 60–64.
+
+### 7.1 Identity Node → Capability Discovery
+
+V1.8 establishes the Node Identity as the cryptographic identity of the infrastructure node and explicitly separates it from the concrete Node Instance. V1.8 also describes node functions and distinguishes REQUIRED, OPTIONAL, CONDITIONAL and APPLICATION-SPECIFIC functions in the PoF model.
+
+The later Node Core architectural boundary explicitly lists capability discovery as a Node Core responsibility.
+
+Therefore FN-025 is correctly classified as a Node Core capability layer, but its minimum responsibility is:
+
+Identity Node → discover/describe node capabilities → capability evidence
+
+It must not yet become:
+
+Identity Node → CPG Player
+
+Capability discovery must describe what the node can do; it must not install or infer the CPG protocol.
+
+### 7.2 Identity Node → Propagation / Peer Evidence
+
+V1.8 explicitly requires node-bound propagation evidence:
+
+NODE_ID + MANIFEST_VERSION + MANIFEST_HASH + SIGNATURE
+
+and defines propagation records with:
+
+propagation_event_id, previous_propagation_hash, node_id, manifest_hash, manifest_version, propagation_role, source_node, destination_node, timestamp, signature, provenance.
+
+V1.8 also separates:
+
+STORAGE COHERENCE ≠ NETWORK SYNCHRONIZATION
+
+and requires peer evidence to be verified before reaching the synchronization threshold.
+
+Therefore FN-026 is correctly classified as the network propagation/evidence layer above FN-024, using Identity Nodes as its cryptographic participants.
+
+### 7.3 Correct dependency model
+
+IDENTITY NODE
+    ↓
+NODE CAPABILITIES
+    ↓
+PEER RELATIONSHIPS
+    ↓
+NODE-BOUND PROPAGATION EVIDENCE
+    ↓
+SYNC THRESHOLD
+    ↓
+SYNCHRONIZED NODE STATE
+
+The layers are distinct:
+
+- FN-024: identity/network substrate.
+- FN-025: capability description/discovery.
+- FN-026: propagation, peer evidence and synchronization threshold.
+- FN-027: Proof of Functions.
+- Application/Protocol layer: application-specific semantics.
+
+### 7.4 Placement of Player Identity Nodes
+
+V1.8 does not define a Player Identity Node as a base networking node type.
+
+The correct interpretation is therefore:
+
+Identity Node + CPG protocol association + player capability/role → Player Identity Node
+
+A Player Identity Node should remain an application/protocol specialization of an existing Identity Node, not a replacement for the base Identity Node and not a new infrastructure class inside FN-024.
+
+This preserves the Node Core invariant:
+
+A node provides the substrate. The protocol provides the semantics.
+
+### 7.5 Placement of Channel Nodes
+
+V1.8 does not define a poker Channel Node or Lightning-compatible table channel.
+
+Therefore a Channel Node cannot be introduced as a historical V1.8 requirement of FN-024/FN-025/FN-026.
+
+The architecture may later define:
+
+Channel Node = Identity Node + CPG channel capability + table/channel state
+
+and then determine the exact relationship between:
+
+- channel identity;
+- participating Player Identity Nodes;
+- table state;
+- consensus state;
+- group table wallet;
+- commitment state;
+- settlement state;
+- Bitcoin/Lightning settlement.
+
+That is a later CPG protocol/channel specification and must not be silently inserted into the generic Red de Nodos networking substrate.
+
+### 7.6 Historical conclusion
+
+The requested chain is confirmed:
+
+Identity Node
+      ↓
+Capability Discovery
+      ↓
+Propagation / Peer Evidence
+      ↓
+Synchronization Threshold
+
+This is supported by the historical V1.8 architecture.
+
+The Player Identity Node belongs after protocol association, and the Channel Node belongs after the protocol defines its channel/table semantics.
+
+FN-025 and FN-026 therefore remain NOT_IMPLEMENTED until their minimum implementations are separately specified and CI-verified. No CPG player/channel semantics are opened by this reconciliation.
