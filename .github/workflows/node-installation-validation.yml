@@ -184,6 +184,61 @@ jobs:
               print(result)
           PY
 
+      - name: Verify durable synchronization queue restart recovery against real Kubo
+        run: |
+          PYTHONPATH=reference-implementation/node-installation python - <<'PY'
+          import hashlib
+          import tempfile
+          from pathlib import Path
+          from object_registry import ObjectRegistry
+          from storage_manager import StorageManager
+          from dual_storage_bootstrap import initialize_local
+          from dual_storage_object_sync import KuboObjectSync
+          from synchronization_queue import DurableSynchronizationQueue
+
+          with tempfile.TemporaryDirectory() as directory:
+              root = Path(directory)
+              initialize_local(root)
+              StorageManager(root).put_json("state", "ci-restart-001", {"source": "durable-queue"})
+              path = root / "node-storage/state/ci-restart-001.json"
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              ObjectRegistry(root).register({
+                  "object_id": "ci-restart-001",
+                  "object_class": "state",
+                  "relative_path": "node-storage/state/ci-restart-001.json",
+                  "content_hash": digest,
+                  "storage_version": "0.1.0",
+                  "provider_type": "LOCAL",
+                  "location_state": "SYNC_PENDING",
+                  "object_state": "PRESENT",
+                  "synchronization_state": "NOT_SYNCHRONIZED",
+              })
+
+              first_process = DurableSynchronizationQueue(root)
+              first_process.enqueue(
+                  "ci-restart-001",
+                  content_hash=digest,
+                  storage_version="0.1.0",
+              )
+              first_process.mark_processing("ci-restart-001")
+
+              restarted_process = DurableSynchronizationQueue(root)
+              pending = restarted_process.pending()
+              assert len(pending) == 1
+              assert pending[0]["object_id"] == "ci-restart-001"
+              assert pending[0]["status"] == "PENDING"
+
+              results = KuboObjectSync(root, "http://127.0.0.1:5001").synchronize_pending()
+              assert len(results) == 1
+              assert results[0].object_id == "ci-restart-001"
+              assert results[0].synchronization_state == "SYNCHRONIZED"
+              assert DurableSynchronizationQueue(root).entries["ci-restart-001"]["status"] == "COMPLETED"
+              persisted = ObjectRegistry(root).get("ci-restart-001")
+              assert persisted["location_state"] == "LOCAL_AND_DISTRIBUTED"
+              assert persisted["synchronization_state"] == "SYNCHRONIZED"
+              print("durable synchronization queue restart recovery: PASS")
+          PY
+
       - name: Stop Kubo integration node
         if: always()
         run: docker rm -f cpg-kubo || true
