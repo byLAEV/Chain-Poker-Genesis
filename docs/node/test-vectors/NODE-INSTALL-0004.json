@@ -1,0 +1,10 @@
+{
+  "vector_id":"NODE-INSTALL-0004",
+  "purpose":"Verify that a bootstrapped node has explicit identity, configuration, and recovery metadata.",
+  "expected":{
+    "identity_status":"INITIALIZED",
+    "decentralized_storage":"NOT_PROVISIONED",
+    "cpg_protocol":"NOT_INSTALLED",
+    "recovery_status":"READY"
+  }
+}
