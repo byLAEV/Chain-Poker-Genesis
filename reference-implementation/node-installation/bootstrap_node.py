@@ -110,12 +110,22 @@ def main() -> int:
         "manifest_version": MANIFEST_VERSION,
         "node": {
             "node_core_version": NODE_CORE_VERSION,
-            "identity_status": "INITIALIZED",
+            "status": "READY",
         },
         "storage": {
             "storage_structure_version": STORAGE_STRUCTURE_VERSION,
             "required_paths": REQUIRED_PATHS,
             "storage_manifest_version": STORAGE_MANIFEST_VERSION,
+        },
+        "provider": {
+            "type": "LOCAL",
+            "status": "READY",
+        },
+        "coherence": {
+            "status": "COHERENT",
+        },
+        "synchronization": {
+            "state": "NOT_EVALUATED",
         },
         "readiness": {
             "state": "NODE_CORE_READY",
