@@ -1,6 +1,7 @@
 name: CPG Node Installation Baseline Validation
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "docs/node/**"
