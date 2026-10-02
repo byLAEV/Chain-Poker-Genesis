@@ -6,7 +6,7 @@ from __future__ import annotations
 from storage_manager import StorageManager, StorageError
 
 class StorageProvider:
-    provider_type = 'ABSTRACT'
+    provider_type = "ABSTRACT"
 
     def put(self, object_class, object_id, value):
         raise NotImplementedError
@@ -17,11 +17,20 @@ class StorageProvider:
     def exists(self, object_class, object_id):
         raise NotImplementedError
 
+    def delete(self, object_class, object_id):
+        raise NotImplementedError
+
     def verify(self, object_class, object_id, expected_hash):
         raise NotImplementedError
 
+    def describe(self, object_class, object_id):
+        raise NotImplementedError
+
+    def status(self):
+        raise NotImplementedError
+
 class LocalStorageProvider(StorageProvider):
-    provider_type = 'LOCAL'
+    provider_type = "LOCAL"
 
     def __init__(self, node_root):
         self.manager = StorageManager(node_root)
@@ -39,8 +48,22 @@ class LocalStorageProvider(StorageProvider):
         except StorageError:
             return False
 
+    def delete(self, object_class, object_id):
+        path = self.manager._canonical_path(object_class, object_id)
+        if not path.is_file():
+            return False
+        path.unlink()
+        return True
+
     def verify(self, object_class, object_id, expected_hash):
         return self.manager.verify(object_class, object_id, expected_hash)
 
+    def describe(self, object_class, object_id):
+        _, metadata = self.manager.get_json(object_class, object_id)
+        return {
+            "provider_type": self.provider_type,
+            **metadata,
+        }
+
     def status(self):
-        return {'provider_type': 'LOCAL', 'status': 'READY'}
+        return {"provider_type": self.provider_type, "status": "READY"}
