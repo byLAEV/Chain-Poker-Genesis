@@ -18,6 +18,10 @@ class StoragePolicyError(ValueError):
 @dataclass(frozen=True)
 class StoragePolicy:
     storage_class: str
+    where: str
+    who: str
+    when: str
+    how_long: str
     sync: str
     placement: str
     visibility: str
@@ -31,6 +35,26 @@ class StoragePolicy:
 
 _DEFAULTS = {
     "TEMPORARY": {
+        "where": "NODE_LOCAL",
+        "who": "NODE_LOCAL",
+        "when": "IMMEDIATE",
+        "how_long": "TEMPORARY",
+        "where": "NODE_LOCAL",
+        "who": "NODE_LOCAL",
+        "when": "IMMEDIATE",
+        "how_long": "PERSISTENT",
+        "where": "NODE_LOCAL",
+        "who": "NODE_LOCAL",
+        "when": "IMMEDIATE",
+        "how_long": "PERSISTENT",
+        "where": "NODE_LOCAL",
+        "who": "AUTHORIZED_ONLY",
+        "when": "IMMEDIATE",
+        "how_long": "PERSISTENT",
+        "where": "NODE_LOCAL",
+        "who": "LOCAL_IDENTITY",
+        "when": "IMMEDIATE",
+        "how_long": "PERSISTENT",
         "sync": "DISABLED",
         "placement": "LOCAL_ONLY",
         "visibility": "LOCAL",
