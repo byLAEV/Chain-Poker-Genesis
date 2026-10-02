@@ -55,6 +55,21 @@ def main() -> int:
     if manifest.get("cpg_protocol", {}).get("status") != "NOT_INSTALLED":
         return fail("CPG protocol isolation invariant failed")
 
+    storage_manifest_path = root / "node-storage/state/storage-manifest.json"
+    if not storage_manifest_path.is_file():
+        return fail("storage manifest missing")
+    try:
+        storage_manifest = json.loads(storage_manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return fail(f"invalid storage manifest: {exc}")
+    if storage_manifest.get("root") != "node-storage":
+        return fail("invalid storage manifest root")
+    if storage_manifest.get("required_paths") != REQUIRED_PATHS:
+        return fail("storage manifest required paths mismatch")
+
+    if manifest.get("cpg_protocol", {}).get("status") != "NOT_INSTALLED":
+        return fail("CPG protocol isolation invariant failed")
+
     if manifest.get("integrity", {}).get("status") != "VERIFIED":
         return fail("integrity status is not VERIFIED")
 
