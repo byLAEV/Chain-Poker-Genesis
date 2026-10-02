@@ -82,8 +82,10 @@ class KuboObjectSync:
                     raise ObjectSynchronizationError(f"Kubo API returned HTTP {response.status}")
                 return response.read()
         except urllib.error.HTTPError as exc:
+            response_body = exc.read().decode("utf-8", errors="replace").strip()
+            detail = f": {response_body}" if response_body else ""
             raise ObjectSynchronizationError(
-                f"Kubo API returned HTTP {exc.code}"
+                f"Kubo API returned HTTP {exc.code}{detail}"
             ) from exc
         except (urllib.error.URLError, TimeoutError) as exc:
             raise ObjectSynchronizationError(f"Kubo API unavailable: {exc}") from exc
@@ -130,8 +132,13 @@ class KuboObjectSync:
         try:
             return self._stat(path)
         except ObjectSynchronizationError as exc:
-            if "HTTP 404" in str(exc):
+            message = str(exc)
+            if "HTTP 404" in message:
                 return None
+            if "HTTP 500" in message:
+                detail = message.lower()
+                if "file does not exist" in detail or "path does not exist" in detail:
+                    return None
             raise
 
     def _mark_conflict(self, object_id: str, *, cid: str, version: str) -> None:
