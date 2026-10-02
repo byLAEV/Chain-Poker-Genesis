@@ -25,6 +25,8 @@ Identity Node → Capability Set → Capability Evidence
 The initial vocabulary is intentionally small:
 - identity.node
 - network.peer
+- network.transport
+- network.endpoint
 - storage.local
 - storage.distributed
 
