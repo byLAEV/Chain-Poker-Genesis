@@ -11,6 +11,8 @@ BASE_CAPABILITIES = frozenset(
     {
         "identity.node",
         "network.peer",
+        "network.endpoint",
+        "network.transport",
         "storage.local",
         "storage.distributed",
     }
