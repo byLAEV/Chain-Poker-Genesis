@@ -1,16 +1,16 @@
 from __future__ import annotations
 
 import json
+import sys
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
-from reference_implementation.node_installation.dual_storage_bootstrap import initialize_local
-from reference_implementation.node_installation.dual_storage_sync import (
-    KuboManifestSync,
-    load_local_manifest,
-    manifest_hash,
-)
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "reference-implementation" / "node-installation"))
+
+from dual_storage_bootstrap import initialize_local
+from dual_storage_sync import KuboManifestSync, load_local_manifest, manifest_hash
 
 
 class FakeKubo(BaseHTTPRequestHandler):
@@ -41,6 +41,7 @@ class FakeKubo(BaseHTTPRequestHandler):
 
 
 def run_server():
+    FakeKubo.manifest = None
     server = HTTPServer(("127.0.0.1", 0), FakeKubo)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
