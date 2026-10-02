@@ -1,0 +1,8 @@
+{
+  "vector_id":"NODE-STORAGE-0004",
+  "purpose":"Distinguish local storage coherence from network synchronization.",
+  "expected":{
+    "local_coherence":"COHERENT",
+    "network_synchronization":"NOT_EVALUATED"
+  }
+}
