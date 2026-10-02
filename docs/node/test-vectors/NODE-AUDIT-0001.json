@@ -1,6 +1,6 @@
 {
   "vector_id": "NODE-AUDIT-0001",
-  "description": "Final Node Core completion baseline",
+  "description": "Final Node Core completion baseline (CI trigger verification)",
   "expected": {
     "audit_status": "PASS",
     "completion_gate": "NODE_CORE_COMPLETE",
