@@ -53,6 +53,11 @@ jobs:
           cd reference-implementation/node-installation
           python test_installation_manifest.py
 
+      - name: Run Final Node Core Audit
+        run: |
+          cd reference-implementation/node-installation
+          python final_node_core_audit.py
+
       - name: Verify runtime readiness output
         run: |
           python reference-implementation/node-installation/node_runtime.py /tmp/cpg-node-test
