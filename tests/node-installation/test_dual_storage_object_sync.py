@@ -111,6 +111,11 @@ class ObjectSynchronizationTests(unittest.TestCase):
                 self.assertTrue(result.cid.startswith("bafy-test-"))
                 self.assertEqual(result.location_state, "LOCAL_AND_DISTRIBUTED")
                 self.assertEqual(result.synchronization_state, "SYNCHRONIZED")
+                persisted = ObjectRegistry(root).get("state-001")
+                self.assertEqual(persisted["distributed_cid"], result.cid)
+                self.assertEqual(persisted["distributed_version"], "0.1.0")
+                self.assertEqual(persisted["location_state"], "LOCAL_AND_DISTRIBUTED")
+                self.assertEqual(persisted["synchronization_state"], "SYNCHRONIZED")
             finally:
                 server.shutdown()
 
