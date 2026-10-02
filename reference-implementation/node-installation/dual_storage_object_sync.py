@@ -17,6 +17,7 @@ from pathlib import Path
 
 from object_registry import ObjectRegistry, RegistryError
 from synchronization_queue import DurableSynchronizationQueue, SynchronizationQueueError
+from synchronization_reliability import RetryBackoffCircuitBreaker
 
 MFS_ROOT = "/node-storage"
 
@@ -212,8 +213,12 @@ class KuboObjectSync:
             storage_version=entry["storage_version"],
         )
 
-    def synchronize_pending(self) -> list[ObjectSynchronizationResult]:
+    def synchronize_pending(
+        self,
+        reliability: RetryBackoffCircuitBreaker | None = None,
+    ) -> list[ObjectSynchronizationResult]:
         queue = DurableSynchronizationQueue(self.node_root)
+        policy = reliability or RetryBackoffCircuitBreaker()
         results = []
         for queued in queue.pending():
             object_id = queued["object_id"]
@@ -224,10 +229,12 @@ class KuboObjectSync:
                 )
             queue.mark_processing(object_id)
             try:
-                result = self.synchronize(object_id)
+                result = policy.execute(lambda: self.synchronize(object_id))
             except Exception:
-                # Leave the durable entry PROCESSING; a new process will
-                # recover it to PENDING without introducing retry policy here.
+                # Return the durable item to PENDING after an exhausted
+                # reliability policy. A future process/run can resume it.
+                queue.entries[object_id]["status"] = "PENDING"
+                queue._persist()
                 raise
             queue.mark_completed(object_id)
             results.append(result)
