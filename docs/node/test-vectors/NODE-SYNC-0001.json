@@ -1,0 +1,6 @@
+{
+  "vector_id":"NODE-SYNC-0001",
+  "purpose":"Prevent local coherence from being reported as network synchronization.",
+  "input":{"provider_ready":false,"threshold_reached":false,"proposed_state":"SYNCHRONIZED"},
+  "expected":{"accepted":false}
+}
