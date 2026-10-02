@@ -98,6 +98,14 @@ class DurableSynchronizationQueue:
         self._persist()
         return dict(entry)
 
+    def mark_pending(self, object_id: str) -> dict[str, Any]:
+        entry = self._get(object_id)
+        if entry["status"] not in {"PROCESSING", "PENDING"}:
+            raise SynchronizationQueueError("queue entry cannot be returned to pending")
+        entry["status"] = "PENDING"
+        self._persist()
+        return dict(entry)
+
     def pending(self) -> list[dict[str, Any]]:
         return [
             dict(self.entries[object_id])
