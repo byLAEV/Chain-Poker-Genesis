@@ -48,6 +48,11 @@ jobs:
           cd reference-implementation/node-installation
           python test_node_installation_e2e.py
 
+      - name: Verify canonical Installation Manifest
+        run: |
+          cd reference-implementation/node-installation
+          python test_installation_manifest.py
+
       - name: Verify runtime readiness output
         run: |
           python reference-implementation/node-installation/node_runtime.py /tmp/cpg-node-test
