@@ -31,3 +31,18 @@ jobs:
       - name: Verify Node Core
         run: |
           python reference-implementation/node-installation/verify_node_installation.py /tmp/cpg-node-test
+
+      - name: Verify protocol isolation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("/tmp/cpg-node-test/node-installation-manifest.json")
+          data = json.loads(p.read_text())
+          data["protocol_associations"] = ["chain-poker-genesis"]
+          p.write_text(json.dumps(data, indent=2))
+          PY
+          if python reference-implementation/node-installation/verify_node_installation.py /tmp/cpg-node-test; then
+            echo "Protocol isolation test unexpectedly passed"
+            exit 1
+          fi
