@@ -124,7 +124,7 @@ See:
 - [Node Core Installation Baseline](INSTALLATION-BASELINE.md)
 - [Node Core Bootstrap Specification](NODE-CORE-BOOTSTRAP-SPECIFICATION.md)
 - [Node Readiness State Model](NODE-READINESS-STATE-MODEL.md)
-- [Node Installation Manifest Schema](../node-core/schemas/node-installation-manifest.schema.json)
+- [Node Installation Manifest Schema](../../docs/node/node-installation-manifest.schema.json)
 - [Node Installation Test Vector](test-vectors/NODE-INSTALL-0001.json)
 - [Node Installation Reference Implementation](../../reference-implementation/node-installation/README.md)
 
