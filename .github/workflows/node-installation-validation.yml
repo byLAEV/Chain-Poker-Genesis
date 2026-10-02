@@ -1,4 +1,5 @@
 name: CPG Node Installation Baseline Validation
+# Full Node Core policy/reliability validation gate.
 
 on:
   workflow_dispatch:
