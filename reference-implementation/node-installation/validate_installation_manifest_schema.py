@@ -38,7 +38,7 @@ def validate(manifest, schema, path="manifest"):
 def main():
     root = Path(sys.argv[1]).resolve() if len(sys.argv) == 2 else Path("/tmp/cpg-node-manifest-schema-test")
     manifest_path = root / "node-installation-manifest.json"
-    schema_path = Path(__file__).resolve().parents[2] / "docs/node/node-core-installation-manifest.schema.json"
+    schema_path = Path(__file__).resolve().parents[2] / "documentation/node-core/node-core-installation-manifest.schema.json"
     if not manifest_path.is_file():
         raise AssertionError("installation manifest missing")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
