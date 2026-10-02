@@ -76,6 +76,27 @@ def main() -> int:
     if manifest.get("recovery", {}).get("status") != "READY":
         return fail("recovery status is not READY")
 
+    identity_path = root / "node-storage/identity/node-identity.json"
+    config_path = root / "node-storage/configuration/node-config.json"
+    recovery_path = root / "node-storage/recovery/recovery.json"
+    for path in (identity_path, config_path, recovery_path):
+        if not path.is_file():
+            return fail(f"required metadata missing: {path.relative_to(root)}")
+    try:
+        identity = json.loads(identity_path.read_text(encoding="utf-8"))
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        recovery = json.loads(recovery_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return fail(f"invalid node metadata: {exc}")
+    if identity.get("identity_status") != "INITIALIZED":
+        return fail("identity is not initialized")
+    if config.get("protocol_associations") != []:
+        return fail("node configuration contains protocol associations")
+    if config.get("cpg_protocol") != "NOT_INSTALLED":
+        return fail("node configuration activates CPG")
+    if recovery.get("status") != "READY":
+        return fail("recovery metadata is not READY")
+
     print("status = VERIFIED")
     print("node_status = NODE_CORE_READY")
     print("cpg_protocol = NOT_INSTALLED")
