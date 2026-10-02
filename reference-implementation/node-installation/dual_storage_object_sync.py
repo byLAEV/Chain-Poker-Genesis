@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from object_registry import ObjectRegistry, RegistryError
+from synchronization_queue import DurableSynchronizationQueue, SynchronizationQueueError
 
 MFS_ROOT = "/node-storage"
 
@@ -200,6 +201,36 @@ class KuboObjectSync:
         results = []
         for object_id in sorted(self.registry.entries):
             results.append(self.synchronize(object_id))
+        return results
+
+    def enqueue(self, object_id: str) -> dict:
+        entry = self._entry(object_id)
+        queue = DurableSynchronizationQueue(self.node_root)
+        return queue.enqueue(
+            object_id,
+            content_hash=entry["content_hash"],
+            storage_version=entry["storage_version"],
+        )
+
+    def synchronize_pending(self) -> list[ObjectSynchronizationResult]:
+        queue = DurableSynchronizationQueue(self.node_root)
+        results = []
+        for queued in queue.pending():
+            object_id = queued["object_id"]
+            entry = self._entry(object_id)
+            if entry["content_hash"] != queued["content_hash"] or entry["storage_version"] != queued["storage_version"]:
+                raise ObjectSynchronizationError(
+                    "queued synchronization no longer matches the canonical registry entry"
+                )
+            queue.mark_processing(object_id)
+            try:
+                result = self.synchronize(object_id)
+            except Exception:
+                # Leave the durable entry PROCESSING; a new process will
+                # recover it to PENDING without introducing retry policy here.
+                raise
+            queue.mark_completed(object_id)
+            results.append(result)
         return results
 
 
