@@ -9,6 +9,8 @@ def test_base_capability_discovery_is_deterministic() -> None:
     b = discovery.describe(reversed(sorted(BASE_CAPABILITIES))).snapshot()
     assert a == b
     assert a["capabilities"] == sorted(BASE_CAPABILITIES)
+    assert "network.transport" in a["capabilities"]
+    assert "network.endpoint" in a["capabilities"]
 
 def test_capability_evidence_is_node_bound() -> None:
     evidence = CapabilityDiscovery("NODE-001", "INSTANCE-001").discover_base()
