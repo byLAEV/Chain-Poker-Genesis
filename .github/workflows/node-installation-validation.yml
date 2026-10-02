@@ -64,6 +64,10 @@ jobs:
           python reference-implementation/node-installation/bootstrap_node.py /tmp/cpg-node-boundary-test
           python reference-implementation/node-installation/protocol_installation_boundary.py /tmp/cpg-node-boundary-test
 
+      - name: Verify Release Integrity
+        run: |
+          python reference-implementation/node-installation/release_integrity.py .
+
       - name: Verify runtime readiness output
         run: |
           python reference-implementation/node-installation/node_runtime.py /tmp/cpg-node-test
