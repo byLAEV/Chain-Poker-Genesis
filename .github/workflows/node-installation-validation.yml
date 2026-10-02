@@ -1,0 +1,33 @@
+name: CPG Node Installation Baseline Validation
+
+on:
+  push:
+    paths:
+      - "docs/node/**"
+      - "reference-implementation/node-installation/**"
+      - ".github/workflows/node-installation-validation.yml"
+  pull_request:
+    paths:
+      - "docs/node/**"
+      - "reference-implementation/node-installation/**"
+      - ".github/workflows/node-installation-validation.yml"
+
+jobs:
+  verify-node-installation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Bootstrap clean Node Core
+        run: |
+          python reference-implementation/node-installation/bootstrap_node.py /tmp/cpg-node-test
+
+      - name: Verify Node Core
+        run: |
+          python reference-implementation/node-installation/verify_node_installation.py /tmp/cpg-node-test
