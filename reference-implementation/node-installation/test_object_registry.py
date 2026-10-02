@@ -35,6 +35,21 @@ def main():
             pass
         else:
             raise AssertionError("protocol-reserved object was registered")
+
+        invalid = {
+            **metadata,
+            "provider_type": "LOCAL",
+            "location_state": "LOCAL_ONLY",
+            "object_state": "PRESENT",
+            "synchronization_state": "NOT_SYNCHRONIZED",
+            "content_hash": "invalid",
+        }
+        try:
+            registry.register(invalid)
+        except RegistryError:
+            pass
+        else:
+            raise AssertionError("invalid registry hash was accepted")
         print("status = VERIFIED")
         print("registry = READY")
 
