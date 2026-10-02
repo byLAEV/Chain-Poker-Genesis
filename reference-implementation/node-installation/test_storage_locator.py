@@ -23,13 +23,18 @@ def main():
         bootstrap(target)
         manager = StorageManager(target)
         metadata = manager.put_json("record", "locator-record-0001", {"status": "VALID"})
-        ObjectRegistry(target).register({
-            **metadata,
+        registry_entry = {
+            "object_id": metadata["object_id"],
+            "object_class": metadata["object_class"],
+            "relative_path": metadata["relative_path"],
+            "content_hash": metadata["content_hash"],
+            "storage_version": metadata["storage_version"],
             "provider_type": "LOCAL",
             "location_state": "LOCAL_ONLY",
             "object_state": "PRESENT",
             "synchronization_state": "NOT_SYNCHRONIZED",
-        })
+        }
+        ObjectRegistry(target).register(registry_entry)
         location = StorageLocator(target).locate("locator-record-0001")
         assert location["logical_path"] == metadata["relative_path"]
         assert location["provider_type"] == "LOCAL"
