@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/byLAEV/Chain-Poker-Genesis/blob/main/docs/node/node-installation-manifest.schema.json",
+  "title": "Node Installation Manifest",
+  "type": "object",
+  "required": [
+    "manifest_version",
+    "node",
+    "storage",
+    "readiness",
+    "protocol_associations",
+    "cpg_protocol",
+    "integrity",
+    "recovery"
+  ],
+  "properties": {
+    "manifest_version": {
+      "type": "string"
+    },
+    "node": {
+      "type": "object",
+      "required": ["node_core_version", "identity_status"],
+      "properties": {
+        "node_core_version": { "type": "string" },
+        "identity_status": {
+          "type": "string",
+          "enum": ["INITIALIZED", "FAILED"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "storage": {
+      "type": "object",
+      "required": ["storage_structure_version", "required_paths"],
+      "properties": {
+        "storage_structure_version": { "type": "string" },
+        "required_paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "readiness": {
+      "type": "object",
+      "required": ["state"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "UNINITIALIZED",
+            "ENVIRONMENT_VALIDATED",
+            "IDENTITY_INITIALIZED",
+            "STORAGE_INITIALIZED",
+            "STORAGE_STRUCTURE_VERIFIED",
+            "INTEGRITY_VERIFIED",
+            "RECOVERY_READY",
+            "NODE_CORE_READY"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "protocol_associations": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "cpg_protocol": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["NOT_INSTALLED"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrity": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["VERIFIED", "NOT_PROVISIONED", "FAILED"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "recovery": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["READY", "FAILED"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
