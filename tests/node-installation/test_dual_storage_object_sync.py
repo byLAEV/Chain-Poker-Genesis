@@ -119,9 +119,7 @@ class ObjectSynchronizationTests(unittest.TestCase):
             finally:
                 server.shutdown()
 
-
-if __name__ == "__main__":
-    unittest.main()    def test_divergent_distributed_object_is_recorded_as_conflict(self):
+    def test_divergent_distributed_object_is_recorded_as_conflict(self):
         import tempfile
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -143,7 +141,8 @@ if __name__ == "__main__":
             server = run_server()
             try:
                 path = "/node-storage/state/state-conflict.json"
-                FakeKubo.files[path] = b'{"value":"remote"}\n'
+                remote_payload = b'{"value":"remote"}\n'
+                FakeKubo.files[path] = remote_payload
                 FakeKubo.cids[path] = "bafy-test-conflict"
                 with self.assertRaisesRegex(Exception, "conflict recorded"):
                     KuboObjectSync(root, f"http://127.0.0.1:{server.server_port}").synchronize("state-conflict")
@@ -151,7 +150,10 @@ if __name__ == "__main__":
                 self.assertEqual(persisted["location_state"], "CONFLICT")
                 self.assertEqual(persisted["synchronization_state"], "CONFLICT")
                 self.assertEqual(persisted["distributed_cid"], "bafy-test-conflict")
+                self.assertEqual(FakeKubo.files[path], remote_payload)
             finally:
                 server.shutdown()
 
 
+if __name__ == "__main__":
+    unittest.main()
