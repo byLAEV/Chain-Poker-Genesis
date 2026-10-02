@@ -58,6 +58,10 @@ jobs:
           cd reference-implementation/node-installation
           python final_node_core_audit.py
 
+      - name: Verify Protocol Installation Boundary
+        run: |
+          python reference-implementation/node-installation/protocol_installation_boundary.py /tmp/cpg-node-test
+
       - name: Verify runtime readiness output
         run: |
           python reference-implementation/node-installation/node_runtime.py /tmp/cpg-node-test
