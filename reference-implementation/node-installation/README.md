@@ -46,3 +46,24 @@ The reference implementation:
 ## Scope
 
 This is an implementation baseline for installation/bootstrap verification. It is not yet a production cryptographic installer or distributed node implementation.
+
+
+## Installation Boundary
+
+The current baseline now also creates and verifies a canonical storage manifest at:
+
+`node-storage/state/storage-manifest.json`
+
+The reference verifier rejects:
+
+- protocol associations;
+- any CPG status other than `NOT_INSTALLED`;
+- missing canonical storage paths;
+- a missing storage manifest;
+- a storage manifest with a different canonical path set.
+
+The CI workflow includes both a positive readiness test and a negative protocol-isolation test.
+
+## Current Scope
+
+This reference implementation intentionally treats decentralized storage as a provider boundary. It records `NOT_PROVISIONED` rather than silently installing Kubo/IPFS. A later provider-specific installer can be added without changing the Node Core protocol-isolation invariant.
