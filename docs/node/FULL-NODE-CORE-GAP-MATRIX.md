@@ -35,7 +35,7 @@
 | FN-019 | Conflict detection | Storage infrastructure | Divergence detection, CONFLICT state persistence, and no-overwrite regression test implemented and CI-verified | conflict test + CI | VERIFIED |
 | FN-020 | Durable synchronization queue | Storage infrastructure | Durable local queue, restart recovery, pending resumption, and completion persistence implemented and CI-verified | queue/restart test + CI | VERIFIED |
 | FN-021 | Retry/backoff/circuit-breaker behavior | Storage infrastructure | Retry/backoff, failure threshold, circuit open/half-open recovery, and durable queue return-to-pending implemented and CI-verified | failure-injection test + CI | VERIFIED |
-| FN-022 | Storage Policy Engine | Storage infrastructure | Minimal policy decision layer implemented for canonical storage classes; policy tests and CI verification pending | policy tests + CI | IN_PROGRESS |
+| FN-022 | Storage Policy Engine | Storage infrastructure | Minimal policy decision layer reconciled to the storage specification, implemented for canonical storage classes, and CI-verified | policy tests + CI | VERIFIED |
 | FN-023 | Replication policy | Storage infrastructure | Not demonstrated | replication tests + CI | NOT_IMPLEMENTED |
 | FN-024 | Node networking substrate | Node architecture | Not demonstrated | node-network tests + CI | NOT_IMPLEMENTED |
 | FN-025 | Capability discovery | Red de Nodos | Not demonstrated | capability evidence + CI | NOT_IMPLEMENTED |
