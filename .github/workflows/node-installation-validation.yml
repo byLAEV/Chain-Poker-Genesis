@@ -126,3 +126,60 @@ jobs:
         run: |
           cd reference-implementation/node-installation
           python test_synchronization_state.py
+
+
+      - name: Verify dual-storage manifest and object synchronization primitives
+        run: |
+          python tests/node-installation/test_dual_storage_sync.py
+          PYTHONPATH=reference-implementation/node-installation python -m pytest -q tests/node-installation/test_dual_storage_object_sync.py
+
+      - name: Start pinned Kubo integration node
+        run: |
+          docker run -d --name cpg-kubo -p 5001:5001 ipfs/kubo:v0.43.1 daemon
+          for i in $(seq 1 30); do
+            if curl --fail --silent -X POST "http://127.0.0.1:5001/api/v0/version" >/tmp/kubo-version.json; then
+              cat /tmp/kubo-version.json
+              break
+            fi
+            sleep 1
+          done
+          test -s /tmp/kubo-version.json
+
+      - name: Verify real Kubo object synchronization
+        run: |
+          PYTHONPATH=reference-implementation/node-installation python - <<'PY'
+          import hashlib
+          import tempfile
+          from pathlib import Path
+          from object_registry import ObjectRegistry
+          from storage_manager import StorageManager
+          from dual_storage_object_sync import KuboObjectSync
+
+          with tempfile.TemporaryDirectory() as directory:
+              root = Path(directory)
+              StorageManager(root).put_json("state", "ci-state-001", {"source": "real-kubo"})
+              path = root / "node-storage/state/ci-state-001.json"
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              ObjectRegistry(root).register({
+                  "object_id": "ci-state-001",
+                  "object_class": "state",
+                  "relative_path": "node-storage/state/ci-state-001.json",
+                  "content_hash": digest,
+                  "storage_version": "0.1.0",
+                  "provider_type": "LOCAL",
+                  "location_state": "SYNC_PENDING",
+                  "object_state": "PRESENT",
+                  "synchronization_state": "NOT_SYNCHRONIZED",
+              })
+              result = KuboObjectSync(root, "http://127.0.0.1:5001").synchronize("ci-state-001")
+              assert result.content_hash == digest
+              assert result.version == "0.1.0"
+              assert result.cid.startswith("b")
+              assert result.location_state == "LOCAL_AND_DISTRIBUTED"
+              assert result.synchronization_state == "SYNCHRONIZED"
+              print(result)
+          PY
+
+      - name: Stop Kubo integration node
+        if: always()
+        run: docker rm -f cpg-kubo || true
