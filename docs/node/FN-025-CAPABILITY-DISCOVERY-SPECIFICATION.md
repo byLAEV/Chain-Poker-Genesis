@@ -33,6 +33,15 @@ The initial vocabulary is intentionally small:
 ## Evidence
 Capability evidence is a deterministic representation of node identity, node instance, capability identifiers, and capability schema version. The evidence is descriptive, not a PoF result and not a consensus artifact.
 
+Transport capabilities are descriptive infrastructure capabilities. `network.transport` and `network.endpoint` indicate that the Node Core exposes the corresponding transport substrate defined by FN-024A; they do not assert that a particular peer session is connected, that a particular endpoint is reachable, or that a particular transport stack has been selected.
+
+FN-024A transport state and FN-025 capability evidence are therefore separate facts:
+
+```text
+Capability Evidence = what the Node Core declares it supports
+Transport State     = the current operational condition of a peer transport session
+```
+
 ## Boundary
 FN-024 → Identity / Peer substrate → FN-025 → Capability description → FN-026 → Propagation / peer evidence → FN-027 → Proof of Functions → CPG protocol
 
