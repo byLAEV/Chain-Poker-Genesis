@@ -27,12 +27,12 @@
 | FN-011 | Health/readiness | Node Core | Implemented and tested | CI | VERIFIED |
 | FN-012 | Recovery | Node Core | Implemented and tested | CI | VERIFIED |
 | FN-013 | Protocol isolation | Node/CPG boundary | Implemented and tested | CI | VERIFIED |
-| FN-014 | IPFS/Kubo operational adapter | Dual-storage/storage infrastructure | Adapter implemented; live Kubo CI verification pending | adapter tests + CI | IN_PROGRESS |
-| FN-015 | IPFS/Kubo logical canonical namespace | Dual-storage bootstrap | Namespace initialization/verification implemented; live Kubo CI verification pending | bootstrap test + CI | IN_PROGRESS |
-| FN-016 | Dual-storage structural verification | Dual-storage bootstrap | Local + Kubo structural paths implemented; live Kubo verification pending | cross-domain test + CI | IN_PROGRESS |
-| FN-017 | Canonical storage manifest across both domains | Dual-storage bootstrap | Deterministic local manifest + Kubo reconciliation implemented | deterministic cross-storage test + CI | IN_PROGRESS |
-| FN-018 | Local/IPFS synchronization engine | Dual-storage/storage infrastructure | Manifest synchronization and single registered-object synchronization implemented; durable full-object synchronization remains open | integration test + CI | IN_PROGRESS |
-| FN-019 | Conflict detection | Storage infrastructure | Divergence detection, conflict state persistence, and regression test implemented; CI verification pending | conflict test + CI | IN_PROGRESS |
+| FN-014 | IPFS/Kubo operational adapter | Dual-storage/storage infrastructure | Adapter implemented and live Kubo v0.43.1 CI-verified | adapter tests + CI | VERIFIED |
+| FN-015 | IPFS/Kubo logical canonical namespace | Dual-storage bootstrap | Namespace initialization/verification implemented and live Kubo v0.43.1 CI-verified | bootstrap test + CI | VERIFIED |
+| FN-016 | Dual-storage structural verification | Dual-storage bootstrap | Local + Kubo structural paths implemented and live Kubo CI-verified | cross-domain test + CI | VERIFIED |
+| FN-017 | Canonical storage manifest across both domains | Dual-storage bootstrap | Deterministic local manifest + Kubo reconciliation implemented and CI-verified | deterministic cross-storage test + CI | VERIFIED |
+| FN-018 | Local/IPFS synchronization engine | Dual-storage/storage infrastructure | Registered-object synchronization, content-hash verification, persistent distributed evidence, and multi-object reconciliation implemented and CI-verified | integration test + CI | VERIFIED |
+| FN-019 | Conflict detection | Storage infrastructure | Divergence detection, CONFLICT state persistence, and no-overwrite regression test implemented and CI-verified | conflict test + CI | VERIFIED |
 | FN-020 | Durable synchronization queue | Storage infrastructure | Not demonstrated | queue/restart test + CI | NOT_IMPLEMENTED |
 | FN-021 | Retry/backoff/circuit-breaker behavior | Storage infrastructure | Not demonstrated | failure-injection test + CI | NOT_IMPLEMENTED |
 | FN-022 | Storage Policy Engine | Storage infrastructure | Not demonstrated | policy tests + CI | NOT_IMPLEMENTED |
@@ -50,7 +50,7 @@
 
 ## Current Gap Concentration
 
-The highest-priority implementation gap is the **dual-storage bootstrap**:
+The highest-priority remaining implementation gap is the **durable synchronization layer**:
 
 ```text
 LOCAL STORAGE
@@ -68,7 +68,7 @@ SYNCHRONIZATION
 STORAGE_READY
 ```
 
-The current branch implements manifest synchronization, registered-object Local ↔ Kubo synchronization, content-hash verification, CID evidence, multi-object reconciliation, and conservative divergence detection. A divergent distributed object is recorded as CONFLICT rather than overwritten. This does **not** claim durable queues, conflict resolution policies that choose a winner, retry policy, or distributed replication.
+The current branch implements manifest synchronization, registered-object Local ↔ Kubo synchronization, content-hash verification, CID evidence, persistent distributed evidence, multi-object reconciliation, and conservative divergence detection. A divergent distributed object is recorded as CONFLICT rather than overwritten. This does **not** claim durable synchronization queues, conflict resolution policies that choose a winner, retry policy, circuit breakers, or distributed replication.
 
 The following layers depend on that foundation:
 
