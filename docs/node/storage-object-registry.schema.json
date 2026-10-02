@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"cpg://node-core/schema/object-registry-entry/0.1.0",
+  "title":"Node Core Object Registry Entry",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["object_id","object_class","relative_path","content_hash","storage_version","provider_type","location_state","object_state","synchronization_state"],
+  "properties":{
+    "object_id":{"type":"string","minLength":1},
+    "object_class":{"type":"string","enum":["identity","cryptography","configuration","state","record","recovery","protocol-reserved"]},
+    "relative_path":{"type":"string","minLength":1},
+    "content_hash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "storage_version":{"type":"string","minLength":1},
+    "provider_type":{"type":"string","enum":["LOCAL","DECENTRALIZED","EXTERNAL"]},
+    "location_state":{"type":"string","enum":["LOCAL_ONLY","DISTRIBUTED_ONLY","LOCAL_AND_DISTRIBUTED","SYNC_PENDING","SYNC_PROCESSING","MISSING_LOCAL","MISSING_DISTRIBUTED","CONFLICT","QUARANTINED"]},
+    "object_state":{"type":"string","enum":["PRESENT","MISSING","INVALID","QUARANTINED"]},
+    "synchronization_state":{"type":"string","enum":["NOT_SYNCHRONIZED","PROPAGATION_PENDING","PROPAGATING","THRESHOLD_NOT_REACHED","THRESHOLD_REACHED","SYNCHRONIZED","SYNC_FAILED","RETRY_WAIT","CONFLICT","QUARANTINED"]}
+  }
+}
