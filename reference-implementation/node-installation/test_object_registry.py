@@ -21,13 +21,18 @@ def main():
         manager = StorageManager(target)
         metadata = manager.put_json("record", "registry-record-0001", {"status": "VALID"})
         registry = ObjectRegistry(target)
-        registry.register({
-            **metadata,
+        registry_entry = {
+            "object_id": metadata["object_id"],
+            "object_class": metadata["object_class"],
+            "relative_path": metadata["relative_path"],
+            "content_hash": metadata["content_hash"],
+            "storage_version": metadata["storage_version"],
             "provider_type": "LOCAL",
             "location_state": "LOCAL_ONLY",
             "object_state": "PRESENT",
             "synchronization_state": "NOT_SYNCHRONIZED",
-        })
+        }
+        registry.register(registry_entry)
         assert registry.get("registry-record-0001")["location_state"] == "LOCAL_ONLY"
         try:
             registry.register({"object_id": "cpg-test", "object_class": "protocol-reserved"})
@@ -37,11 +42,7 @@ def main():
             raise AssertionError("protocol-reserved object was registered")
 
         invalid = {
-            **metadata,
-            "provider_type": "LOCAL",
-            "location_state": "LOCAL_ONLY",
-            "object_state": "PRESENT",
-            "synchronization_state": "NOT_SYNCHRONIZED",
+            **registry_entry,
             "content_hash": "invalid",
         }
         try:
