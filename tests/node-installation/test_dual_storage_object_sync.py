@@ -24,8 +24,24 @@ class FakeKubo(BaseHTTPRequestHandler):
 
         if self.path.startswith("/api/v0/files/write"):
             length = int(self.headers.get("Content-Length", "0"))
-            self.__class__.files[arg] = self.rfile.read(length)
-            self.__class__.cids[arg] = "bafy-test-" + hashlib.sha256(self.__class__.files[arg]).hexdigest()[:16]
+            body = self.rfile.read(length)
+            content_type = self.headers.get("Content-Type", "")
+            if content_type.startswith("multipart/form-data;"):
+                boundary = content_type.split("boundary=", 1)[1].encode("ascii")
+                marker = b"--" + boundary
+                parts = body.split(marker)
+                file_part = next(
+                    (part for part in parts if b"filename=" in part and b"\r\n\r\n" in part),
+                    None,
+                )
+                if file_part is None:
+                    self.send_response(400)
+                    self.end_headers()
+                    return
+                body = file_part.split(b"\r\n\r\n", 1)[1]
+                body = body.rstrip(b"\r\n-")
+            self.__class__.files[arg] = body
+            self.__class__.cids[arg] = "bafy-test-" + hashlib.sha256(body).hexdigest()[:16]
             self.send_response(200)
             self.end_headers()
             return
