@@ -239,6 +239,10 @@ jobs:
               print("durable synchronization queue restart recovery: PASS")
           PY
 
+      - name: Verify synchronization retry backoff and circuit breaker
+        run: |
+          PYTHONPATH=reference-implementation/node-installation python -m unittest discover -s tests/node-installation -p "test_dual_storage_object_sync.py"
+
       - name: Stop Kubo integration node
         if: always()
         run: docker rm -f cpg-kubo || true
