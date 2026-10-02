@@ -1,0 +1,9 @@
+{
+  "vector_id":"NODE-STORAGE-0001",
+  "purpose":"Create, retrieve, hash, and verify a protocol-neutral Node Core object.",
+  "expected":{
+    "retrievable":true,
+    "sha256_length":64,
+    "integrity_verification":true
+  }
+}
