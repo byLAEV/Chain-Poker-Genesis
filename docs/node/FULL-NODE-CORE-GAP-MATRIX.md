@@ -33,7 +33,7 @@
 | FN-017 | Canonical storage manifest across both domains | Dual-storage bootstrap | Deterministic local manifest + Kubo reconciliation implemented and CI-verified | deterministic cross-storage test + CI | VERIFIED |
 | FN-018 | Local/IPFS synchronization engine | Dual-storage/storage infrastructure | Registered-object synchronization, content-hash verification, persistent distributed evidence, and multi-object reconciliation implemented and CI-verified | integration test + CI | VERIFIED |
 | FN-019 | Conflict detection | Storage infrastructure | Divergence detection, CONFLICT state persistence, and no-overwrite regression test implemented and CI-verified | conflict test + CI | VERIFIED |
-| FN-020 | Durable synchronization queue | Storage infrastructure | Not demonstrated | queue/restart test + CI | NOT_IMPLEMENTED |
+| FN-020 | Durable synchronization queue | Storage infrastructure | Durable local queue, restart recovery, pending resumption, and completion persistence implemented and CI-verified | queue/restart test + CI | VERIFIED |
 | FN-021 | Retry/backoff/circuit-breaker behavior | Storage infrastructure | Not demonstrated | failure-injection test + CI | NOT_IMPLEMENTED |
 | FN-022 | Storage Policy Engine | Storage infrastructure | Not demonstrated | policy tests + CI | NOT_IMPLEMENTED |
 | FN-023 | Replication policy | Storage infrastructure | Not demonstrated | replication tests + CI | NOT_IMPLEMENTED |
@@ -50,7 +50,7 @@
 
 ## Current Gap Concentration
 
-The highest-priority remaining implementation gap is the **durable synchronization layer**:
+The highest-priority remaining implementation gap is the **synchronization reliability layer**:
 
 ```text
 LOCAL STORAGE
@@ -68,7 +68,7 @@ SYNCHRONIZATION
 STORAGE_READY
 ```
 
-The current branch implements manifest synchronization, registered-object Local ↔ Kubo synchronization, content-hash verification, CID evidence, persistent distributed evidence, multi-object reconciliation, and conservative divergence detection. A divergent distributed object is recorded as CONFLICT rather than overwritten. This does **not** claim durable synchronization queues, conflict resolution policies that choose a winner, retry policy, circuit breakers, or distributed replication.
+The current branch implements manifest synchronization, registered-object Local ↔ Kubo synchronization, content-hash verification, CID evidence, persistent distributed evidence, multi-object reconciliation, conservative divergence detection, and a durable local synchronization queue with restart recovery. A divergent distributed object is recorded as CONFLICT rather than overwritten. This does **not** claim conflict resolution policies that choose a winner, retry policy, circuit breakers, or distributed replication.
 
 The following layers depend on that foundation:
 
