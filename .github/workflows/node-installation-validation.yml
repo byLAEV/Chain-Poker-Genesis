@@ -131,7 +131,7 @@ jobs:
       - name: Verify dual-storage manifest and object synchronization primitives
         run: |
           python tests/node-installation/test_dual_storage_sync.py
-          PYTHONPATH=reference-implementation/node-installation python -m pytest -q tests/node-installation/test_dual_storage_object_sync.py
+          PYTHONPATH=reference-implementation/node-installation python tests/node-installation/test_dual_storage_object_sync.py
 
       - name: Start pinned Kubo integration node
         run: |
