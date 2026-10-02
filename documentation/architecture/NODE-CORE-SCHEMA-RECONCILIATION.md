@@ -54,3 +54,54 @@ This is not necessarily contradictory: installation readiness and distributed sy
 **Do not physically move the schema files yet.**
 
 The correct next operation is schema canonicalization, not folder movement.
+
+
+## Consumer Reconciliation — Current Cycle
+
+The executable implementation has now been checked against both installation-manifest contracts.
+
+### Node Core generator
+
+`reference-implementation/node-installation/bootstrap_node.py` generates the Node Core completion/ready shape: READY, NODE_CORE_READY, LOCAL/READY provider, COHERENT, NOT_EVALUATED synchronization, READY recovery, VERIFIED integrity, empty protocol associations, and NOT_INSTALLED CPG Protocol.
+
+### Node Core validator
+
+`validate_installation_manifest_schema.py` explicitly loads:
+
+`documentation/node-core/node-core-installation-manifest.schema.json`
+
+The generated manifest shape matches that schema.
+
+### Installation manifest test
+
+`test_installation_manifest.py` asserts the same Node Core completion invariants.
+
+### Legacy schema
+
+`docs/node/node-installation-manifest.schema.json` is structurally different. It describes an earlier/broader installation lifecycle and is not the schema consumed by the current Node Core validator.
+
+## Current decision
+
+For the **current Node Core implementation**, the canonical installation manifest contract is:
+
+`documentation/node-core/node-core-installation-manifest.schema.json`
+
+The historical duplicate at:
+
+`docs/node/node-core-installation-manifest.schema.json`
+
+is retained temporarily for compatibility and provenance. It has the same SHA/content as the canonical copy.
+
+The separate legacy:
+
+`docs/node/node-installation-manifest.schema.json`
+
+is not merged, renamed, or deleted in this cycle.
+
+## $id decision
+
+The current Node Core schema does not declare an explicit `$id`. Therefore no new semantic identifier is being invented during this physical migration. Introducing a canonical `$id` is deferred to a dedicated schema-versioning change.
+
+## Gate effect
+
+The Node Core manifest contract is sufficiently reconciled for the current migration. The remaining Gate 2 requirement is a clean validation of the repaired repository state.
