@@ -22,7 +22,7 @@ def main() -> int:
         run("verify_node_installation.py", root)
         run("verify_storage_coherence.py", root)
         run("test_installation_manifest.py", root)
-        run("test_node_installation_e2e.py", root)
+        subprocess.run([sys.executable, str(BASE / "test_node_installation_e2e.py")], check=True)
 
         manifest = json.loads((root / "node-installation-manifest.json").read_text(encoding="utf-8"))
         assert manifest["node"]["status"] == "READY"
