@@ -46,8 +46,20 @@ def main() -> int:
         if not (root / relative).is_dir():
             return fail(f"required path missing: {relative}")
 
+    if manifest.get("node", {}).get("status") != "READY":
+        return fail("node status is not READY")
+
     if manifest.get("readiness", {}).get("state") != "NODE_CORE_READY":
         return fail("node is not NODE_CORE_READY")
+
+    if manifest.get("provider", {}).get("type") != "LOCAL" or manifest.get("provider", {}).get("status") != "READY":
+        return fail("provider baseline is not LOCAL/READY")
+
+    if manifest.get("coherence", {}).get("status") != "COHERENT":
+        return fail("coherence status is not COHERENT")
+
+    if manifest.get("synchronization", {}).get("state") != "NOT_EVALUATED":
+        return fail("synchronization state is not NOT_EVALUATED")
 
     if manifest.get("protocol_associations") != []:
         return fail("protocol association list is not empty")
