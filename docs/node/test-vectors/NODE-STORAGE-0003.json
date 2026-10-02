@@ -1,0 +1,9 @@
+{
+  "vector_id":"NODE-STORAGE-0003",
+  "purpose":"Verify the local storage provider boundary.",
+  "expected":{
+    "provider_type":"LOCAL",
+    "status":"READY",
+    "external_provider":"NOT_PROVISIONED"
+  }
+}
