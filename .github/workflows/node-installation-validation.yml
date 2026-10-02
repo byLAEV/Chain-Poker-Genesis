@@ -119,6 +119,11 @@ jobs:
           cd reference-implementation/node-installation
           python test_specification_coverage.py
 
+      - name: Verify Storage Policy Engine
+        run: |
+          cd reference-implementation/node-installation
+          python test_storage_policy_engine.py
+
       - name: Verify Object Registry
         run: |
           cd reference-implementation/node-installation
