@@ -21,6 +21,7 @@ def main() -> int:
         run("bootstrap_node.py", root)
         run("verify_node_installation.py", root)
         run("verify_storage_coherence.py", root)
+        run("protocol_installation_boundary.py", root)
         run("test_installation_manifest.py", root)
         subprocess.run([sys.executable, str(BASE / "test_node_installation_e2e.py")], check=True)
 
