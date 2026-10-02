@@ -1,0 +1,8 @@
+{
+  "name": "Node Core",
+  "status": "structural-definition",
+  "scope": "Protocol-agnostic node infrastructure",
+  "parent_repository": "byLAEV/Chain-Poker-Genesis",
+  "protocol_dependency": null,
+  "notes": "Directory structure established as the independent Node Core layer. Protocol-specific logic belongs outside Node Core."
+}
