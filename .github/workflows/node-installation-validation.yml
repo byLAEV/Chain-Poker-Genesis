@@ -155,10 +155,12 @@ jobs:
           from pathlib import Path
           from object_registry import ObjectRegistry
           from storage_manager import StorageManager
+          from dual_storage_bootstrap import initialize_local
           from dual_storage_object_sync import KuboObjectSync
 
           with tempfile.TemporaryDirectory() as directory:
               root = Path(directory)
+              initialize_local(root)
               StorageManager(root).put_json("state", "ci-state-001", {"source": "real-kubo"})
               path = root / "node-storage/state/ci-state-001.json"
               digest = hashlib.sha256(path.read_bytes()).hexdigest()
