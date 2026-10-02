@@ -22,7 +22,7 @@ def main() -> int:
         run("verify_node_installation.py", root)
         run("verify_storage_coherence.py", root)
         run("protocol_installation_boundary.py", root)
-        subprocess.run([sys.executable, str(BASE / "release_integrity.py"), str(BASE.parents[2])], check=True)
+        subprocess.run([sys.executable, str(BASE / "release_integrity.py"), str(BASE.parents[1])], check=True)
         run("test_installation_manifest.py", root)
         subprocess.run([sys.executable, str(BASE / "test_node_installation_e2e.py")], check=True)
 
