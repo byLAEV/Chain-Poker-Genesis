@@ -37,6 +37,16 @@ jobs:
           cd reference-implementation/node-installation
           python test_runtime_lifecycle.py
 
+      - name: Verify Health and Recovery
+        run: |
+          cd reference-implementation/node-installation
+          python test_health_recovery.py
+
+      - name: Verify End-to-End Node Installation
+        run: |
+          cd reference-implementation/node-installation
+          python test_node_installation_e2e.py
+
       - name: Verify runtime readiness output
         run: |
           python reference-implementation/node-installation/node_runtime.py /tmp/cpg-node-test
