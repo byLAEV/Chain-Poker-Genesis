@@ -1,0 +1,9 @@
+{
+  "vector_id": "NODE-RUNTIME-0002",
+  "description": "Runtime rejects RUNNING when a required readiness condition is false",
+  "initial_state": "READY",
+  "condition": {"provider_ready": false},
+  "expected_transition": "REJECTED",
+  "expected_state": "READY",
+  "cpg_protocol": "NOT_INSTALLED"
+}
