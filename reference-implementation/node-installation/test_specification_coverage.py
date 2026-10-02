@@ -13,7 +13,7 @@ REQUIRED = [
 ]
 
 def main():
-    path = Path(__file__).resolve().parents[2] / "docs/node/NODE-CORE-SPECIFICATION-COVERAGE-AUDIT.md"
+    path = Path(__file__).resolve().parents[2] / "documentation/architecture/NODE-CORE-SPECIFICATION-COVERAGE-AUDIT.md"
     text = path.read_text(encoding="utf-8")
     missing = [item for item in REQUIRED if item not in text]
     if missing:
