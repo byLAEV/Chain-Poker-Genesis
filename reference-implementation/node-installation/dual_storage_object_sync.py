@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import secrets
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -50,11 +51,29 @@ class KuboObjectSync:
         self.timeout = timeout
         self.registry = ObjectRegistry(self.node_root)
 
-    def _request(self, endpoint: str, *, params: dict[str, str], data: bytes = b"") -> bytes:
+    def _request(
+        self,
+        endpoint: str,
+        *,
+        params: dict[str, str],
+        data: bytes = b"",
+        multipart: bool = False,
+    ) -> bytes:
         query = urllib.parse.urlencode(params)
+        headers = {}
+        body = data
+        if multipart:
+            boundary = "----CPGKubo" + secrets.token_hex(12)
+            headers["Content-Type"] = f"multipart/form-data; boundary={boundary}"
+            body = (
+                f"--{boundary}\r\n"
+                'Content-Disposition: form-data; name="file"; filename="object"\r\n'
+                "Content-Type: application/octet-stream\r\n\r\n"
+            ).encode("ascii") + data + f"\r\n--{boundary}--\r\n".encode("ascii")
         request = urllib.request.Request(
             f"{self.api_base}/api/v0/{endpoint}?{query}",
-            data=data,
+            data=body,
+            headers=headers,
             method="POST",
         )
         try:
@@ -62,6 +81,10 @@ class KuboObjectSync:
                 if response.status >= 300:
                     raise ObjectSynchronizationError(f"Kubo API returned HTTP {response.status}")
                 return response.read()
+        except urllib.error.HTTPError as exc:
+            raise ObjectSynchronizationError(
+                f"Kubo API returned HTTP {exc.code}"
+            ) from exc
         except (urllib.error.URLError, TimeoutError) as exc:
             raise ObjectSynchronizationError(f"Kubo API unavailable: {exc}") from exc
 
@@ -90,6 +113,7 @@ class KuboObjectSync:
             "files/write",
             params={"arg": path, "create": "true", "parents": "true", "truncate": "true"},
             data=data,
+            multipart=True,
         )
 
     def _stat(self, path: str) -> dict:
