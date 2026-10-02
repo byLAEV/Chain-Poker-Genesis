@@ -52,3 +52,13 @@ jobs:
         run: |
           cd reference-implementation/node-installation
           python test_storage_manager.py
+
+      
+      - name: Verify Storage Coherence
+        run: |
+          python reference-implementation/node-installation/verify_storage_coherence.py /tmp/cpg-node-test
+
+      - name: Verify Storage Provider
+        run: |
+          cd reference-implementation/node-installation
+          python test_storage_provider.py
