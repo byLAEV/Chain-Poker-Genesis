@@ -13,10 +13,10 @@
       "COPYRIGHT.md",
       "MAIN-STATE-MANIFEST-v1.json",
       "Main Temporal",
-      ".github",
-      ".devcontainer",
       "Node Core",
-      "CPG Protocol"
+      "CPG Protocol",
+      ".github",
+      ".devcontainer"
     ],
     "archive_container": "Main Temporal",
     "archive_policy": "Preserve the complete pre-migration main tree under Main Temporal without modifying its contents.",
@@ -62,12 +62,50 @@
     ".github",
     ".devcontainer"
   ],
+  "canonical_domains": {
+    "Node Core": [
+      "specifications",
+      "contracts",
+      "engines",
+      "reference-implementation",
+      "tests",
+      "test-vectors",
+      "storage",
+      "runtime",
+      "installation"
+    ],
+    "CPG Protocol": [
+      "specifications",
+      "contracts",
+      "manifests",
+      "engines",
+      "reference-implementation",
+      "tests",
+      "test-vectors",
+      "integration",
+      "runtime",
+      "state",
+      "ledger",
+      "consensus",
+      "table"
+    ],
+    "GitHub": [
+      ".github/workflows/main-structure-validation.yml",
+      ".github/workflows/node-core-structure-validation.yml",
+      ".github/workflows/cpg-protocol-structure-validation.yml"
+    ],
+    "Codespaces": [
+      ".devcontainer/devcontainer.json"
+    ]
+  },
   "migration_status": {
     "pre_migration_snapshot_verified": true,
-    "temporal_archive_created": false,
-    "canonical_root_created": false,
-    "github_infrastructure_created": false,
-    "codespaces_infrastructure_created": false,
+    "temporal_archive_created": true,
+    "canonical_root_created": true,
+    "github_infrastructure_created": true,
+    "codespaces_infrastructure_created": true,
+    "node_core_structure_created": true,
+    "cpg_protocol_structure_created": true,
     "content_migration_started": false
   }
 }
