@@ -143,6 +143,14 @@ class KuboObjectSync:
         if not isinstance(cid, str) or not cid:
             raise ObjectSynchronizationError("Kubo did not return an object CID")
 
+        self.registry.update_distribution_state(
+            object_id,
+            cid=cid,
+            version=entry["storage_version"],
+            location_state="LOCAL_AND_DISTRIBUTED",
+            synchronization_state="SYNCHRONIZED",
+        )
+
         return ObjectSynchronizationResult(
             object_id=object_id,
             content_hash=local_hash,
@@ -151,6 +159,13 @@ class KuboObjectSync:
             location_state="LOCAL_AND_DISTRIBUTED",
             synchronization_state="SYNCHRONIZED",
         )
+
+
+    def synchronize_all(self) -> list[ObjectSynchronizationResult]:
+        results = []
+        for object_id in sorted(self.registry.entries):
+            results.append(self.synchronize(object_id))
+        return results
 
 
 def synchronize_object(node_root: Path, kubo_api: str, object_id: str) -> ObjectSynchronizationResult:
