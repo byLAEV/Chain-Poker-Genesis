@@ -9,12 +9,53 @@ from pathlib import Path
 
 from dual_storage_object_sync import KuboObjectSync
 from synchronization_queue import DurableSynchronizationQueue
+from synchronization_reliability import RetryBackoffCircuitBreaker, SynchronizationCircuitOpenError
 from object_registry import ObjectRegistry
 from storage_manager import StorageManager
 from dual_storage_bootstrap import initialize_local
 
 
-class FakeKubo(BaseHTTPRequestHandler):
+
+
+class TestSynchronizationReliability(unittest.TestCase):
+    def test_retry_backoff_and_success_reset(self):
+        delays = []
+        attempts = []
+        failures = [RuntimeError("transient"), RuntimeError("transient")]
+        policy = RetryBackoffCircuitBreaker(max_retries=2, base_delay=0.25, backoff_multiplier=2.0, failure_threshold=5, sleep=delays.append)
+        def operation():
+            attempts.append(1)
+            if failures:
+                raise failures.pop(0)
+            return "ok"
+        self.assertEqual(policy.execute(operation), "ok")
+        self.assertEqual(len(attempts), 3)
+        self.assertEqual(delays, [0.25, 0.5])
+        self.assertEqual(policy.state, "CLOSED")
+
+    def test_circuit_opens_after_failure_threshold(self):
+        now = [0.0]
+        policy = RetryBackoffCircuitBreaker(max_retries=0, failure_threshold=2, recovery_timeout=10.0, sleep=lambda _: None, clock=lambda: now[0])
+        operation = lambda: (_ for _ in ()).throw(RuntimeError("failure"))
+        with self.assertRaises(RuntimeError):
+            policy.execute(operation)
+        with self.assertRaises(RuntimeError):
+            policy.execute(operation)
+        self.assertEqual(policy.state, "OPEN")
+        with self.assertRaises(SynchronizationCircuitOpenError):
+            policy.execute(lambda: "blocked")
+
+    def test_circuit_enters_half_open_after_recovery_timeout(self):
+        now = [0.0]
+        policy = RetryBackoffCircuitBreaker(max_retries=0, failure_threshold=1, recovery_timeout=5.0, sleep=lambda _: None, clock=lambda: now[0])
+        with self.assertRaises(RuntimeError):
+            policy.execute(lambda: (_ for _ in ()).throw(RuntimeError("failure")))
+        self.assertEqual(policy.state, "OPEN")
+        now[0] = 5.0
+        self.assertEqual(policy.state, "HALF_OPEN")
+        self.assertEqual(policy.execute(lambda: "recovered"), "recovered")
+        self.assertEqual(policy.state, "CLOSED")
+\n\nclass FakeKubo(BaseHTTPRequestHandler):
     files: dict[str, bytes] = {}
     cids: dict[str, str] = {}
     stat_missing_status: int = 500
