@@ -1,0 +1,47 @@
+{
+  "component": "Node Core Cryptography External Authentication References",
+  "status": "REFERENCE_ONLY",
+  "version": "0.1.0",
+  "target_capabilities": [
+    "cryptographic_login",
+    "challenge_response",
+    "OpenPGP_signing",
+    "GPG_signing",
+    "signature_verification",
+    "identity_association",
+    "record_signing",
+    "hardware_key_authentication"
+  ],
+  "references": [
+    [
+      "gpg/poldi",
+      "master",
+      "5d672355f3d27dc1f7e4729be5f098cd2bc9d448",
+      "PAM authentication using OpenPGP smartcards; reference for challenge/login and identity-to-account association."
+    ],
+    [
+      "gpg/gpgme",
+      "master",
+      "56bec336057a5876bf72b5e49e59626d2480f11f",
+      "GnuPG Made Easy; reference API for GPG operations, signing and verification."
+    ],
+    [
+      "openpgpjs/openpgpjs",
+      "main",
+      "8bc35df4887933a3b2661e3741b33ba5f347b935",
+      "OpenPGP implementation reference for browser/JavaScript signing and verification."
+    ],
+    [
+      "pgpainless/pgpainless",
+      "main",
+      "68666feafc639c6360a3e60706ec69659e58c24e",
+      "Java OpenPGP implementation; reference for key management, signatures and verification."
+    ],
+    [
+      "OpenPGP/web-key-directory",
+      "main",
+      null,
+      "OpenPGP key discovery reference if available; not pinned until repository is verified."
+    ]
+  ]
+}
