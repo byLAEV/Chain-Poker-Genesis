@@ -1,0 +1,37 @@
+{
+  "component": "Node Core Identity",
+  "version": "1.0.0",
+  "status": "IMPLEMENTED_PARTIAL",
+  "scope": "Protocol-neutral node identity and lifecycle infrastructure",
+  "implementation": {
+    "node_identity": true,
+    "node_id_derivation": true,
+    "node_life": true,
+    "lifecycle_event_chain": true,
+    "identity_validation": true,
+    "offline_snapshot": true,
+    "external_credential_adapters": false,
+    "binding": false,
+    "request_verification": false,
+    "zero_knowledge_production_adapter": false,
+    "persistent_storage_adapter": false,
+    "network_propagation": false,
+    "recovery_integration": false
+  },
+  "cryptographic_profile": {
+    "identity_algorithm": "Ed25519",
+    "node_id_derivation": "SHA-256(canonical identity material)",
+    "derivation_profile": "sha256-canonical-public-identity-v1"
+  },
+  "verification": {
+    "reference_tests": "Node Core/Tests/Identity/test_identity_core.py",
+    "production_security_audit": false,
+    "external_credential_interoperability": false
+  },
+  "protocol_isolation": {
+    "cpg_player_identity": false,
+    "cpg_table_membership": false,
+    "cpg_ledger": false,
+    "cpg_consensus": false
+  }
+}
