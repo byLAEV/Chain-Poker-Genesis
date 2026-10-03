@@ -1,0 +1,39 @@
+name: Node Core Verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Node Core/**"
+      - "scripts/node_core_audit.py"
+      - ".github/workflows/node-core-verification.yml"
+      - ".devcontainer/**"
+  pull_request:
+    paths:
+      - "Node Core/**"
+      - "scripts/node_core_audit.py"
+      - ".github/workflows/node-core-verification.yml"
+      - ".devcontainer/**"
+  workflow_dispatch:
+
+jobs:
+  node-core-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run Node Core structural audit
+        run: python scripts/node_core_audit.py
+
+      - name: Compile Node Core Python sources
+        run: |
+          python -m compileall -q "Node Core"
+
+      - name: Run Node Core verification tests
+        run: python -m unittest discover -s "Node Core/Tests/Verification" -p "test_*.py" -v
