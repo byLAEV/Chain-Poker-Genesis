@@ -30,6 +30,21 @@ def main():
             assert str(exc) == "protocol-reserved storage is not writable by Node Core"
         else:
             raise AssertionError("protocol-reserved write unexpectedly succeeded")
+
+        for bad_id in ("../escape", "a/b", "a\\\\b", "..", ""):
+            try:
+                manager.put_json("record", bad_id, {"x": 1})
+            except StorageError:
+                pass
+            else:
+                raise AssertionError("invalid object id accepted")
+        try:
+            manager.get_json("record", "missing-record")
+        except StorageError as exc:
+            assert str(exc) == "object not found"
+        else:
+            raise AssertionError("missing object unexpectedly returned")
+
         print("status = VERIFIED")
         print("storage_manager = READY")
         print("protocol_reserved = ISOLATED")
