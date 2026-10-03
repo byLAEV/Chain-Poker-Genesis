@@ -1,0 +1,1 @@
+{"component":"Node Core CLI","version":"1.0.0","status":"IMPLEMENTED_PARTIAL","scope":"Protocol-neutral operational command boundary","commands":["status","version"]}
