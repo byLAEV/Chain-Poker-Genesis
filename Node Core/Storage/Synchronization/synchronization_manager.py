@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+"""Synchronization state machine for Node Core Storage."""
+
+class SynchronizationState:
+    LOCAL_ONLY = "LOCAL_ONLY"
+    SYNC_PENDING = "SYNC_PENDING"
+    SYNC_PROCESSING = "SYNC_PROCESSING"
+    SYNCHRONIZED = "SYNCHRONIZED"
+    SYNC_FAILED = "SYNC_FAILED"
+    MISSING_LOCAL = "MISSING_LOCAL"
+    MISSING_DISTRIBUTED = "MISSING_DISTRIBUTED"
+    CONFLICT = "CONFLICT"
+    QUARANTINED = "QUARANTINED"
+
+ALLOWED_TRANSITIONS = {
+    "LOCAL_ONLY": {"SYNC_PENDING", "SYNCHRONIZED", "MISSING_LOCAL", "QUARANTINED"},
+    "SYNC_PENDING": {"SYNC_PROCESSING", "SYNC_FAILED", "SYNCHRONIZED", "CONFLICT"},
+    "SYNC_PROCESSING": {"SYNCHRONIZED", "SYNC_FAILED", "CONFLICT", "QUARANTINED"},
+    "SYNC_FAILED": {"SYNC_PENDING", "SYNC_PROCESSING", "QUARANTINED"},
+    "SYNCHRONIZED": {"MISSING_LOCAL", "MISSING_DISTRIBUTED", "CONFLICT", "QUARANTINED"},
+    "MISSING_LOCAL": {"SYNC_PROCESSING", "SYNCHRONIZED", "QUARANTINED"},
+    "MISSING_DISTRIBUTED": {"SYNC_PENDING", "SYNC_PROCESSING"},
+    "CONFLICT": {"SYNC_PROCESSING", "QUARANTINED"},
+    "QUARANTINED": set(),
+}
+
+class SynchronizationManager:
+    def transition(self, current, target):
+        if target not in ALLOWED_TRANSITIONS.get(current, set()):
+            raise ValueError(f"invalid synchronization transition: {current} -> {target}")
+        return target
