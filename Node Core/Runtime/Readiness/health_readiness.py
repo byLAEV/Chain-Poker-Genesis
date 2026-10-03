@@ -36,7 +36,7 @@ class HealthReport:
     def snapshot(self) -> dict[str, str]:
         return {
             "health": "HEALTHY" if self.healthy else "FAILED",
-            "readiness": "READY" if self.ready else "NOT_READY",
+            "readiness": "NODE_CORE_READY" if self.ready else "NOT_READY",
             "synchronization": self.synchronization,
             "cpg_protocol": self.cpg_protocol,
         }
