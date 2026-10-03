@@ -21,7 +21,7 @@ class RecoveryManager:
         runtime.transition(RuntimeState.RECOVERY)
         readiness = evaluate_readiness(self.root)
         if readiness.is_ready():
-            runtime.transition(RuntimeState.READY, readiness)
+            runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
             return runtime
         runtime.transition(RuntimeState.RECOVERY_FAILED)
         raise RuntimeError("Node Core recovery prerequisites are not satisfied")
