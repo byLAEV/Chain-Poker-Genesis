@@ -1,43 +1,18 @@
-# Node Core — Identity
+# Node Core Identity
 
-Status: IMPLEMENTED / PARTIAL
-Version: 1.0.0
+**Status:** IMPLEMENTED
+**Version:** 1.1.0
 
-Identity is a protocol-neutral Node Core service. It establishes the cryptographic identity and lifecycle of a node; it does not define CPG player identity, table membership, settlement, rake, or the CPG ledger.
+Node Core Identity provides the protocol-neutral cryptographic identity boundary for a node.
 
-## Implemented reference boundary
+Implemented: Ed25519 node identity generation; deterministic Node ID derivation; Node Life lifecycle and hash-linked events; identity validation and reconstruction; external credential verification; Ed25519 signature verification; offline snapshot; Identity API.
 
-- Ed25519 Node Identity generation.
-- Deterministic Node ID derivation from canonical public identity material.
-- Node Life creation.
-- Append-only lifecycle event chain with integrity hashes.
-- Identity validation.
-- Offline lifecycle reconstruction.
-- Canonical identity schema.
-- Identity Manager import boundary.
-- Reference tests, including tamper detection.
+Private keys are not persisted by the identity registry or snapshot. Production signing should use an external secure key provider.
 
-## Not yet implemented
+Lifecycle:
+UNINITIALIZED → CREATED → INITIALIZED → ACTIVE
+ACTIVE → SUSPENDED / TERMINATED
+SUSPENDED → ACTIVE / TERMINATED
+TERMINATED → RECOVERED → ACTIVE / TERMINATED
 
-- External credential adapters.
-- Identity binding / United Identity.
-- Protocol-controlled identity requests.
-- Production ZK proof systems.
-- Persistent identity storage and Kubo/IPFS integration.
-- Network identity propagation.
-- Recovery integration.
-- Production security audit.
-
-## Security boundary
-
-Private keys are not part of the canonical Node Identity record and are not serialized by the reference implementation. Key custody remains outside the identity record.
-
-The reference Node ID profile is explicit and deterministic:
-sha256-canonical-public-identity-v1
-
-This is a Node Core reference implementation of the defined cryptographic profile. It does not create CPG-specific identity semantics.
-
-## Verification
-
-Run:
-python3 "Node Core/Tests/Identity/test_identity_core.py"
+This module does not define CPG player identity, table membership, CPG ledger, CPG consensus, or poker state.
