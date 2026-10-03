@@ -1,27 +1,35 @@
 #!/usr/bin/env python3
-"""Node Core recovery integration."""
-
+"""Protocol-neutral Node Core recovery coordinator."""
 from __future__ import annotations
-import sys
+import json
 from pathlib import Path
-
-_RUNTIME_DIR = Path(__file__).resolve().parent.parent / "Runtime"
-sys.path.insert(0, str(_RUNTIME_DIR))
-
-from node_runtime import evaluate_readiness
-from runtime_state import Runtime, RuntimeState
+from .recovery_state import RecoveryRecord
 
 class RecoveryManager:
-    def __init__(self, root: Path):
-        self.root = root.resolve()
-
-    def recover(self, runtime: Runtime) -> Runtime:
-        if runtime.state not in (RuntimeState.RUNNING, RuntimeState.DEGRADED):
-            raise ValueError(f"recovery requires RUNNING or DEGRADED, got {runtime.state.value}")
-        runtime.transition(RuntimeState.RECOVERY)
-        readiness = evaluate_readiness(self.root)
-        if readiness.is_ready():
-            runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
-            return runtime
-        runtime.transition(RuntimeState.RECOVERY_FAILED)
-        raise RuntimeError("Node Core recovery prerequisites are not satisfied")
+    version="1.1.0"
+    def __init__(self, root):
+        self.root=Path(root).resolve()
+        self.recovery_dir=self.root/"node-storage/recovery"
+        self.state_file=self.recovery_dir/"node-recovery-state.json"
+    def inspect(self):
+        storage=self.root/"node-storage"
+        return {
+            "environment":self.root.is_dir(),
+            "storage":storage.is_dir(),
+            "configuration":(storage/"configuration/node-config.json").is_file(),
+            "state":(storage/"state/node-state.json").is_file(),
+            "recovery":self.recovery_dir.is_dir(),
+            "identity":(storage/"identity/node-identity.json").is_file(),
+        }
+    def recover(self):
+        self.recovery_dir.mkdir(parents=True,exist_ok=True)
+        checks=self.inspect()
+        if not checks["environment"] or not checks["storage"]:
+            return self._record("RECOVERY_FAILED",checks)
+        if not checks["configuration"] or not checks["state"]:
+            return self._record("RECOVERY_INCOMPLETE",checks)
+        return self._record("RECOVERY_READY",checks)
+    def _record(self,status,details):
+        record={"status":status,"details":details}
+        self.state_file.write_text(json.dumps(record,indent=2,sort_keys=True)+"\n",encoding="utf-8")
+        return record
