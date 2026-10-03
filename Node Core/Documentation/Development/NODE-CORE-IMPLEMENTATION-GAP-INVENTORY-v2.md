@@ -19,7 +19,7 @@
 |---|---|---|---|
 | Bootstrap / Installer | executable bootstrap + CI/E2E verification | IMPLEMENTED + VERIFIED | preserve baseline; expand negative cases |
 | Configuration | schemas + generated node configuration + readiness validation | IMPLEMENTED / PARTIAL | connect full configuration policy to runtime |
-| Identity | identity metadata + cryptographic connection specifications; no complete identity engine | SPECIFICATION / SCHEMA ONLY | define formal identity profile and implement |
+| Identity | executable offline Identity Core + canonical schema + lifecycle/tamper tests; production integration remains open | IMPLEMENTED / PARTIAL | integrate credential adapters, binding, persistence, propagation and recovery |
 | Cryptography Core | core specification; implementation directories remain placeholders | BLOCKED BY SPECIFICATION | freeze cryptographic profile before normative implementation |
 | Storage Manager | executable manager + tests + coherence validation | IMPLEMENTED / PARTIAL | expand failure and fallback coverage |
 | Object Registry | executable registry + tests | IMPLEMENTED / PARTIAL | expand integrity/schema edge cases |
