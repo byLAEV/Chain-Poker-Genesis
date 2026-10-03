@@ -25,7 +25,7 @@
 | Runtime | lifecycle implementation + tests + specification | IMPLEMENTED / PARTIAL | align every transition with readiness model |
 | Health / Readiness | implementation + tests + specification | IMPLEMENTED / PARTIAL | integrate into final operational gate |
 | Recovery | implementation + specification | IMPLEMENTED / PARTIAL | add interruption/corruption recovery tests |
-| Network / Synchronization | synchronization state implementation + tests | IMPLEMENTED / PARTIAL | complete actual network boundary before claiming network readiness |
+| Network / Synchronization | executable peer registry, TCP reference transport, message framing, hello handshake, propagation boundary, synchronization state + tests | IMPLEMENTED / PARTIAL | integrate authenticated production provider, decentralized discovery, and live synchronization verification |
 | Protocol Interface | installation boundary implementation + schema + specification | IMPLEMENTED / PARTIAL | verify rejection/isolation cases |
 | Configuration | schemas and manifest validation | IMPLEMENTED / PARTIAL | connect validation to complete runtime configuration |
 | Node Manager | structural directory / documentation evidence | STRUCTURAL ONLY | define contract and implement |
@@ -63,8 +63,8 @@ Identity implementation must therefore separate credential acquisition, identity
 6. Define CLI contract.
 7. Define Security boundary.
 8. Resolve the Formal Cryptographic Profile before implementing normative cryptographic primitives.
-9. Resolve the formal Identity profile and implement the Cryptographic Connection Engine.
-10. Integrate all completed components into the Local Readiness Gate.
+9. Resolve the formal Identity profile and implement the Cryptographic Connection Engine.\n10. Network implementation baseline: peer registry, transport framing, hello handshake, propagation and network-state observation are now executable.\n11. Integrate authenticated production transport and decentralized discovery only after the provider/security contract is frozen.
+12. Integrate all completed components into the Local Readiness Gate.
 
 ## Completion rule
 A subsystem cannot be marked complete because its directory, README, schema, or placeholder exists. Completion requires executable behavior where applicable, applicable automated tests, and verification evidence tied to a repository commit.
