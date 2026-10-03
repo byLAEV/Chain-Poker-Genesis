@@ -6,8 +6,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from .peer_registry import Peer, PeerRegistry
-from .transport import TCPReferenceTransport
+try:
+    from .peer_registry import Peer, PeerRegistry
+    from .transport import TCPReferenceTransport
+except ImportError:
+    from peer_registry import Peer, PeerRegistry
+    from transport import TCPReferenceTransport
 
 @dataclass(frozen=True)
 class NetworkState:
@@ -36,6 +40,13 @@ class NetworkManager:
         if peer is None:
             raise KeyError(peer_id)
         self.registry.update_state(peer_id, "CONNECTING")
+        try:
+            response = self.transport.send(peer.host, peer.port, {"type": "NODE_CORE_HELLO", "sender": self.node_id, "recipient": peer.peer_id})
+            if response.get("type") != "NODE_CORE_HELLO_ACK":
+                raise ConnectionError("peer did not acknowledge Node Core hello")
+        except Exception:
+            self.registry.update_state(peer_id, "FAILED")
+            raise
         self.registry.update_state(peer_id, "CONNECTED")
         return self.registry.get(peer_id)
 
