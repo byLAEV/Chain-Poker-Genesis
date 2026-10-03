@@ -25,8 +25,6 @@ class StorageLocator:
             entry = self.registry.get(object_id)
         except RegistryError as exc:
             raise StorageLocatorError(str(exc)) from exc
-        if entry.get("provider_type") != self.provider.provider_type:
-            raise StorageLocatorError("unsupported provider for current Node Core baseline")
         if entry.get("location_state") not in {
             "LOCAL_ONLY", "LOCAL_AND_DISTRIBUTED", "DISTRIBUTED_ONLY",
             "SYNC_PENDING", "SYNC_PROCESSING", "MISSING_LOCAL",
@@ -37,5 +35,6 @@ class StorageLocator:
             "object_id": object_id,
             "logical_path": entry["relative_path"],
             "provider_type": entry["provider_type"],
+            "cid": entry.get("cid"),
             "location_state": entry["location_state"],
         }
