@@ -80,9 +80,21 @@ Depends on:
 ### WP-07 — ZK adapter
 Deliver:
 - ZK verifier interface;
-- selected proof-system adapter;
+- proof-system adapter boundary;
 - public-input validation;
-- deterministic verification result.
+- deterministic verification result;
+- verification-key resolution contract;
+- request/context binding contract;
+- deterministic negative-test matrix.
+
+Current integration:
+- `Node Core/Identity/Verification/Zero-Knowledge/`
+- `Node Core/Tests/Identity/Zero-Knowledge/`
+
+Reference implementation source:
+- `candrea-rares/Decentralized-Zero-Knowledge-Poker`
+- pinned as external reference only;
+- poker-specific circuits remain outside Node Core.
 
 Depends on:
 - final ZK protocol selection.
@@ -180,6 +192,14 @@ Primary area:
 
 Node Core/Identity/
 
+ZK verification implementation area:
+
+Node Core/Identity/Verification/Zero-Knowledge/
+
+Reference and deterministic verification tests:
+
+Node Core/Tests/Identity/Zero-Knowledge/
+
 Related Node Core areas:
 
 - Bootstrap/
@@ -222,6 +242,8 @@ The first executable milestone should be a minimal offline Identity Core capable
 7. producing deterministic test output.
 
 External identity approach, ZK, Kubo/IPFS, and network propagation should be added only after this core is stable.
+
+ZK reference integration has now been established as an adapter boundary and deterministic test matrix. This does not yet select a production proof system.
 
 ## 7. Integration milestone
 
