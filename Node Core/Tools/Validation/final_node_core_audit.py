@@ -9,22 +9,31 @@ import sys
 import tempfile
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent
+VALIDATION_DIR = Path(__file__).resolve().parent
+NODE_CORE = VALIDATION_DIR.parents[1]
+TESTS = NODE_CORE / "Tests"
+REPO_ROOT = NODE_CORE.parent
 
-def run(script: str, root: Path) -> None:
-    subprocess.run([sys.executable, str(BASE / script), str(root)], check=True)
+def run(script: Path, root: Path) -> None:
+    subprocess.run([sys.executable, str(script), str(root)], check=True, cwd=REPO_ROOT)
 
 def main() -> int:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp) / "node"
 
-        run("bootstrap_node.py", root)
-        run("verify_node_installation.py", root)
-        run("verify_storage_coherence.py", root)
-        run("protocol_installation_boundary.py", root)
-        subprocess.run([sys.executable, str(BASE / "release_integrity.py"), str(BASE.parents[1])], check=True)
-        run("test_installation_manifest.py", root)
-        subprocess.run([sys.executable, str(BASE / "test_node_installation_e2e.py")], check=True)
+        run(NODE_CORE / "Bootstrap/Installer/bootstrap_node.py", root)
+        run(VALIDATION_DIR / "verify_node_installation.py", root)
+        run(VALIDATION_DIR / "verify_storage_coherence.py", root)
+        run(NODE_CORE / "Protocol Interface/Protocol Installation/protocol_installation_boundary.py", root)
+
+        subprocess.run(
+            [sys.executable, str(TESTS / "Integration/test_installation_manifest.py"), str(root)],
+            check=True, cwd=REPO_ROOT
+        )
+        subprocess.run(
+            [sys.executable, str(TESTS / "Integration/test_node_installation_e2e.py")],
+            check=True, cwd=REPO_ROOT
+        )
 
         manifest = json.loads((root / "node-installation-manifest.json").read_text(encoding="utf-8"))
         assert manifest["node"]["status"] == "READY"
@@ -38,7 +47,7 @@ def main() -> int:
         assert manifest["cpg_protocol"]["status"] == "NOT_INSTALLED"
 
         print("audit_status = PASS")
-        print("completion_gate = NODE_CORE_COMPLETE")
+        print("completion_gate = NODE_CORE_IMPLEMENTATION_BASELINE")
         print("protocol_associations = []")
         print("cpg_protocol = NOT_INSTALLED")
         print("synchronization = NOT_EVALUATED")
