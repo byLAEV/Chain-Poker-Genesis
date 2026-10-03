@@ -10,13 +10,20 @@
     "lifecycle_event_chain": true,
     "identity_validation": true,
     "offline_snapshot": true,
-    "external_credential_adapters": false,
-    "binding": false,
-    "request_verification": false,
+    "canonical_schema_validation": true,
+    "external_credential_interface": true,
+    "ed25519_credential_verification": true,
+    "binding": true,
+    "request_validation": true,
+    "verification_records": true,
+    "local_identity_store": true,
+    "continuity_recovery_boundary": true,
+    "public_propagation_reference": true,
+    "external_credential_adapters": "INTERFACE_ONLY",
+    "pgp_gpg_interoperability": false,
     "zero_knowledge_production_adapter": false,
-    "persistent_storage_adapter": false,
-    "network_propagation": false,
-    "recovery_integration": false
+    "encrypted_sensitive_store": false,
+    "network_propagation": false
   },
   "cryptographic_profile": {
     "identity_algorithm": "Ed25519",
@@ -24,9 +31,17 @@
     "derivation_profile": "sha256-canonical-public-identity-v1"
   },
   "verification": {
-    "reference_tests": "Node Core/Tests/Identity/test_identity_core.py",
+    "reference_tests": [
+      "Node Core/Tests/Identity/test_identity_core.py",
+      "Node Core/Tests/Identity/test_identity_completion.py"
+    ],
     "production_security_audit": false,
-    "external_credential_interoperability": false
+    "external_credential_interoperability": false,
+    "external_reference_patterns": [
+      "libp2p Peer IDs and Keys",
+      "go-libp2p Identify service",
+      "Matrix/Synapse signing-key lifecycle"
+    ]
   },
   "protocol_isolation": {
     "cpg_player_identity": false,
