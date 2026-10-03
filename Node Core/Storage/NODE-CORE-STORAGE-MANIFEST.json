@@ -1,11 +1,23 @@
 {
   "component": "Node Core Storage",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "IMPLEMENTED",
-  "scope": "Protocol-neutral local and decentralized storage substrate",
+  "scope": "Protocol-neutral local persistence, decentralized mirroring, synchronization, integrity verification, fallback, and recovery",
+  "architecture": {
+    "storage_manager": "IMPLEMENTED",
+    "storage_policy": "IMPLEMENTED",
+    "object_registry": "IMPLEMENTED",
+    "providers": "IMPLEMENTED",
+    "local": "IMPLEMENTED",
+    "kubo_ipfs": "IMPLEMENTED_REFERENCE_ADAPTER",
+    "synchronization": "IMPLEMENTED",
+    "integrity": "IMPLEMENTED",
+    "disaster_recovery": "IMPLEMENTED",
+    "api": "IMPLEMENTED"
+  },
   "providers": {
     "local": "IMPLEMENTED",
-    "kubo_ipfs_reference": "IMPLEMENTED",
+    "kubo_ipfs": "IMPLEMENTED_REFERENCE_ADAPTER",
     "external_provider": "BOUNDARY_ONLY"
   },
   "storage_classes": [
@@ -23,10 +35,13 @@
     "kubo_mirror": true,
     "kubo_preferred_read": true,
     "local_fallback": true,
-    "sync_state_tracking": true,
+    "synchronization_state_machine": true,
+    "synchronization_retry_boundary": true,
+    "disaster_recovery": true,
     "private_restricted_encryption_boundary": true,
     "protocol_reserved_write_protection": true,
-    "path_traversal_protection": true
+    "path_traversal_protection": true,
+    "provider_capabilities": true
   },
   "security_boundary": {
     "key_custody": "external",
@@ -34,12 +49,17 @@
     "node_core_does_not_store_encryption_keys": true
   },
   "verification": {
-    "reference_tests": "Node Core/Tests/Storage/test_storage_engine.py",
-    "live_kubo_network_verification": "environment-dependent"
+    "integration_test": "Node Core/Tests/Storage/test_storage_complete.py",
+    "existing_reference_tests": "Node Core/Tests/Storage/test_storage_engine.py",
+    "live_kubo_network_verification": "environment-dependent",
+    "local_runtime_execution": "not_verified_in_chat_environment"
   },
   "protocol_isolation": {
     "cpg_ledger": false,
     "cpg_consensus": false,
-    "cpg_table_state": false
+    "cpg_table_state": false,
+    "poker_rules": false,
+    "settlement": false,
+    "rake": false
   }
 }
