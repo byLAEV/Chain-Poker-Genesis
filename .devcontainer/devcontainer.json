@@ -1,0 +1,13 @@
+{
+  "name": "Chain Poker Genesis — Node Core",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  },
+  "postCreateCommand": "python scripts/node_core_audit.py && python -m compileall -q 'Node Core'",
+  "remoteUser": "vscode"
+}
