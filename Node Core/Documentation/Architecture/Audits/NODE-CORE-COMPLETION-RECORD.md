@@ -36,6 +36,14 @@ Several areas remain partial, specification-only, or structural. They are tracke
 
 In particular, production cryptographic and identity profiles, live distributed synchronization, Node Manager, CLI, API, Security, Time, and other structural subsystems remain outside the verified implementation baseline.
 
+## Network Implementation Update
+
+The Network subsystem has moved from synchronization-state-only evidence to an executable implementation baseline. The repository now contains peer registration, transport framing, Node Core handshake, message envelopes, propagation, and deterministic local tests.
+
+`network_status = IMPLEMENTED_PARTIAL`
+
+Live decentralized synchronization remains explicitly unevaluated until authenticated provider transport, peer discovery, propagation evidence, and synchronization thresholds are verified together.
+
 ## Explicit Boundary
 
 This completion record does not authorize or perform:
