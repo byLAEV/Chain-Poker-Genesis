@@ -54,12 +54,17 @@ class TCPReferenceTransport:
         self.host, self.port = server.getsockname()
         return self.host, self.port
 
-    def accept_once(self) -> dict[str, Any]:
+    def accept_once(self, handler=None) -> dict[str, Any]:
         if self._server is None:
             raise RuntimeError("transport is not listening")
         conn, _ = self._server.accept()
         with conn:
-            return decode_frame(conn)
+            message = decode_frame(conn)
+            if handler is not None:
+                response = handler(message)
+                if response is not None:
+                    conn.sendall(encode_frame(response))
+            return message
 
     def send(self, host: str, port: int, message: dict[str, Any], timeout: float = 2.0) -> dict[str, Any]:
         with socket.create_connection((host, port), timeout=timeout) as sock:
