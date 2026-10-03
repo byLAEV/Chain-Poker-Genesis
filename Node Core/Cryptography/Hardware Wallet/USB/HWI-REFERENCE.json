@@ -1,0 +1,23 @@
+{
+  "name": "Bitcoin Hardware Wallet Interface",
+  "repository": "bitcoin-core/HWI",
+  "url": "https://github.com/bitcoin-core/HWI",
+  "branch": "master",
+  "classification": "external-reference-and-integration-provider",
+  "license": "MIT",
+  "purpose": "USB hardware-wallet discovery and device-specific signing interface",
+  "node_core_role": "external signer transport provider",
+  "private_key_custody": "external-device-only",
+  "copy_source_code": false,
+  "reason": "HWI is Bitcoin-specific and already provides a standard device abstraction. Node Core should preserve a protocol-neutral signer boundary rather than vendor-locking its cryptographic core to a device implementation.",
+  "integration_strategy": "provider-or-controlled-process-bridge",
+  "required_capabilities": [
+    "device enumeration",
+    "device identification",
+    "public key retrieval",
+    "approval request",
+    "hardware-confirmed signature",
+    "signature return",
+    "disconnect"
+  ]
+}
