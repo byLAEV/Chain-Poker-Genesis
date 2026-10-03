@@ -1,0 +1,13 @@
+{
+  "repository": "opentimestamps/opentimestamps-client",
+  "commit": "cd71c7609421bed2a07b9642a3c02a58c9fd2cdf",
+  "status": "REFERENCE_ONLY",
+  "license": "LGPL-3.0-or-later",
+  "capabilities": [
+    "stamp",
+    "verify",
+    "upgrade",
+    "info",
+    "PGP-signed Git commit timestamping"
+  ]
+}
