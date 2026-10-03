@@ -7,6 +7,7 @@ STORAGE = Path(__file__).resolve().parents[2] / "Storage"
 sys.path.insert(0, str(STORAGE))
 sys.path.insert(0, str(STORAGE / "Storage Manager"))
 sys.path.insert(0, str(STORAGE / "Storage Policy"))
+sys.path.insert(0, str(STORAGE / "Synchronization"))
 from storage_manager import StorageManager
 from storage_policy import StoragePolicy, StoragePolicyError
 from storage_engine import StorageError
