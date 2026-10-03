@@ -24,6 +24,14 @@ The audit validates the complete protocol-neutral Node Core installation baselin
 12. Network synchronization remains NOT_EVALUATED.
 13. No Node Core operation installs or activates CPG.
 
+## Network Implementation Status
+
+The Network subsystem now has an executable protocol-neutral reference implementation covering peer registration, peer-state management, TCP framing, Node Core hello handshake, message envelopes, propagation, and network-state observation.
+
+Network implementation status: IMPLEMENTED / PARTIAL.
+
+This does not claim live decentralized synchronization. The final synchronization gate remains separate and requires authenticated production transport, decentralized peer discovery, synchronization evidence, and threshold verification.
+
 ## Completion Rule
 
 The Node Core may be declared NODE_CORE_COMPLETE only when every gate passes.
