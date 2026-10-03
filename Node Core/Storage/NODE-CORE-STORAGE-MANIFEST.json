@@ -1,0 +1,45 @@
+{
+  "component": "Node Core Storage",
+  "version": "1.0.0",
+  "status": "IMPLEMENTED",
+  "scope": "Protocol-neutral local and decentralized storage substrate",
+  "providers": {
+    "local": "IMPLEMENTED",
+    "kubo_ipfs_reference": "IMPLEMENTED",
+    "external_provider": "BOUNDARY_ONLY"
+  },
+  "storage_classes": [
+    "temporary",
+    "public",
+    "private",
+    "restricted",
+    "personal"
+  ],
+  "features": {
+    "canonical_layout": true,
+    "atomic_local_write": true,
+    "sha256_integrity": true,
+    "object_registry": true,
+    "kubo_mirror": true,
+    "kubo_preferred_read": true,
+    "local_fallback": true,
+    "sync_state_tracking": true,
+    "private_restricted_encryption_boundary": true,
+    "protocol_reserved_write_protection": true,
+    "path_traversal_protection": true
+  },
+  "security_boundary": {
+    "key_custody": "external",
+    "private_data_must_be_encrypted_before_distribution": true,
+    "node_core_does_not_store_encryption_keys": true
+  },
+  "verification": {
+    "reference_tests": "Node Core/Tests/Storage/test_storage_engine.py",
+    "live_kubo_network_verification": "environment-dependent"
+  },
+  "protocol_isolation": {
+    "cpg_ledger": false,
+    "cpg_consensus": false,
+    "cpg_table_state": false
+  }
+}
