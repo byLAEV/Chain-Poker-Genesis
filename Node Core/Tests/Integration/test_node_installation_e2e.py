@@ -38,6 +38,7 @@ def main() -> int:
 
         readiness = evaluate_readiness(root)
         runtime = initialize_and_verify(root)
+        assert readiness.configuration_ready
         assert runtime.state == RuntimeState.NODE_CORE_READY
         assert readiness.environment_ready
         assert readiness.identity_ready
