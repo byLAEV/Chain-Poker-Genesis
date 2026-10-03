@@ -1,0 +1,10 @@
+{
+  "component":"Node Core Protocol Interface",
+  "version":"1.1.0",
+  "status":"IMPLEMENTED",
+  "scope":"Protocol discovery, compatibility, registration, installation and lifecycle boundary",
+  "implemented":{"discovery":true,"manifest_validation":true,"capability_negotiation":true,"registration":true,"installation_state":true,"activation":true,"suspension":true,"removal":true},
+  "engine_versioning":"INDEPENDENT",
+  "node_core_updates_protocol_engines":"false",
+  "cpg_logic":"NOT_INCLUDED"
+}
