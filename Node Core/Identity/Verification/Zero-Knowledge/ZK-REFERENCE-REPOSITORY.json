@@ -1,0 +1,30 @@
+{
+  "name": "Node Core Zero-Knowledge Reference",
+  "type": "external-reference",
+  "repository": "candrea-rares/Decentralized-Zero-Knowledge-Poker",
+  "url": "https://github.com/candrea-rares/Decentralized-Zero-Knowledge-Poker",
+  "branch": "main",
+  "pinned_commit": "c6ca40add20945615eb1442c9ef41cf2c03e82d5",
+  "reference_scope": [
+    "zero-knowledge proof verification",
+    "Groth16",
+    "Circom",
+    "Poseidon",
+    "multi-party shuffle",
+    "re-encryption",
+    "partial decryption"
+  ],
+  "classification": "reference-only",
+  "node_core_status": "adapter-reference",
+  "copy_source_code": false,
+  "reason": "The external repository is an application-specific Texas Hold'em prototype. Node Core must remain protocol-agnostic.",
+  "license_note": "The fetched README does not state an explicit software license. Source files are therefore not copied into this repository.",
+  "verification_circuits": [
+    "publickey1.circom",
+    "encryptdeck52.circom",
+    "shuffle52reencrypt.circom",
+    "shuffle52final9.circom",
+    "partialdecrypt1.circom",
+    "finalreveal1.circom"
+  ]
+}
