@@ -16,7 +16,7 @@
 | Subsystem | Repository evidence | Current state | Next action |
 |---|---|---|---|
 | Bootstrap / Installer | bootstrap implementation + schemas + integration tests | IMPLEMENTED / PARTIAL | complete CI/E2E gate |
-| Identity | cryptographic-connection specification + identity schema; no complete engine implementation | SPECIFICATION / SCHEMA ONLY | define formal identity profile and implement |
+| Identity | executable offline Identity Core + schema + lifecycle/tamper tests; external credential/binding/storage/recovery layers remain open | IMPLEMENTED / PARTIAL | integrate credential adapters, binding, persistence, propagation and recovery |
 | Cryptography Core | architectural specification only; no complete engine | BLOCKED BY SPECIFICATION | freeze cryptographic profile before normative implementation |
 | Storage Manager | implementation + tests + specification | IMPLEMENTED / PARTIAL | expand failure/fallback verification |
 | Object Registry | implementation + tests + specification | IMPLEMENTED / PARTIAL | verify schema/integrity edge cases |
