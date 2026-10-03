@@ -62,15 +62,32 @@ export class OpenPGPProvider {
     });
   }
 
-  async verify({ message, verificationKeys, format = 'armored' }) {
-    const parsed = typeof message === 'string'
+  /**
+   * Verify a signed message or a detached signature.
+   *
+   * For detached signatures, pass `signature` separately. The signature is
+   * parsed with readSignature before calling the upstream verifier.
+   */
+  async verify({ message, signature, verificationKeys }) {
+    const parsedMessage = typeof message === 'string'
       ? await openpgp.readMessage({ armoredMessage: message })
       : await openpgp.readMessage({ binaryMessage: message });
 
+    if (signature !== undefined) {
+      const parsedSignature = typeof signature === 'string'
+        ? await openpgp.readSignature({ armoredSignature: signature })
+        : await openpgp.readSignature({ binarySignature: signature });
+
+      return openpgp.verify({
+        message: parsedMessage,
+        signature: parsedSignature,
+        verificationKeys
+      });
+    }
+
     return openpgp.verify({
-      message: parsed,
-      verificationKeys,
-      format
+      message: parsedMessage,
+      verificationKeys
     });
   }
 }
