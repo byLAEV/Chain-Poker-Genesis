@@ -16,6 +16,7 @@ RUNTIME = NODE_CORE / "Runtime"
 RECOVERY = NODE_CORE / "Recovery"
 
 sys.path.insert(0, str(RUNTIME))
+sys.path.insert(0, str(RUNTIME / "Readiness"))
 sys.path.insert(0, str(RECOVERY))
 
 from health_readiness import evaluate_health
