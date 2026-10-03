@@ -1,0 +1,91 @@
+{
+  "component": "Node Core Time External Reference Laboratory",
+  "status": "REFERENCE_ONLY",
+  "version": "0.1.0",
+  "rules": [
+    "external repositories are research references",
+    "not normative Node Core implementation",
+    "do not import code without license/provenance review",
+    "pin references to commits"
+  ],
+  "references": [
+    {
+      "repository": "OpenTimestamps/opentimestamps-client",
+      "branch": "master",
+      "commit": "cd71c7609421bed2a07b9642a3c02a58c9fd2cdf",
+      "purpose": "Timestamping / proof references"
+    },
+    {
+      "repository": "OpenTimestamps/opentimestamps-server",
+      "branch": "master",
+      "commit": "0508e63fbd4d3a3fb716519f8fb1119fedde2c8a",
+      "purpose": "Calendar server reference"
+    },
+    {
+      "repository": "OpenTimestamps/javascript-opentimestamps",
+      "branch": "master",
+      "commit": "c07ba8be0dae4e8721a84f32820abf7b2547a6ce",
+      "purpose": "JavaScript timestamping reference"
+    },
+    {
+      "repository": "OpenTimestamps/python-opentimestamps",
+      "branch": "master",
+      "commit": "3af46432efc4a4c4e7bba439c1f49bce808eb3e5",
+      "purpose": "Python timestamping reference"
+    },
+    {
+      "repository": "OpenTimestamps/rust-opentimestamps",
+      "branch": "master",
+      "commit": "c87e3e18284fd1bb9456e50721aa4e2796aed057",
+      "purpose": "Rust timestamping reference"
+    },
+    {
+      "repository": "eggert/tz",
+      "branch": "main",
+      "commit": "bec4d95af5bc600df799bdec8964a4c78e9b57b3",
+      "purpose": "IANA TZ database reference"
+    },
+    {
+      "repository": "richardcochran/linuxptp",
+      "branch": "master",
+      "commit": "227bbd4715bf4cb735be4947e987032f41457585",
+      "purpose": "IEEE 1588 PTP reference"
+    },
+    {
+      "repository": "ntpsec/ntpsec",
+      "branch": "master",
+      "commit": "4fcb67de9e7de7b1cf2434330966ef5df87895f1",
+      "purpose": "NTP/NTS reference"
+    },
+    {
+      "repository": "Time-Appliances-Project/Time-Card",
+      "branch": "master",
+      "commit": "1d49e310f7480968a4a0407ab46b1df4b7253dac",
+      "purpose": "GNSS/atomic-clock/PHC time appliance reference"
+    },
+    {
+      "repository": "Time-Appliances-Project/Open-Time-Server",
+      "branch": "master",
+      "commit": "2600b240c8df1edeba4108bd36142153f8db325f",
+      "purpose": "Open time server architecture reference"
+    },
+    {
+      "repository": "Time-Appliances-Project/Precise-Time-API",
+      "branch": "master",
+      "commit": "0027c3fb3e3093a7bfc9b51440b8b27982228c31",
+      "purpose": "Uncertainty-aware time API reference"
+    },
+    {
+      "repository": "Time-Appliances-Project/DC-PTP-Profile",
+      "branch": "master",
+      "commit": "e29d89411d7e98b3b023690f67893cb35a1c9760",
+      "purpose": "Data-center PTP profile reference"
+    },
+    {
+      "repository": "Time-Appliances-Project/TimeHAT",
+      "branch": "master",
+      "commit": "cdfd8205ceb415e3d36bd5b3b3cf006546f10bc6",
+      "purpose": "GNSS/PTP hardware reference"
+    }
+  ]
+}
