@@ -1,0 +1,42 @@
+{
+  "component": "Node Core Cryptography Core External References",
+  "status": "REFERENCE_ONLY",
+  "version": "0.1.0",
+  "references": [
+    {
+      "repository": "bitcoin-core/secp256k1",
+      "branch": "master",
+      "commit": "22245aedf4000e62b597d40091a23388f2fa533a",
+      "purpose": "ECDSA/secp256k1 and Schnorr primitives; private-key signing/public-key verification reference.",
+      "license": "MIT"
+    },
+    {
+      "repository": "bitcoin/bitcoin",
+      "branch": "master",
+      "commit": "66776840beb558f7e84451c2c55457f0e06242f0",
+      "purpose": "Bitcoin cryptographic integration, key/address/signature handling and wallet boundaries.",
+      "license": "MIT"
+    },
+    {
+      "repository": "lightningnetwork/lnd",
+      "branch": "master",
+      "commit": "f3a8f4e8ae8237ff2b40e4724de45085170df962",
+      "purpose": "Lightning Network cryptographic integration, key management and authenticated protocol usage.",
+      "license": "MIT"
+    },
+    {
+      "repository": "lightning/bolts",
+      "branch": "master",
+      "commit": "1aadb719b4007c4cea0ba6e36b08c4fb53788dee",
+      "purpose": "Lightning protocol specifications including cryptographic constructions and authenticated channels.",
+      "license": "MIT-style project repository; verify per file before reuse"
+    },
+    {
+      "repository": "jedisct1/libsodium",
+      "branch": "master",
+      "commit": "75c6d5520a3b99790696d98b554673697c71c5cc",
+      "purpose": "General-purpose authenticated encryption, public-key cryptography, hashing and key-exchange primitives.",
+      "license": "ISC-like / project licensing; verify upstream"
+    }
+  ]
+}
