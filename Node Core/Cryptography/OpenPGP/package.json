@@ -1,0 +1,9 @@
+{
+  "name": "@bylaev/node-core-openpgp",
+  "private": true,
+  "type": "module",
+  "description": "Node Core OpenPGP cryptography provider boundary",
+  "dependencies": {
+    "openpgp": "6.3.2"
+  }
+}
