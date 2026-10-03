@@ -1,0 +1,9 @@
+{
+  "status":"IMPLEMENTED",
+  "providers":{
+    "secp256k1":{"adapter":"IMPLEMENTED","upstream":"https://github.com/ofek/coincurve","commit":"2d11b1160c75ae8fd94fe8fe3f226aec176bf9bf"},
+    "openpgp":{"adapter":"IMPLEMENTED","upstream":"https://github.com/gpg/gpgmepy","commit":"a4b0c9f6e285c0a56b758f73cc4ee38c0b3e5c46"},
+    "libsodium":{"adapter":"IMPLEMENTED","upstream":"https://github.com/pyca/pynacl","commit":"a5d50e2c9d87a64f5d69c7d42fa79f03e49d08b6"},
+    "hardware_wallet":{"adapter":"IMPLEMENTED","upstream":"https://github.com/bitcoin-core/HWI","commit":"e63a0af2bf5c7c60b8cc71d99aba59068e8be0f0"}
+  }
+}
