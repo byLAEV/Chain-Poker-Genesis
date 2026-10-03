@@ -1,0 +1,12 @@
+{
+  "name": "Node Core Consensus",
+  "project": "Chain Poker Genesis by LAEV",
+  "layer": "Node Core",
+  "scope": "Node infrastructure consensus",
+  "status": "Architectural and conceptual specification",
+  "eligibility_filters": ["existence", "protocol_eligibility", "proof_of_function"],
+  "participation_model": "100 percent of the eligible universe when explicitly required",
+  "economic_slashing": false,
+  "activation_mechanisms": ["activation_height", "activation_timestamp"],
+  "application_scope_exclusions": ["CPG rules", "poker state", "table state", "CPG ledger", "settlement"]
+}
