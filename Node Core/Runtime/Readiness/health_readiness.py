@@ -16,6 +16,8 @@ class HealthReport:
     identity_ready: bool
     configuration_ready: bool
     storage_ready: bool
+    structure_ready: bool
+    integrity_ready: bool
     provider_ready: bool
     coherence_coherent: bool
     recovery_ready: bool
@@ -48,6 +50,8 @@ def evaluate_health(root: Path) -> HealthReport:
         identity_ready=readiness.identity_ready,
         configuration_ready=readiness.configuration_ready,
         storage_ready=readiness.storage_ready,
+        structure_ready=readiness.structure_ready,
+        integrity_ready=readiness.integrity_ready,
         provider_ready=evaluate_provider(root),
         coherence_coherent=evaluate_coherence(root),
         recovery_ready=readiness.recovery_ready,
