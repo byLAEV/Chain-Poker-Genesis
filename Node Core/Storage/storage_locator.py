@@ -2,6 +2,12 @@
 """Canonical logical-to-physical Node Core storage locator."""
 
 from __future__ import annotations
+import sys
+from pathlib import Path
+
+_STORAGE_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(_STORAGE_DIR / "Object Registry"))
+sys.path.insert(0, str(_STORAGE_DIR / "Providers"))
 
 from object_registry import ObjectRegistry, RegistryError
 from storage_provider import LocalStorageProvider
@@ -19,17 +25,14 @@ class StorageLocator:
             entry = self.registry.get(object_id)
         except RegistryError as exc:
             raise StorageLocatorError(str(exc)) from exc
-
         if entry.get("provider_type") != self.provider.provider_type:
             raise StorageLocatorError("unsupported provider for current Node Core baseline")
-
         if entry.get("location_state") not in {
             "LOCAL_ONLY", "LOCAL_AND_DISTRIBUTED", "DISTRIBUTED_ONLY",
             "SYNC_PENDING", "SYNC_PROCESSING", "MISSING_LOCAL",
             "MISSING_DISTRIBUTED", "CONFLICT", "QUARANTINED",
         }:
             raise StorageLocatorError("invalid location state")
-
         return {
             "object_id": object_id,
             "logical_path": entry["relative_path"],
