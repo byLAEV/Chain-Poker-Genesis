@@ -39,6 +39,19 @@ def main():
         assert location["logical_path"] == metadata["relative_path"]
         assert location["provider_type"] == "LOCAL"
         assert location["location_state"] == "LOCAL_ONLY"
+
+        registry = ObjectRegistry(target)
+        bad = dict(registry_entry)
+        bad["provider_type"] = "UNSUPPORTED"
+        bad["object_id"] = "locator-record-unsupported"
+        registry.register(bad)
+        try:
+            StorageLocator(target).locate("locator-record-unsupported")
+        except Exception:
+            pass
+        else:
+            raise AssertionError("unsupported provider unexpectedly accepted")
+
         print("status = VERIFIED")
         print("locator = READY")
 
