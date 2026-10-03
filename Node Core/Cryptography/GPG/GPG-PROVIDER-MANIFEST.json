@@ -1,0 +1,27 @@
+{
+  "component": "Node Core Cryptography GPG Provider",
+  "type": "external-cryptographic-provider",
+  "primary_reference": {
+    "repository": "gpg/gnupg",
+    "url": "https://github.com/gpg/gnupg",
+    "branch": "master"
+  },
+  "application_api_reference": {
+    "repository": "gpg/gpgme",
+    "url": "https://github.com/gpg/gpgme",
+    "branch": "master"
+  },
+  "capabilities": [
+    "key-discovery",
+    "signing",
+    "signature-verification",
+    "encryption",
+    "decryption",
+    "key-management-interface"
+  ],
+  "private_key_custody": "external-gnupg-boundary",
+  "node_core_private_key_storage": false,
+  "protocol_specific_logic": false,
+  "hardware_signer_compatibility": "possible-through-gnupg-agent-or-smartcard-boundary",
+  "status": "architecture-integrated-runtime-validation-pending"
+}
