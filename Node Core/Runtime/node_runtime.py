@@ -52,43 +52,46 @@ def evaluate_coherence(root: Path) -> bool:
         manifest = _load_json(manifest_path)
     except (OSError, json.JSONDecodeError):
         return False
-    if manifest.get("root") != "node-storage":
-        return False
-    if manifest.get("required_paths") != REQUIRED_PATHS:
-        return False
-    required_metadata = (
-        "node-storage/identity/node-identity.json",
-        "node-storage/configuration/node-config.json",
-        "node-storage/recovery/recovery.json",
+    return (
+        manifest.get("root") == "node-storage"
+        and manifest.get("required_paths") == REQUIRED_PATHS
+        and all((root / p).is_file() for p in (
+            "node-storage/identity/node-identity.json",
+            "node-storage/configuration/node-config.json",
+            "node-storage/recovery/recovery.json",
+        ))
     )
-    return all((root / relative).is_file() for relative in required_metadata)
 
 
 def evaluate_readiness(root: Path) -> Readiness:
     identity = _load_json(root / "node-storage/identity/node-identity.json")
     config = _load_json(root / "node-storage/configuration/node-config.json")
     recovery = _load_json(root / "node-storage/recovery/recovery.json")
+    installation = _load_json(root / "node-installation-manifest.json")
     return Readiness(
+        environment_ready=root.is_dir(),
         identity_ready=identity.get("identity_status") == "INITIALIZED",
-        configuration_ready=(
-            config.get("node_core_version") is not None
-            and config.get("protocol_associations") == []
-            and config.get("cpg_protocol") == "NOT_INSTALLED"
-        ),
         storage_ready=(root / "node-storage").is_dir(),
+        structure_ready=evaluate_coherence(root),
+        integrity_ready=installation.get("integrity", {}).get("status") == "VERIFIED",
+        recovery_ready=recovery.get("status") == "READY",
         provider_ready=evaluate_provider(root),
         coherence_coherent=evaluate_coherence(root),
-        recovery_ready=recovery.get("status") == "READY",
         protocol_associations_empty=config.get("protocol_associations") == [],
         cpg_not_installed=config.get("cpg_protocol") == "NOT_INSTALLED",
     )
 
 
 def initialize_and_verify(root: Path) -> Runtime:
+    readiness = evaluate_readiness(root)
     runtime = Runtime()
-    runtime.transition(RuntimeState.INITIALIZING)
-    runtime.transition(RuntimeState.VERIFYING)
-    runtime.transition(RuntimeState.READY, evaluate_readiness(root))
+    runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED, readiness)
+    runtime.transition(RuntimeState.IDENTITY_INITIALIZED, readiness)
+    runtime.transition(RuntimeState.STORAGE_INITIALIZED, readiness)
+    runtime.transition(RuntimeState.STORAGE_STRUCTURE_VERIFIED, readiness)
+    runtime.transition(RuntimeState.INTEGRITY_VERIFIED, readiness)
+    runtime.transition(RuntimeState.RECOVERY_READY, readiness)
+    runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
     return runtime
 
 
