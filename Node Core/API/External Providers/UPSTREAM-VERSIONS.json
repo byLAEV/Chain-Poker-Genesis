@@ -1,0 +1,9 @@
+{
+  "policy": "pinned-reference",
+  "providers": {
+    "kubo": {"repository":"https://github.com/ipfs/kubo","tag":"v0.43.1","commit":"46a53f55dd670059c86b7315919cd2e01caa3113"},
+    "libp2p": {"repository":"https://github.com/libp2p/py-libp2p","tag":"v0.6.0","commit":"b09e3fae5cd1f121a63e266789c0fa6a67603fc1"},
+    "gpgme": {"repository":"https://github.com/gpg/gpgme","tag":"gpgme-2.2.0","commit":"6b075516b88e3df70694a6f8cb9471388aa78aa8"},
+    "openpgpjs": {"repository":"https://github.com/openpgpjs/openpgpjs","tag":"v6.3.2","commit":"7315fc8044e7e41a56e724defae9fe9ba754bffc"}
+  }
+}
