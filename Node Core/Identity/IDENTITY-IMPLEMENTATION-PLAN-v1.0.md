@@ -285,7 +285,17 @@ Every implementation component SHALL be traceable to:
 
 ## 10. Current status
 
-The implementation plan is complete at the planning level.
+The first executable offline Identity Core milestone is now implemented in the repository.
 
-Production coding is blocked until the cryptographic and lifecycle decisions listed in the Identity Implementation Specification are formally resolved.
+Implemented milestone:
+- canonical Node Identity record;
+- Ed25519 identity generation;
+- deterministic Node ID derivation using the explicit Node Core cryptographic profile;
+- Node Life creation;
+- append-only lifecycle event chain;
+- identity validation;
+- lifecycle reconstruction;
+- executable positive and tamper-detection tests.
+
+Production integration remains partial. Credential adapters, binding, request verification, persistent storage, propagation, recovery integration, and production security audit remain open work packages.
 
