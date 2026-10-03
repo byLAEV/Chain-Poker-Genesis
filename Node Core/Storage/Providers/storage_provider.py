@@ -1,59 +1,53 @@
 #!/usr/bin/env python3
-"""Provider-neutral storage boundary for Node Core."""
+"""Provider-neutral storage contract and local provider."""
 
 from __future__ import annotations
 import sys
 from pathlib import Path
 
-_STORAGE_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(_STORAGE_DIR / "Storage Manager"))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
-from storage_manager import StorageManager, StorageError
+from storage_engine import LocalStore, StorageError
 
 class StorageProvider:
     provider_type = "ABSTRACT"
 
-    def put(self, object_class, object_id, value):
-        raise NotImplementedError
-    def get(self, object_class, object_id):
-        raise NotImplementedError
-    def exists(self, object_class, object_id):
-        raise NotImplementedError
-    def delete(self, object_class, object_id):
-        raise NotImplementedError
-    def verify(self, object_class, object_id, expected_hash):
-        raise NotImplementedError
-    def describe(self, object_class, object_id):
-        raise NotImplementedError
-    def status(self):
-        raise NotImplementedError
+    def put(self, object_class, object_id, data): raise NotImplementedError
+    def get(self, object_class, object_id): raise NotImplementedError
+    def exists(self, object_class, object_id): raise NotImplementedError
+    def delete(self, object_class, object_id): raise NotImplementedError
+    def verify(self, object_class, object_id, expected_hash): raise NotImplementedError
+    def status(self): raise NotImplementedError
+    def capabilities(self): return set()
 
 class LocalStorageProvider(StorageProvider):
     provider_type = "LOCAL"
 
     def __init__(self, node_root):
-        self.manager = StorageManager(node_root)
+        self.store = LocalStore(node_root)
 
-    def put(self, object_class, object_id, value):
-        return self.manager.put_json(object_class, object_id, value)
+    def put(self, object_class, object_id, data):
+        return self.store.put(object_class, object_id, data)
+
     def get(self, object_class, object_id):
-        return self.manager.get_json(object_class, object_id)
+        return self.store.get(object_class, object_id)
+
     def exists(self, object_class, object_id):
         try:
-            self.manager.get_json(object_class, object_id)
+            self.store.get(object_class, object_id)
             return True
         except StorageError:
             return False
+
     def delete(self, object_class, object_id):
-        path = self.manager._canonical_path(object_class, object_id)
-        if not path.is_file():
-            return False
-        path.unlink()
-        return True
+        return self.store.delete(object_class, object_id)
+
     def verify(self, object_class, object_id, expected_hash):
-        return self.manager.verify(object_class, object_id, expected_hash)
-    def describe(self, object_class, object_id):
-        _, metadata = self.manager.get_json(object_class, object_id)
-        return {"provider_type": self.provider_type, **metadata}
+        return self.store.verify(object_class, object_id, expected_hash)
+
     def status(self):
         return {"provider_type": self.provider_type, "status": "READY"}
+
+    def capabilities(self):
+        return {"put", "get", "delete", "exists", "verify", "atomic_write"}
