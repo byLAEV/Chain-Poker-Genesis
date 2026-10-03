@@ -46,10 +46,9 @@ def test_sha256_known_vector() -> None:
 
 def test_canonical_hash_known_vector() -> None:
     assert hash_canonical_hex({"a": 1}) == (
-        "015abd7f5cc57a2d0a2b1f1e4e0e0d6"
-        "f6f3f6d7d5c5d3f8f7d9d0b1c6d7f6b7"
-    ) or isinstance(hash_canonical_hex({"a": 1}), str)
-
+        "015abd7f5cc57a2dd94b7590f04ad808"
+        "4273905ee33ec5cebeae62276a97f862"
+    )
 
 def test_nonce_length_and_uniqueness() -> None:
     first = generate_nonce(32)
