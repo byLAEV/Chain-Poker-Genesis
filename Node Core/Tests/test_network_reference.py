@@ -44,18 +44,15 @@ def test_tcp_reference_transport() -> None:
     received: list[dict] = []
 
     def accept() -> None:
-        message = receiver.accept_once()
+        message = receiver.accept_once(lambda m: {"type": "NODE_CORE_HELLO_ACK"} if m["type"] == "NODE_CORE_HELLO" else None)
         received.append(message)
-        with_ack = {"type": "NODE_CORE_HELLO_ACK"}
-        # The reference accept_once is intentionally one-way; ACK framing is
-        # tested independently below.
-        assert message["type"] == "NODE_CORE_MESSAGE" or message["type"] == "NODE_CORE_HELLO"
 
     thread = threading.Thread(target=accept)
     thread.start()
 
     with socket.create_connection((host, port), timeout=2) as sock:
         sock.sendall(transport.encode_frame({"type": "NODE_CORE_HELLO", "sender": "node-a"}))
+        assert transport.decode_frame(sock) == {"type": "NODE_CORE_HELLO_ACK"}
 
     thread.join(timeout=2)
     assert received == [{"type": "NODE_CORE_HELLO", "sender": "node-a"}]
