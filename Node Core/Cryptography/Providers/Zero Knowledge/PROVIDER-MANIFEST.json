@@ -1,0 +1,11 @@
+{
+  "status":"IMPLEMENTED",
+  "provider":"RISC Zero",
+  "adapter":"IMPLEMENTED",
+  "upstream":"https://github.com/risc0/risc0",
+  "version":"0.20.1",
+  "capabilities":["proof_verification","receipt_verification"],
+  "execution_boundary":"EXTERNAL_VERIFIER_PROCESS",
+  "cpg_circuit":"NOT_DEFINED",
+  "protocol_specific_logic":"NONE"
+}
