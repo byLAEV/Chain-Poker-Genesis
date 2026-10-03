@@ -7,20 +7,33 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+NODE_CORE = Path(__file__).resolve().parents[2]
+BOOTSTRAP = NODE_CORE / "Bootstrap/Installer/bootstrap_node.py"
+VERIFY = NODE_CORE / "Tools/Validation/verify_node_installation.py"
+COHERENCE = NODE_CORE / "Tools/Validation/verify_storage_coherence.py"
+RUNTIME = NODE_CORE / "Runtime"
+RECOVERY = NODE_CORE / "Recovery"
+
+sys.path.insert(0, str(RUNTIME))
+sys.path.insert(0, str(RECOVERY))
+
 from health_readiness import evaluate_health
 from node_runtime import evaluate_readiness, initialize_and_verify
 from recovery_manager import RecoveryManager
 from runtime_state import RuntimeState
 
+
 def run(command: list[str]) -> None:
-    subprocess.run(command, check=True)
+    subprocess.run(command, check=True, cwd=NODE_CORE)
+
 
 def main() -> int:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp) / "node"
-        run([sys.executable, "bootstrap_node.py", str(root)])
-        run([sys.executable, "verify_node_installation.py", str(root)])
-        run([sys.executable, "verify_storage_coherence.py", str(root)])
+        run([sys.executable, str(BOOTSTRAP), str(root)])
+        run([sys.executable, str(VERIFY), str(root)])
+        run([sys.executable, str(COHERENCE), str(root)])
 
         runtime = initialize_and_verify(root)
         assert runtime.state == RuntimeState.READY
@@ -47,6 +60,7 @@ def main() -> int:
         print("recovery = VERIFIED")
         print("cpg_protocol = NOT_INSTALLED")
         return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
