@@ -2,30 +2,39 @@
 
 **Project:** Chain Poker Genesis by LAEV  
 **Component:** Node Core  
-**Status:** NODE_CORE_COMPLETE_FOR_REPOSITORY_SPECIFICATION
+**Current status:** NODE_CORE_IMPLEMENTATION_BASELINE
 
-## Verification Evidence
+## Current Verification Evidence
 
-- Pull Request #12: Node Core coverage corrections validated before merge.
-- GitHub Actions Run #113: all Node Core validation steps passed.
-- Pull Request #13: temporary CI trigger marker cleanup.
-- GitHub Actions Run #117: all Node Core validation steps passed on the cleanup branch.
-- Pull Request #13 was merged into `main`.
-- Final `main` workflow contains no temporary post-merge validation marker.
+- GitHub Actions workflow: **Node Core Verification**
+- Run: **#37**
+- Run ID: `37086100258`
+- Verified commit: `ab81b793c328778c870bde6fcb5192d7fad318b7`
+- Final audit result: `audit_status = PASS`
+- Completion gate: `NODE_CORE_IMPLEMENTATION_BASELINE`
 
-## Completion Conditions
+The complete current workflow passed its structural audit, compilation, verification tests, installation manifest test, end-to-end test, and final Node Core audit.
 
-The Node Core completion gate is satisfied for the current specification baseline.
+## Baseline Conditions
 
-Required protocol-boundary invariants remain:
+The verified installation demonstrates:
 
+    node_status = NODE_CORE_READY
     protocol_associations = []
     cpg_protocol = NOT_INSTALLED
     synchronization = NOT_EVALUATED
 
-## Historical Specification Reconciliation
+Recovery was also verified to return the runtime from `DEGRADED` through `RECOVERY` to `NODE_CORE_READY`.
 
-The executable Node Core is complete and CI-verified against the current repository specification baseline. A separate historical reconciliation remains required before claiming that every historical LAEV Node/Infrastructure/Security requirement has been fully reconciled. The historical source PDFs are referenced by `docs/node/README.md` but are not decoded by the current GitHub text-file interface.
+## Scope of Completion
+
+This record establishes completion of the **current repository implementation baseline**, not completion of every Node Core subsystem.
+
+Several areas remain partial, specification-only, or structural. They are tracked in:
+
+`Node Core/Documentation/Development/NODE-CORE-IMPLEMENTATION-GAP-INVENTORY-v2.md`
+
+In particular, production cryptographic and identity profiles, live distributed synchronization, Node Manager, CLI, API, Security, Time, and other structural subsystems remain outside the verified implementation baseline.
 
 ## Explicit Boundary
 
@@ -34,8 +43,12 @@ This completion record does not authorize or perform:
 - Chain Poker Genesis installation;
 - protocol association;
 - protocol activation;
+- CPG gameplay execution;
+- CPG ledger operation;
 - network synchronization;
 - decentralized provider provisioning;
 - external provider provisioning.
 
-Node Core completion means the installation infrastructure and its verification boundary are complete for this phase.
+Node Core completion for this phase means that the current protocol-neutral installation and runtime baseline is executable and CI-verified.
+
+**Author:** Lerry Alexander Elizondo Villalobos — LAEV / byLAEV
