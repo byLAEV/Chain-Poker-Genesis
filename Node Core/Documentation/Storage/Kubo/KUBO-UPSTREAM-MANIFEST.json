@@ -1,0 +1,56 @@
+{
+  "provider": "Kubo",
+  "ecosystem": "IPFS",
+  "upstream_repository": "https://github.com/ipfs/kubo",
+  "upstream_license": [
+    "Apache-2.0",
+    "MIT"
+  ],
+  "integration_type": "external_provider_adapter",
+  "node_core_owns": [
+    "storage_api",
+    "storage_manager",
+    "storage_policy",
+    "canonical_object_metadata",
+    "local_provider",
+    "coherence",
+    "synchronization_state",
+    "retry_and_recovery_policy",
+    "authorization_boundary"
+  ],
+  "kubo_owns": [
+    "ipfs_daemon",
+    "kubo_repository",
+    "datastore",
+    "blockstore",
+    "bitswap",
+    "libp2p_integration",
+    "routing",
+    "gateway",
+    "rpc",
+    "cli",
+    "kubo_configuration"
+  ],
+  "required_adapter_capabilities": [
+    "put",
+    "get",
+    "has",
+    "stat",
+    "remove",
+    "pin",
+    "unpin",
+    "resolve",
+    "verify",
+    "health",
+    "version"
+  ],
+  "read_policy": {
+    "primary": "kubo_when_available_and_integrity_valid",
+    "fallback": "local_node_storage",
+    "conflict": "do_not_silently_overwrite"
+  },
+  "installation_policy": {
+    "silent_install": false,
+    "provider_optional_at_baseline": true
+  }
+}
