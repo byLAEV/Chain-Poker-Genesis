@@ -27,8 +27,9 @@ def main() -> int:
         shutil.rmtree(root)
 
     subprocess.run(
-        [sys.executable, "bootstrap_node.py", str(root)],
+        [sys.executable, str(Path(__file__).resolve().parents[2] / "Bootstrap/Installer/bootstrap_node.py"), str(root)],
         check=True,
+        cwd=Path(__file__).resolve().parents[2],
     )
 
     manifest_path = root / "node-installation-manifest.json"
