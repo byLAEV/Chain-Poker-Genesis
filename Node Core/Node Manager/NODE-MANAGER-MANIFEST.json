@@ -1,0 +1,1 @@
+{"component":"Node Core Node Manager","version":"1.0.0","status":"IMPLEMENTED_PARTIAL","scope":"Node lifecycle, engine registration and protocol association boundary","implementation":{"lifecycle":true,"engine_registry":true,"protocol_registry":true,"status_snapshot":true},"exclusions":{"cpg_protocol_activation_logic":true}}
