@@ -1,56 +1,95 @@
 #!/usr/bin/env python3
-"""Protocol-neutral orchestration boundary for Node Core Storage."""
-
+"""Protocol-neutral high-level Node Core Storage Manager."""
 from __future__ import annotations
+
 import sys
 from pathlib import Path
-from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "Storage Policy"))
-sys.path.insert(0, str(ROOT / "Object Registry"))
-sys.path.insert(0, str(ROOT / "Integrity"))
-sys.path.insert(0, str(ROOT / "Disaster Recovery"))
-sys.path.insert(0, str(ROOT / "Synchronization"))
+for subdir in ("Storage Policy", "Object Registry", "Integrity", "Disaster Recovery", "Synchronization"):
+    sys.path.insert(0, str(ROOT / subdir))
 
-from storage_engine import StorageEngine, StorageError
+from storage_engine import StorageEngine, StorageError, sha256
 from storage_policy import StoragePolicy
-from object_registry import ObjectRegistry, RegistryError
+from object_registry import ObjectRegistry
 from integrity_manager import IntegrityManager
 from storage_recovery import StorageRecovery
 from synchronization_manager import SynchronizationManager
 
 class StorageManager:
-    """Single high-level entry point for storage lifecycle operations."""
-
     def __init__(self, node_root, *, kubo=None):
         self.node_root = Path(node_root).resolve()
         self.engine = StorageEngine(self.node_root, kubo=kubo)
         self.policy = StoragePolicy()
         self.registry = ObjectRegistry(self.node_root)
         self.integrity = IntegrityManager(self.engine)
-        self.recovery = StorageRecovery(self.engine, self.registry, self.integrity)
         self.synchronization = SynchronizationManager()
+        self.recovery = StorageRecovery(self.engine, self.registry, self.integrity)
 
     def put(self, object_class, object_id, data, *, mirror=True, encrypted=False):
-        rule = self.policy.validate_write(object_class, mirror=mirror, encrypted=encrypted)
-        metadata = self.engine.put(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
-        metadata.update(rule)
-        self.registry.upsert(metadata)
-        return metadata
+        policy = self.policy.validate_write(object_class, mirror=mirror, encrypted=encrypted)
+        metadata = self.engine.put_local(object_class, object_id, data)
+        if encrypted:
+            metadata["encryption_state"] = "ENCRYPTED"
+
+        if mirror:
+            try:
+                cid = self.engine.mirror(data)
+                metadata.update({
+                    "provider_type": "DECENTRALIZED",
+                    "location_state": "LOCAL_AND_DISTRIBUTED",
+                    "synchronization_state": "SYNCHRONIZED",
+                    "cid": cid,
+                })
+            except Exception as exc:
+                metadata.update({
+                    "provider_type": "LOCAL",
+                    "location_state": "SYNC_PENDING",
+                    "synchronization_state": "SYNC_FAILED",
+                    "sync_error": type(exc).__name__,
+                })
+
+        metadata.update(policy)
+        return self.registry.upsert(metadata)
 
     def get(self, object_class, object_id):
-        return self.engine.get(object_class, object_id)
+        entry = self.registry.get(object_id)
+        if entry["object_class"] != object_class:
+            raise StorageError("object class does not match registry entry")
+
+        cid = entry.get("cid")
+        if cid and self.engine.kubo:
+            try:
+                data = self.engine.read_distributed(cid)
+                if sha256(data) == entry["content_hash"]:
+                    return data, {**entry, "read_source": "KUBO_IPFS"}
+            except Exception:
+                pass
+
+        try:
+            data, metadata = self.engine.get_local(object_class, object_id)
+        except StorageError:
+            if cid:
+                return self.recovery.recover(object_id)
+            raise
+
+        if sha256(data) != entry["content_hash"]:
+            raise StorageError("local content integrity mismatch")
+        return data, {**entry, "read_source": "LOCAL_FALLBACK" if cid else "LOCAL"}
 
     def update(self, object_class, object_id, data, *, mirror=True, encrypted=False):
-        if not self.engine.exists(object_class, object_id):
-            raise StorageError("object not found")
+        self.registry.get(object_id)
         return self.put(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
 
     def delete(self, object_class, object_id):
         self.policy.validate_delete(object_class)
-        deleted = self.engine.delete(object_class, object_id)
+        entry = self.registry.get(object_id)
+        if entry.get("cid") and self.engine.kubo:
+            try:
+                self.engine.kubo.unpin(entry["cid"])
+            except Exception:
+                pass
+        deleted = self.engine.delete_local(object_class, object_id)
         if deleted:
             self.registry.remove(object_id)
         return deleted
@@ -64,15 +103,36 @@ class StorageManager:
 
     def synchronize(self, object_id):
         entry = self.registry.get(object_id)
-        current = entry.get("location_state", "LOCAL_ONLY")
-        if current == "LOCAL_ONLY":
-            self.synchronization.transition(current, "SYNC_PENDING")
-        result = self.engine.synchronize(
-            entry["object_class"], object_id,
-            encrypted=entry.get("encryption_state") == "ENCRYPTED"
-        )
-        self.registry.upsert(result)
-        return result
+        if not self.engine.exists_local(entry["object_class"], object_id):
+            raise StorageError("cannot synchronize missing local object")
+        try:
+            self.synchronization.transition(entry["location_state"], "SYNC_PROCESSING")
+        except ValueError:
+            pass
+        try:
+            data, local_metadata = self.engine.get_local(entry["object_class"], object_id)
+            if sha256(data) != entry["content_hash"]:
+                raise StorageError("local content integrity mismatch")
+            if entry["object_class"] in {"private", "restricted"} and entry.get("encryption_state") != "ENCRYPTED":
+                raise StorageError("private/restricted distribution requires encrypted bytes")
+            cid = self.engine.mirror(data)
+            entry.update(local_metadata)
+            entry.update({
+                "provider_type": "DECENTRALIZED",
+                "location_state": "LOCAL_AND_DISTRIBUTED",
+                "synchronization_state": "SYNCHRONIZED",
+                "cid": cid,
+                "encryption_state": entry.get("encryption_state", "PLAINTEXT"),
+            })
+            return self.registry.upsert(entry)
+        except Exception as exc:
+            entry.update({
+                "location_state": "SYNC_PENDING",
+                "synchronization_state": "SYNC_FAILED",
+                "sync_error": type(exc).__name__,
+            })
+            self.registry.upsert(entry)
+            raise
 
     def recover(self, object_id):
         return self.recovery.recover(object_id)
