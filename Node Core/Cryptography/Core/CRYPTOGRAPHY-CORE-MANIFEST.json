@@ -1,0 +1,19 @@
+{
+  "component": "Node Core Cryptography Core",
+  "version": "0.1.0",
+  "status": "IMPLEMENTED_PARTIAL",
+  "scope": "Node Core infrastructure cryptographic primitives",
+  "implemented": [
+    "canonical_serialization",
+    "sha256",
+    "canonical_sha256",
+    "csprng_nonce",
+    "constant_time_byte_comparison"
+  ],
+  "not_yet_implemented": [
+    "ed25519",
+    "aead",
+    "merkle"
+  ],
+  "boundary": "Protocol-specific cryptography remains outside Node Core Cryptography Core."
+}
