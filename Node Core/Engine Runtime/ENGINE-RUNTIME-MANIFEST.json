@@ -1,0 +1,1 @@
+{"component":"Node Core Engine Runtime","version":"1.0.0","status":"IMPLEMENTED_PARTIAL","scope":"Protocol-neutral engine registration and lifecycle","implementation":{"registry":true,"version_record":true,"start_stop":true,"snapshot":true,"sandbox":false,"resource_limits":false}}
