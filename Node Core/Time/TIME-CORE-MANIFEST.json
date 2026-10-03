@@ -1,0 +1,2 @@
+{"component":"Node Core Time","version":"1.0.0","status":"IMPLEMENTED_PARTIAL","scope":"Protocol-neutral local time reference and sequential time records","implementation":{"reference_clock":true,"timestamp_generation":true,"sequential_records":true,"hash_chain":true,"network_time_consensus":false}
+}
