@@ -1,0 +1,27 @@
+{
+  "component": "Node Core Network",
+  "version": "0.1.0",
+  "status": "IMPLEMENTED_PARTIAL",
+  "scope": "Protocol-neutral peer registration, transport, messaging and propagation boundary",
+  "implemented": [
+    "peer_registry",
+    "peer_state_model",
+    "tcp_reference_transport",
+    "length_prefixed_json_framing",
+    "node_core_hello_handshake",
+    "message_envelope",
+    "propagation",
+    "network_state_observation"
+  ],
+  "verification": {
+    "local_reference_tests": true,
+    "production_secure_transport": false,
+    "live_decentralized_discovery": false,
+    "live_state_synchronization": false
+  },
+  "protocol_isolation": {
+    "cpg_activation": false,
+    "cpg_consensus": false,
+    "cpg_ledger": false
+  }
+}
