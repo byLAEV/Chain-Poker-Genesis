@@ -1,0 +1,24 @@
+{
+  "name": "Node Core OpenPGP Provider",
+  "type": "cryptography-provider",
+  "provider": "openpgpjs",
+  "repository": "https://github.com/openpgpjs/openpgpjs",
+  "release": "v6.3.2",
+  "license": "LGPL-3.0-or-later",
+  "protocol": "OpenPGP / RFC 9580",
+  "source_mode": "external-dependency",
+  "source_copied": false,
+  "capabilities": [
+    "key-management",
+    "encryption",
+    "decryption",
+    "digital-signatures",
+    "signature-verification",
+    "armored-messages",
+    "binary-messages"
+  ],
+  "node_core_scope": "generic-cryptographic-provider",
+  "cpg_scope": null,
+  "private_key_policy": "external-key-material; never protocol state",
+  "runtime_status": "provider-boundary-established"
+}
