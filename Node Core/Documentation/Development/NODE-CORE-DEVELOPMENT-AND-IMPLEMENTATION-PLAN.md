@@ -54,6 +54,12 @@ Node Core must not absorb CPG-specific table, poker, settlement, ledger, viewer,
 
 Node Core provides the infrastructure and protocol-installation boundary over which a future protocol can operate.
 
-## 5. Completion condition
+## 5. Current audit baseline
+
+The repository currently contains **301 files under Node Core: 99 non-placeholder files and 202 `.gitkeep` structural placeholders**. This is an inventory fact, not a completion percentage. The implementation inventory must be maintained against executable evidence rather than file count.
+
+Current executable Python inventory includes Bootstrap, Runtime, Recovery, Storage, Network synchronization, Protocol Interface, Release Integrity, validation tools, and tests. Areas represented only by structural placeholders remain implementation work.
+
+## 6. Completion condition
 
 Node Core is not closed until a clean environment can install, initialize, verify, start, report readiness, restart, and recover the node using repository-defined procedures, with the verification evidence recorded in GitHub.
