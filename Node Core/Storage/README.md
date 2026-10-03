@@ -1,60 +1,48 @@
-# Node Core — Storage
+# Node Core Storage
 
-**Status:** IMPLEMENTED  
-**Version:** 1.0.0
+**Status:** IMPLEMENTED
+**Version:** 1.1.0
+**Scope:** Protocol-neutral persistence substrate for Node Core.
 
-Storage is the protocol-neutral persistence substrate of Node Core. It is independent from the CPG ledger and must not write protocol-reserved storage.
+Node Core Storage provides local persistence, optional decentralized mirroring through Kubo/IPFS, integrity verification, synchronization state management, fallback reads, and recovery from a verified distributed copy.
 
 ## Architecture
 
-```text
-Node Core Storage
-│
-├── Local Node Storage
-│   ├── temporary
-│   ├── public
-│   ├── private
-│   ├── restricted
-│   ├── personal
-│   └── state / recovery
-│
-├── Object Registry
-│
-└── Kubo / IPFS mirror
-    ├── Public
-    ├── Private
-    ├── Restricted
-    └── Encrypted
-```
+- Storage Manager — single orchestration boundary.
+- Storage Policy — class and distribution rules.
+- Object Registry — canonical object metadata and location state.
+- Providers — provider contract and provider registry.
+- Local — authoritative local persistence.
+- Kubo-IPFS — optional decentralized mirror.
+- Synchronization — explicit synchronization state machine.
+- Integrity — content hash verification.
+- Disaster Recovery — verified distributed-to-local restoration.
+- API — programmatic boundary delegating to Storage Manager.
 
-The local store is the authoritative write boundary. When Kubo is configured and an object has a valid CID, Kubo is the preferred read source. Any Kubo read failure or integrity mismatch falls back to the local copy.
+## Storage classes
 
-## Implemented
+temporary, public, private, restricted, personal.
 
-- Canonical storage layout.
-- Atomic local writes.
-- Object registry metadata.
-- SHA-256 content integrity.
-- Local storage classes.
-- Kubo/IPFS HTTP reference adapter.
-- Local → Kubo mirror.
-- Kubo-preferred reads.
-- Local fallback on Kubo failure.
-- Synchronization-state metadata.
-- Path traversal protection.
-- Protocol-reserved write protection.
-- Private/restricted distribution encryption boundary.
-- Storage status reporting.
-- Executable reference tests.
+protocol-reserved is explicitly outside the Node Core write boundary.
 
-## Security boundary
+Private and restricted objects may be mirrored only when the caller supplies encrypted bytes. Node Core Storage does not own encryption keys.
 
-Node Core Storage never owns private encryption keys. For private or restricted objects, plaintext may remain local when distribution is disabled. If distribution is requested, the caller must provide encrypted bytes and explicitly mark the operation as encrypted.
+## Read and recovery model
+
+1. Local persistence is the authoritative write boundary.
+2. When a valid CID exists, Kubo/IPFS is the preferred read source.
+3. Distributed content is hash-verified against the registry.
+4. Kubo failure or invalid distributed content falls back to local storage.
+5. If the local copy is missing, Disaster Recovery restores it from Kubo only after hash verification.
+6. The recovery result is written back to the canonical registry.
 
 ## Verification
 
 Run:
+python3 "Node Core/Tests/Storage/test_storage_complete.py"
 
-`python3 "Node Core/Tests/Storage/test_storage_engine.py"`
+The live Kubo path remains environment-dependent.
 
-A live Kubo node is environment-dependent; absence of Kubo does not invalidate the local storage implementation because the defined local fallback remains operational.
+## Protocol isolation
+
+This subsystem does not implement or store CPG ledger, CPG consensus, poker table state, settlement, rake, or poker rules. Those belong to protocol layers above Node Core Storage.
