@@ -4,15 +4,16 @@ import unittest
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parents[2]
+NODE_CORE = Path(__file__).resolve().parents[2]
+REPO_ROOT = NODE_CORE.parent
 
 
 class TestNodeCoreStructure(unittest.TestCase):
     def test_structural_audit_passes(self):
-        script = ROOT.parent.parent / "scripts" / "node_core_audit.py"
+        script = REPO_ROOT / "scripts" / "node_core_audit.py"
         result = subprocess.run(
             [sys.executable, str(script)],
-            cwd=ROOT.parent.parent,
+            cwd=REPO_ROOT,
             capture_output=True,
             text=True,
         )
