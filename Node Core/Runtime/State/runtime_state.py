@@ -52,6 +52,7 @@ class Readiness:
     environment_ready: bool = False
     identity_ready: bool = False
     storage_ready: bool = False
+    configuration_ready: bool = False
     structure_ready: bool = False
     integrity_ready: bool = False
     recovery_ready: bool = False
@@ -65,6 +66,7 @@ class Readiness:
             self.environment_ready or True,
             self.identity_ready,
             self.storage_ready,
+            self.configuration_ready,
             self.structure_ready,
             self.integrity_ready,
             self.recovery_ready,
