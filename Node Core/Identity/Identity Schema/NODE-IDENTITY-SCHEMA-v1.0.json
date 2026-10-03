@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Node Core Identity",
+  "type": "object",
+  "required": ["identity_version","node_id","public_key_algorithm","public_key","creation_timestamp","status"],
+  "properties": {
+    "identity_version": {"const": "1.0"},
+    "node_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "public_key_algorithm": {"const": "Ed25519"},
+    "public_key": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "creation_timestamp": {"type": "integer", "minimum": 0},
+    "status": {"type": "string", "enum": ["VALIDATED","REGISTERED","ACTIVE","SUSPENDED","REVOKED"]},
+    "registration_reference": {"type": ["string","null"]},
+    "verification_reference": {"type": ["string","null"]}
+  },
+  "additionalProperties": false
+}
