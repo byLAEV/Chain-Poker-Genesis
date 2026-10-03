@@ -1,6 +1,6 @@
 # Node Core Implementation Gap Inventory
 
-**Baseline:** 2026-10-02
+**Baseline:** 2026-10-03
 **Scope:** Node Core only
 **Method:** repository evidence, executable files, schemas, specifications, and tests.
 
@@ -18,10 +18,10 @@
 | Bootstrap / Installer | bootstrap implementation + schemas + integration tests | IMPLEMENTED / PARTIAL | complete CI/E2E gate |
 | Identity | executable offline Identity Core + schema + lifecycle/tamper tests; external credential/binding/storage/recovery layers remain open | IMPLEMENTED / PARTIAL | integrate credential adapters, binding, persistence, propagation and recovery |
 | Cryptography Core | architectural specification only; no complete engine | BLOCKED BY SPECIFICATION | freeze cryptographic profile before normative implementation |
-| Storage Manager | implementation + tests + specification | IMPLEMENTED / PARTIAL | expand failure/fallback verification |
-| Object Registry | implementation + tests + specification | IMPLEMENTED / PARTIAL | verify schema/integrity edge cases |
-| Storage Provider | local provider implementation + tests | IMPLEMENTED / PARTIAL | establish distributed-provider contract and fallback tests |
-| Storage Locator | implementation + tests + specification | IMPLEMENTED / PARTIAL | complete all location-state cases |
+| Storage Manager | complete StorageEngine + LocalStore + Kubo reference adapter + tests | IMPLEMENTED + VERIFIED | live Kubo verification remains environment-dependent |
+| Object Registry | implementation + tests + specification | IMPLEMENTED / PARTIAL | integrate complete registry schema verification |
+| Storage Provider | local provider + Kubo reference provider + fallback orchestration | IMPLEMENTED + VERIFIED | live decentralized provider verification |
+| Storage Locator | implementation + tests + specification | IMPLEMENTED / PARTIAL | reconcile every registry state with engine |
 | Runtime | lifecycle implementation + tests + specification | IMPLEMENTED / PARTIAL | align every transition with readiness model |
 | Health / Readiness | implementation + tests + specification | IMPLEMENTED / PARTIAL | integrate into final operational gate |
 | Recovery | implementation + specification | IMPLEMENTED / PARTIAL | add interruption/corruption recovery tests |
@@ -43,28 +43,21 @@
 ### Cryptography
 The current Cryptographic Core specification explicitly leaves the cryptographic profile open. A normative production implementation must not silently choose algorithms, encodings, derivation rules, or Merkle semantics.
 
-Required before normative cryptographic implementation:
-1. Formal Cryptographic Profile.
-2. Canonical Serialization Specification.
-3. Merkle Tree Specification.
-4. Cryptographic Test Vector Suite.
-
 ### Identity
-The historical Cryptographic Connection specification documents multiple credential paths but explicitly leaves hardware-wallet protocol, validation algorithms, secure local storage, derivation policy, and recovery details unspecified.
-
-Identity implementation must therefore separate credential acquisition, identity derivation, identity validation, and node activation, and must not invent unspecified protocol behavior.
+Identity now has an executable offline reference core. Production credential acquisition, binding, persistent storage, propagation, and recovery remain separate integration layers.
 
 ## Immediate execution order
 1. Finish current GitHub Actions E2E/final-audit gate.
 2. Reconcile Runtime implementation with the canonical readiness state model.
 3. Close Bootstrap/Configuration installation verification.
-4. Expand Storage negative/fallback tests.
+4. Complete Storage live Kubo verification when a Kubo environment is available.
 5. Define Node Manager contract.
 6. Define CLI contract.
 7. Define Security boundary.
 8. Resolve the Formal Cryptographic Profile before implementing normative cryptographic primitives.
-9. Resolve the formal Identity profile and implement the Cryptographic Connection Engine.\n10. Network implementation baseline: peer registry, transport framing, hello handshake, propagation and network-state observation are now executable.\n11. Integrate authenticated production transport and decentralized discovery only after the provider/security contract is frozen.
-12. Integrate all completed components into the Local Readiness Gate.
+9. Resolve remaining Identity production integration contracts.
+10. Complete authenticated Network transport/discovery and live synchronization verification.
+11. Integrate all completed components into the Local Readiness Gate.
 
 ## Completion rule
 A subsystem cannot be marked complete because its directory, README, schema, or placeholder exists. Completion requires executable behavior where applicable, applicable automated tests, and verification evidence tied to a repository commit.
