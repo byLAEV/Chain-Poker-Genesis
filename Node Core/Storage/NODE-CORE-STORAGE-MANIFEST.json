@@ -1,6 +1,6 @@
 {
   "component": "Node Core Storage",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "IMPLEMENTED",
   "scope": "Protocol-neutral local persistence, decentralized mirroring, synchronization, integrity verification, fallback, and recovery",
   "architecture": {
@@ -15,18 +15,7 @@
     "disaster_recovery": "IMPLEMENTED",
     "api": "IMPLEMENTED"
   },
-  "providers": {
-    "local": "IMPLEMENTED",
-    "kubo_ipfs": "IMPLEMENTED_REFERENCE_ADAPTER",
-    "external_provider": "BOUNDARY_ONLY"
-  },
-  "storage_classes": [
-    "temporary",
-    "public",
-    "private",
-    "restricted",
-    "personal"
-  ],
+  "storage_classes": ["temporary", "public", "private", "restricted", "personal"],
   "features": {
     "canonical_layout": true,
     "atomic_local_write": true,
@@ -40,8 +29,7 @@
     "disaster_recovery": true,
     "private_restricted_encryption_boundary": true,
     "protocol_reserved_write_protection": true,
-    "path_traversal_protection": true,
-    "provider_capabilities": true
+    "path_traversal_protection": true
   },
   "security_boundary": {
     "key_custody": "external",
@@ -50,9 +38,8 @@
   },
   "verification": {
     "integration_test": "Node Core/Tests/Storage/test_storage_complete.py",
-    "existing_reference_tests": "Node Core/Tests/Storage/test_storage_engine.py",
     "live_kubo_network_verification": "environment-dependent",
-    "local_runtime_execution": "not_verified_in_chat_environment"
+    "runtime_execution_in_chat_environment": "not_available"
   },
   "protocol_isolation": {
     "cpg_ledger": false,
