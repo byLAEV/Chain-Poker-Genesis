@@ -1,0 +1,9 @@
+{
+  "component":"Node Core Recovery",
+  "version":"1.1.0",
+  "status":"IMPLEMENTED",
+  "scope":"Protocol-neutral Node Core recovery prerequisites and state",
+  "implemented":{"environment_inspection":true,"storage_prerequisite_check":true,"recovery_boundary":true,"recovery_status_record":true},
+  "delegated":{"storage_object_recovery":"Node Core/Storage/Disaster Recovery","private_key_recovery":"EXTERNAL","protocol_state_recovery":"PROTOCOL_SPECIFIC"},
+  "protocol_isolation":{"cpg_ledger":false,"cpg_consensus":false,"cpg_table_state":false}
+}
