@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verified decentralized-to-local recovery."""
 from __future__ import annotations
-from storage_engine import sha256, StorageError
+from storage_engine import sha256
 
 class RecoveryError(Exception):
     pass
@@ -34,16 +34,9 @@ class StorageRecovery:
             "recovery_state": "RECOVERED",
             "encryption_state": entry.get("encryption_state", "PLAINTEXT"),
         })
-        metadata.update({
-            k: entry[k] for k in ("policy_version", "distribution_allowed",
-                                  "encryption_required_for_distribution")
-            if k in entry
-        })
-        self.engine.local.registry_path.write_text(
-            __import__("json").dumps(
-                {**self.engine.registry(), object_id: metadata},
-                indent=2, sort_keys=True
-            ) + "\n",
-            encoding="utf-8",
-        )
-        return self.registry.upsert(metadata)
+        for key in ("policy_version", "distribution_allowed",
+                    "encryption_required_for_distribution"):
+            if key in entry:
+                metadata[key] = entry[key]
+        saved = self.registry.upsert(metadata)
+        return data, saved
