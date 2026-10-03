@@ -73,6 +73,7 @@ def evaluate_readiness(root: Path) -> Readiness:
         environment_ready=root.is_dir(),
         identity_ready=identity.get("identity_status") == "INITIALIZED",
         storage_ready=(root / "node-storage").is_dir(),
+        configuration_ready=all(key in config for key in ("node_core_version", "decentralized_storage", "protocol_associations", "cpg_protocol")),
         structure_ready=evaluate_coherence(root),
         integrity_ready=installation.get("integrity", {}).get("status") == "VERIFIED",
         recovery_ready=recovery.get("status") == "READY",
