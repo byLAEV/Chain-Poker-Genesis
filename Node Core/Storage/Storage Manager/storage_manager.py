@@ -1,78 +1,77 @@
 #!/usr/bin/env python3
-"""Protocol-neutral Node Core Storage Manager."""
+"""Protocol-neutral orchestration boundary for Node Core Storage."""
 
 from __future__ import annotations
-import hashlib
-import json
+import sys
 from pathlib import Path
+from typing import Any
 
-STORAGE_VERSION = "0.1.0"
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "Storage Policy"))
+sys.path.insert(0, str(ROOT / "Object Registry"))
+sys.path.insert(0, str(ROOT / "Integrity"))
+sys.path.insert(0, str(ROOT / "Disaster Recovery"))
 
-CLASS_DIRS = {
-    "identity": "identity",
-    "cryptography": "cryptography",
-    "configuration": "configuration",
-    "state": "state",
-    "record": "records",
-    "recovery": "recovery",
-    "protocol-reserved": "protocol",
-}
-
-class StorageError(Exception):
-    pass
+from storage_engine import StorageEngine, StorageError
+from storage_policy import StoragePolicy
+from object_registry import ObjectRegistry, RegistryError
+from integrity_manager import IntegrityManager
+from storage_recovery import StorageRecovery
 
 class StorageManager:
-    def __init__(self, node_root):
+    """Single high-level entry point for storage lifecycle operations."""
+
+    def __init__(self, node_root, *, kubo=None):
         self.node_root = Path(node_root).resolve()
-        self.storage_root = (self.node_root / "node-storage").resolve()
-        if not self.storage_root.is_dir():
-            raise StorageError("node storage root does not exist")
+        self.engine = StorageEngine(self.node_root, kubo=kubo)
+        self.policy = StoragePolicy()
+        self.registry = ObjectRegistry(self.node_root)
+        self.integrity = IntegrityManager(self.engine)
+        self.recovery = StorageRecovery(self.engine, self.registry, self.integrity)
 
-    def _canonical_path(self, object_class, object_id):
-        if object_class not in CLASS_DIRS:
-            raise StorageError("unsupported object class")
-        if not object_id or "/" in object_id or chr(92) in object_id or ".." in object_id:
-            raise StorageError("invalid object id")
-        if object_class == "protocol-reserved":
-            raise StorageError("protocol-reserved storage is not writable by Node Core")
-        path = (self.storage_root / CLASS_DIRS[object_class] / (object_id + ".json")).resolve()
-        if self.storage_root not in path.parents:
-            raise StorageError("object path escapes storage root")
-        return path
+    def put(self, object_class, object_id, data, *, mirror=True, encrypted=False):
+        rule = self.policy.validate_write(object_class, mirror=mirror, encrypted=encrypted)
+        metadata = self.engine.put(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
+        metadata.update(rule)
+        self.registry.upsert(metadata)
+        return metadata
 
-    @staticmethod
-    def _hash(data):
-        return hashlib.sha256(data).hexdigest()
+    def get(self, object_class, object_id):
+        return self.engine.get(object_class, object_id)
 
-    def put_json(self, object_class, object_id, value):
-        path = self._canonical_path(object_class, object_id)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        data = (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
-        path.write_bytes(data)
-        return {
-            "object_id": object_id,
-            "object_class": object_class,
-            "relative_path": path.relative_to(self.node_root).as_posix(),
-            "content_hash": self._hash(data),
-            "content_encoding": "utf-8",
-            "storage_version": STORAGE_VERSION
-        }
-
-    def get_json(self, object_class, object_id):
-        path = self._canonical_path(object_class, object_id)
-        if not path.is_file():
+    def update(self, object_class, object_id, data, *, mirror=True, encrypted=False):
+        if not self.engine.exists(object_class, object_id):
             raise StorageError("object not found")
-        data = path.read_bytes()
-        metadata = {
-            "object_id": object_id,
-            "object_class": object_class,
-            "relative_path": path.relative_to(self.node_root).as_posix(),
-            "content_hash": self._hash(data),
-            "content_encoding": "utf-8",
-            "storage_version": STORAGE_VERSION
-        }
-        return json.loads(data.decode("utf-8")), metadata
+        return self.put(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
 
-    def verify(self, object_class, object_id, expected_hash):
-        _, metadata = self.get_json(object_class, object_id)
-        return metadata["content_hash"] == expected_hash
+    def delete(self, object_class, object_id):
+        self.policy.validate_delete(object_class)
+        deleted = self.engine.delete(object_class, object_id)
+        if deleted:
+            self.registry.remove(object_id)
+        return deleted
+
+    def locate(self, object_id):
+        return self.registry.get(object_id)
+
+    def verify(self, object_class, object_id):
+        entry = self.registry.get(object_id)
+        return self.integrity.verify(object_class, object_id, entry["content_hash"])
+
+    def synchronize(self, object_id):
+        entry = self.registry.get(object_id)
+        return self.engine.synchronize(
+            entry["object_class"], object_id, encrypted=entry.get("encryption_state") == "ENCRYPTED"
+        )
+
+    def recover(self, object_id):
+        return self.recovery.recover(object_id)
+
+    def status(self):
+        return {
+            "storage_version": self.engine.version,
+            "policy_version": self.policy.version,
+            "registered_objects": len(self.registry.list()),
+            "engine": self.engine.status(),
+        }
