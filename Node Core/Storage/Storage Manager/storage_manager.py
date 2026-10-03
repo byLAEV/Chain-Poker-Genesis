@@ -12,12 +12,14 @@ sys.path.insert(0, str(ROOT / "Storage Policy"))
 sys.path.insert(0, str(ROOT / "Object Registry"))
 sys.path.insert(0, str(ROOT / "Integrity"))
 sys.path.insert(0, str(ROOT / "Disaster Recovery"))
+sys.path.insert(0, str(ROOT / "Synchronization"))
 
 from storage_engine import StorageEngine, StorageError
 from storage_policy import StoragePolicy
 from object_registry import ObjectRegistry, RegistryError
 from integrity_manager import IntegrityManager
 from storage_recovery import StorageRecovery
+from synchronization_manager import SynchronizationManager
 
 class StorageManager:
     """Single high-level entry point for storage lifecycle operations."""
@@ -29,6 +31,7 @@ class StorageManager:
         self.registry = ObjectRegistry(self.node_root)
         self.integrity = IntegrityManager(self.engine)
         self.recovery = StorageRecovery(self.engine, self.registry, self.integrity)
+        self.synchronization = SynchronizationManager()
 
     def put(self, object_class, object_id, data, *, mirror=True, encrypted=False):
         rule = self.policy.validate_write(object_class, mirror=mirror, encrypted=encrypted)
@@ -61,9 +64,15 @@ class StorageManager:
 
     def synchronize(self, object_id):
         entry = self.registry.get(object_id)
-        return self.engine.synchronize(
-            entry["object_class"], object_id, encrypted=entry.get("encryption_state") == "ENCRYPTED"
+        current = entry.get("location_state", "LOCAL_ONLY")
+        if current == "LOCAL_ONLY":
+            self.synchronization.transition(current, "SYNC_PENDING")
+        result = self.engine.synchronize(
+            entry["object_class"], object_id,
+            encrypted=entry.get("encryption_state") == "ENCRYPTED"
         )
+        self.registry.upsert(result)
+        return result
 
     def recover(self, object_id):
         return self.recovery.recover(object_id)
