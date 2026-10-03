@@ -34,6 +34,14 @@ def main():
         assert description['content_hash'] == metadata['content_hash']
         assert provider.delete('record', 'provider-record-0001') is True
         assert provider.exists('record', 'provider-record-0001') is False
+
+        try:
+            provider.put("protocol-reserved", "blocked-provider-write", {"x": 1})
+        except Exception:
+            pass
+        else:
+            raise AssertionError("provider bypassed protocol-reserved write boundary")
+
         print('status = VERIFIED')
         print('provider = LOCAL')
         print('external_provider = NOT_PROVISIONED')
