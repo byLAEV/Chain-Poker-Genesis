@@ -25,7 +25,7 @@ class HealthReport:
 
     @property
     def healthy(self) -> bool:
-        return all((self.identity_ready, self.configuration_ready, self.storage_ready,
+        return all((self.identity_ready, self.configuration_ready, self.storage_ready, self.structure_ready, self.integrity_ready,
                     self.provider_ready, self.coherence_coherent, self.recovery_ready,
                     self.protocol_isolated))
 
