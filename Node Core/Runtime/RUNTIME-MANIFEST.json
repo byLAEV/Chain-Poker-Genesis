@@ -1,0 +1,12 @@
+{
+  "component":"Node Core Runtime",
+  "version":"1.1.0",
+  "status":"IMPLEMENTED",
+  "scope":"Protocol-neutral Node Core lifecycle, readiness, start and stop orchestration",
+  "implemented":{"state_machine":true,"readiness_evaluation":true,"start":true,"stop":true,"failure_states":true,"recovery_states":true},
+  "protocol_execution":"DELEGATED",
+  "cpg_consensus":false,
+  "cpg_ledger":false,
+  "cpg_table_state":false,
+  "requires_identity_before_running":true
+}
