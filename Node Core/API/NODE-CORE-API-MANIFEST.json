@@ -1,0 +1,34 @@
+{
+  "name": "Node Core API",
+  "version": "1.0.0-conceptual",
+  "status": "architecture and contract specification",
+  "apis": [
+    "Node API",
+    "Node Manager API",
+    "Runtime API",
+    "Health / Readiness API",
+    "Recovery API",
+    "Configuration API",
+    "Identity API",
+    "Cryptography API",
+    "Time API",
+    "Storage API",
+    "Storage Provider API",
+    "Network API",
+    "Synchronization API",
+    "Consensus API",
+    "Proof of Function API",
+    "Evidence API",
+    "Engine API",
+    "Protocol API",
+    "Security API",
+    "Manifest API"
+  ],
+  "external_provider_apis": [
+    "Kubo HTTP/RPC API",
+    "libp2p",
+    "GPGME",
+    "OpenPGP.js"
+  ],
+  "application_dependency": null
+}
