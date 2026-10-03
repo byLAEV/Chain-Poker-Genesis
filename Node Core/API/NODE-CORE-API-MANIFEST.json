@@ -1,7 +1,7 @@
 {
   "name": "Node Core API",
-  "version": "1.0.0-conceptual",
-  "status": "architecture and contract specification",
+  "version": "1.1.0",
+  "status": "IMPLEMENTED_PARTIAL",
   "apis": [
     "Node API",
     "Node Manager API",
