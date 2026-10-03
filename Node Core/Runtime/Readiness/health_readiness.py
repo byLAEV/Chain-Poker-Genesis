@@ -2,8 +2,13 @@
 """Objective Node Core health and readiness evaluation."""
 
 from __future__ import annotations
+import sys
 from dataclasses import dataclass
 from pathlib import Path
+
+_RUNTIME_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_RUNTIME_DIR))
+
 from node_runtime import evaluate_coherence, evaluate_provider, evaluate_readiness
 
 @dataclass(frozen=True)
@@ -52,7 +57,6 @@ def evaluate_health(root: Path) -> HealthReport:
     )
 
 def main() -> int:
-    import sys
     if len(sys.argv) != 2:
         print("usage: health_readiness.py <node-directory>")
         return 2
