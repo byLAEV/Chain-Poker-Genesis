@@ -1,28 +1,11 @@
 {
-  "component": "Node Core Cryptography Core",
-  "version": "0.2.0",
-  "status": "IMPLEMENTED_PARTIAL",
-  "scope": "Node Core infrastructure cryptographic primitives",
-  "implemented": [
-    "canonical_serialization",
-    "sha256",
-    "canonical_sha256",
-    "csprng_nonce",
-    "constant_time_byte_comparison",
-    "ed25519_key_generation",
-    "ed25519_signing",
-    "ed25519_verification"
-  ],
-  "not_yet_implemented": [
-    "aead",
-    "merkle"
-  ],
-  "boundary": "Protocol-specific cryptography remains outside Node Core Cryptography Core.",
-  "verification": [
-    "round_trip_signature",
-    "modified_payload_rejection",
-    "modified_signature_rejection",
-    "invalid_key_rejection",
-    "canonical_payload_signature_verification"
-  ]
+  "component":"Node Core Cryptography Core",
+  "version":"1.1.0",
+  "status":"IMPLEMENTED",
+  "scope":"Protocol-neutral cryptographic primitives and execution service",
+  "implemented":{"canonicalization":true,"sha256":true,"canonical_hashing":true,"secure_randomness":true,"constant_time_comparison":true,"ed25519_key_generation":true,"ed25519_signing":true,"ed25519_verification":true},
+  "key_custody":"EXTERNAL",
+  "external_references":"REFERENCE_ONLY_UNLESS_ADAPTER_IMPLEMENTED",
+  "protocol_isolation":{"cpg_ledger":false,"cpg_consensus":false,"cpg_table_state":false,"settlement":false,"rake":false},
+  "verification":{"integration_test":"Node Core/Tests/Cryptography/test_crypto_implementation.py","production_security_audit":false}
 }
