@@ -28,7 +28,7 @@
 | Runtime | executable lifecycle + readiness state model + E2E | IMPLEMENTED + VERIFIED | add transition-negative coverage |
 | Health / Readiness | executable health evaluator + E2E verification | IMPLEMENTED + VERIFIED | expand failure-state coverage |
 | Recovery | executable recovery manager + E2E verification | IMPLEMENTED / PARTIAL | add interruption/corruption scenarios |
-| Network / Synchronization | synchronization state implementation + tests; no live network sync | IMPLEMENTED / PARTIAL | implement and verify actual network boundary |
+| Network / Synchronization | executable peer registry, TCP reference transport, message framing, hello handshake, propagation boundary, synchronization state + tests | IMPLEMENTED / PARTIAL | integrate authenticated production provider, decentralized discovery, and live synchronization verification |
 | Protocol Interface | protocol installation boundary + schema + E2E isolation | IMPLEMENTED + VERIFIED | expand rejection/compatibility cases |
 | Node Manager | structural directories/documentation | STRUCTURAL ONLY | define manager contract and implement |
 | API | structural API directories | STRUCTURAL ONLY | define Node Core API contract |
