@@ -37,3 +37,12 @@ jobs:
 
       - name: Run Node Core verification tests
         run: python -m unittest discover -s "Node Core/Tests/Verification" -p "test_*.py" -v
+
+      - name: Run Node Core installation manifest test
+        run: python "Node Core/Tests/Integration/test_installation_manifest.py"
+
+      - name: Run Node Core end-to-end test
+        run: python "Node Core/Tests/Integration/test_node_installation_e2e.py"
+
+      - name: Run Node Core final audit
+        run: python "Node Core/Tools/Validation/final_node_core_audit.py"
