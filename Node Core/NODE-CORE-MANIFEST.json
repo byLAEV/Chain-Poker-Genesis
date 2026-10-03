@@ -13,9 +13,9 @@
       "status": "provider-boundary-established"
     }
   ],
-  "notes": "Node Core is independently bootstrappable and CI-verified as a protocol-neutral implementation baseline. Chain Poker Genesis remains outside the Node Core installation boundary.",
+  "notes": "Node Core is independently bootstrappable and CI-verified as a protocol-neutral implementation baseline. Network now has an executable reference boundary; production secure transport, decentralized discovery, and live synchronization remain separate implementation phases. Chain Poker Genesis remains outside the Node Core installation boundary.",
   "architectural_status": "defined",
-  "implementation_status": "baseline",
+  "implementation_status": "IMPLEMENTED_PARTIAL",
   "verification_status": "PASS",
   "verification_workflow": "Node Core Verification",
   "verification_run": 37,
