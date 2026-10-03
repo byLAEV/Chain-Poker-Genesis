@@ -1,6 +1,6 @@
 {
   "component": "Node Core Cryptography Core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "IMPLEMENTED_PARTIAL",
   "scope": "Node Core infrastructure cryptographic primitives",
   "implemented": [
@@ -8,12 +8,21 @@
     "sha256",
     "canonical_sha256",
     "csprng_nonce",
-    "constant_time_byte_comparison"
+    "constant_time_byte_comparison",
+    "ed25519_key_generation",
+    "ed25519_signing",
+    "ed25519_verification"
   ],
   "not_yet_implemented": [
-    "ed25519",
     "aead",
     "merkle"
   ],
-  "boundary": "Protocol-specific cryptography remains outside Node Core Cryptography Core."
+  "boundary": "Protocol-specific cryptography remains outside Node Core Cryptography Core.",
+  "verification": [
+    "round_trip_signature",
+    "modified_payload_rejection",
+    "modified_signature_rejection",
+    "invalid_key_rejection",
+    "canonical_payload_signature_verification"
+  ]
 }
