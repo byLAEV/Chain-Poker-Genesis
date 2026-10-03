@@ -1,52 +1,11 @@
 {
-  "component": "Node Core Identity",
-  "version": "1.0.0",
-  "status": "IMPLEMENTED_PARTIAL",
-  "scope": "Protocol-neutral node identity and lifecycle infrastructure",
-  "implementation": {
-    "node_identity": true,
-    "node_id_derivation": true,
-    "node_life": true,
-    "lifecycle_event_chain": true,
-    "identity_validation": true,
-    "offline_snapshot": true,
-    "canonical_schema_validation": true,
-    "external_credential_interface": true,
-    "ed25519_credential_verification": true,
-    "binding": true,
-    "request_validation": true,
-    "verification_records": true,
-    "local_identity_store": true,
-    "continuity_recovery_boundary": true,
-    "public_propagation_reference": true,
-    "external_credential_adapters": "INTERFACE_ONLY",
-    "pgp_gpg_interoperability": false,
-    "zero_knowledge_production_adapter": false,
-    "encrypted_sensitive_store": false,
-    "network_propagation": false
-  },
-  "cryptographic_profile": {
-    "identity_algorithm": "Ed25519",
-    "node_id_derivation": "SHA-256(canonical identity material)",
-    "derivation_profile": "sha256-canonical-public-identity-v1"
-  },
-  "verification": {
-    "reference_tests": [
-      "Node Core/Tests/Identity/test_identity_core.py",
-      "Node Core/Tests/Identity/test_identity_completion.py"
-    ],
-    "production_security_audit": false,
-    "external_credential_interoperability": false,
-    "external_reference_patterns": [
-      "libp2p Peer IDs and Keys",
-      "go-libp2p Identify service",
-      "Matrix/Synapse signing-key lifecycle"
-    ]
-  },
-  "protocol_isolation": {
-    "cpg_player_identity": false,
-    "cpg_table_membership": false,
-    "cpg_ledger": false,
-    "cpg_consensus": false
-  }
+  "component":"Node Core Identity",
+  "version":"1.1.0",
+  "status":"IMPLEMENTED",
+  "scope":"Protocol-neutral node identity, lifecycle, validation, and external credential verification",
+  "implementation":{"node_identity":true,"node_id_derivation":true,"node_life":true,"lifecycle_event_chain":true,"identity_validation":true,"offline_snapshot":true,"canonical_schema_validation":true,"external_credential_interface":true,"ed25519_credential_verification":true,"binding":true,"request_validation":true,"verification_records":true,"local_identity_store":true,"continuity_recovery_boundary":true,"public_propagation_reference":true},
+  "external_adapters":{"pgp_gpg_interoperability":"BOUNDARY_ONLY","zero_knowledge":"BOUNDARY_ONLY"},
+  "key_custody":"EXTERNAL",
+  "verification":{"integration_test":"Node Core/Tests/Identity/test_identity_implementation.py","production_security_audit":false},
+  "protocol_isolation":{"cpg_player_identity":false,"cpg_table_membership":false,"cpg_ledger":false,"cpg_consensus":false}
 }
