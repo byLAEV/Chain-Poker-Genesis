@@ -1,0 +1,1 @@
+{"component":"Node Core Security","version":"1.0.0","status":"IMPLEMENTED_PARTIAL","scope":"Protocol-neutral executable security boundary","implementation":{"path_policy":true,"permission_guard":true,"audit_log":false,"secure_configuration":false,"external_key_custody":true},"exclusions":{"cpg_authorization":true,"wallet_key_custody":true}}
