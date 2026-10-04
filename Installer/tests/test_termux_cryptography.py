@@ -69,7 +69,8 @@ class TermuxCryptographyDependencyTests(unittest.TestCase):
             calls[2][0],
             str(environment / "bin/python"),
         )
-        self.assertEqual(calls[2][1:3], ["-c", calls[2][2]])
+        self.assertEqual(calls[2][1], "-c")
+        self.assertEqual(len(calls[2]), 3)
 
         pip_commands = [
             command
