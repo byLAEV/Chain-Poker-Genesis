@@ -27,6 +27,26 @@ def main():
         try: manager.update({"unknown":"value"})
         except ConfigurationError: pass
         else: raise AssertionError("unknown configuration property accepted")
+
+        negatives = [
+            {"node_core_version":"1.0.0","decentralized_storage":{"status":"READY"},"protocol_associations":[]},
+            {"node_core_version":"1.0.0","decentralized_storage":{"status":"INVALID"},"protocol_associations":[],"cpg_protocol":"NOT_INSTALLED"},
+            {"node_core_version":"1.0.0","decentralized_storage":{"status":"READY"},"protocol_associations":["p","p"],"cpg_protocol":"NOT_INSTALLED"},
+            {"node_core_version":"1.0.0","decentralized_storage":{"status":"READY"},"protocol_associations":[],"cpg_protocol":"ACTIVE"},
+            {"node_core_version":"1.0.0","decentralized_storage":{"status":"READY","mode":"INVALID"},"protocol_associations":[],"cpg_protocol":"NOT_INSTALLED"},
+        ]
+        for invalid in negatives:
+            try: manager.validate(invalid)
+            except ConfigurationError: pass
+            else: raise AssertionError("invalid configuration accepted")
+
+        try: manager.set_storage_mode("INVALID")
+        except ConfigurationError: pass
+        else: raise AssertionError("invalid storage mode accepted")
+
+        try: manager.set_storage_mode("DUAL_STORAGE", readiness={"dual_storage_ready": False})
+        except ConfigurationError: pass
+        else: raise AssertionError("Dual Storage enabled without coherence evidence")
     print("Node Core Configuration tests: PASS")
 
 if __name__=="__main__": main()
