@@ -1,0 +1,13 @@
+{
+  "format":"Node Core Cryptographic Test Vector Format",
+  "version":"1.0",
+  "profile_group":["SHA-256","Canonical Hashing","Ed25519"],
+  "vectors":[
+    {"id":"sha256.empty.001","profile":"SHA-256","operation":"sha256_hex","inputs":{"bytes_hex":""},"expected":{"hex":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},"result":"PASS"},
+    {"id":"sha256.abc.001","profile":"SHA-256","operation":"sha256_hex","inputs":{"bytes_hex":"616263"},"expected":{"hex":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"},"result":"PASS"},
+    {"id":"canonical_hash.empty_object.001","profile":"Canonical Hashing","operation":"hash_canonical_hex","inputs":{},"expected":{"canonical_utf8_hex":"7b7d","hex":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"result":"PASS"},
+    {"id":"canonical_hash.a1.001","profile":"Canonical Hashing","operation":"hash_canonical_hex","inputs":{"a":1},"expected":{"canonical_utf8_hex":"7b2261223a317d","hex":"015abd7f5cc57a2dd94b7590f04ad8084273905ee33ec5cebeae62276a97f862"},"result":"PASS"},
+    {"id":"canonical_hash.ordering.001","profile":"Canonical Hashing","operation":"hash_canonical_hex","inputs":{"b":2,"a":1},"expected":{"canonical_utf8_hex":"7b2261223a312c2262223a327d"},"result":"PASS"},
+    {"id":"ed25519.rfc8032.test1","profile":"Ed25519","operation":"sign","inputs":{"seed_hex":"9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60","message_hex":""},"expected":{"public_key_hex":"d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a","signature_hex":"e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e06522490155"},"result":"PASS"}
+  ]
+}
