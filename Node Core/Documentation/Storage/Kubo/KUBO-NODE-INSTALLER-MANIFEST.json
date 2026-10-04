@@ -67,12 +67,13 @@
       "canonical_path_derivation",
       "absolute_ipfs_path",
       "provider_state_persistence",
-      "verified_package_installation"
+      "verified_package_installation",
+      "safe_package_extraction",
+      "executable_verification",
+      "active_installation_manifest"
     ],
     "not_implemented": [
       "remote_release_metadata_retrieval",
-      "package_download",
-      "package_verification",
       "repository_initialization",
       "process_manager",
       "health_manager",
