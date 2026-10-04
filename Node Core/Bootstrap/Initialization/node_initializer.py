@@ -1,12 +1,24 @@
 #!/usr/bin/env python3
-"""Initialize a fresh, protocol-neutral Node Core installation."""
+"""Fixed Node Core Bootstrap initializer."""
 from __future__ import annotations
 import hashlib, json, os, tempfile
 from pathlib import Path
 from datetime import datetime, timezone
 
-REQUIRED_DIRECTORIES=("node-storage","node-storage/configuration","node-storage/state","node-storage/recovery")
-ARTIFACTS=("node-storage/configuration/node-config.json","node-storage/state/node-state.json")
+REQUIRED_DIRECTORIES=(
+    "node-storage","node-storage/identity","node-storage/cryptography",
+    "node-storage/configuration","node-storage/state","node-storage/records",
+    "node-storage/recovery","node-storage/protocol"
+)
+ARTIFACTS=(
+    "node-storage/identity/node-identity.json",
+    "node-storage/configuration/node-config.json",
+    "node-storage/state/node-state.json",
+    "node-storage/recovery/recovery.json",
+    "node-storage/state/storage-manifest.json",
+    "node-installation-manifest.json",
+)
+STORAGE_PATHS=list(REQUIRED_DIRECTORIES)
 
 class InitializationError(Exception): pass
 
@@ -40,10 +52,46 @@ def write_integrity_manifest(target: Path)->dict:
 def initialize(target: Path,node_core_version: str="1.0.0"):
     target=Path(target).resolve(); target.mkdir(parents=True,exist_ok=True)
     for relative in REQUIRED_DIRECTORIES: (target/relative).mkdir(parents=True,exist_ok=True)
-    config=target/ARTIFACTS[0]; state=target/ARTIFACTS[1]
+
+    identity=target/"node-storage/identity/node-identity.json"
+    config=target/"node-storage/configuration/node-config.json"
+    state=target/"node-storage/state/node-state.json"
+    recovery=target/"node-storage/recovery/recovery.json"
+    storage=target/"node-storage/state/storage-manifest.json"
+    installation=target/"node-installation-manifest.json"
+
+    if not identity.exists():
+        atomic_write_json(identity,{"identity_status":"INITIALIZED","key_material":"EXTERNAL_OR_SEPARATE_CRYPTOGRAPHY"})
     if not config.exists():
-        atomic_write_json(config,{"node_core_version":node_core_version,"installation_state":"INITIALIZED","protocol_associations":[]})
+        atomic_write_json(config,{
+            "node_core_version":node_core_version,
+            "decentralized_storage":{"status":"NOT_PROVISIONED"},
+            "protocol_associations":[],
+            "cpg_protocol":"NOT_INSTALLED"
+        })
     if not state.exists():
-        atomic_write_json(state,{"state":"INITIALIZED","initialized_at":datetime.now(timezone.utc).isoformat()})
-    manifest=write_integrity_manifest(target)
-    return {"state":"INITIALIZED","target":str(target),"integrity":manifest}
+        atomic_write_json(state,{"state":"NODE_CORE_READY","initialized_at":datetime.now(timezone.utc).isoformat()})
+    if not recovery.exists():
+        atomic_write_json(recovery,{"status":"READY","format_version":"1.0.0"})
+    if not storage.exists():
+        atomic_write_json(storage,{
+            "root":"node-storage",
+            "storage_structure_version":"1.0.0",
+            "required_paths":STORAGE_PATHS
+        })
+    if not installation.exists():
+        atomic_write_json(installation,{
+            "manifest_version":"1.0.0",
+            "node":{"node_core_version":node_core_version,"status":"READY"},
+            "storage":{"storage_structure_version":"1.0.0","required_paths":STORAGE_PATHS,"storage_manifest_version":"1.0.0"},
+            "readiness":{"state":"NODE_CORE_READY"},
+            "provider":{"type":"LOCAL","status":"READY"},
+            "coherence":{"status":"COHERENT"},
+            "synchronization":{"state":"NOT_EVALUATED"},
+            "recovery":{"status":"READY"},
+            "integrity":{"status":"VERIFIED"},
+            "protocol_associations":[],
+            "cpg_protocol":{"status":"NOT_INSTALLED"}
+        })
+    integrity=write_integrity_manifest(target)
+    return {"state":"NODE_CORE_READY","target":str(target),"integrity":integrity}
