@@ -43,6 +43,9 @@ jobs:
       - name: Test interactive CLI menu
         run: python -m unittest Installer/tests/test_cli_interaction.py
 
+      - name: Test Termux cryptography dependency strategy
+        run: python -m unittest Installer/tests/test_termux_cryptography.py
+
       - name: Test non-interactive direct installer from current branch
         run: |
           rm -rf /tmp/cpg-direct-installer-test
