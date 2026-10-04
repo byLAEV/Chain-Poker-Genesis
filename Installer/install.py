@@ -130,7 +130,7 @@ def _termux_install_native_cryptography() -> None:
         raise InstallationError("Termux package manager 'pkg' is required for the native cryptography dependency")
 
     completed = subprocess.run(
-        [pkg, "install", "-y", "python-cryptography"],
+        [pkg, "install", "-y", "python", "python-cryptography"],
         text=True, capture_output=True,
     )
     if completed.returncode != 0:
@@ -148,6 +148,8 @@ def _verify_termux_cryptography(python_executable: Path) -> None:
     probe = (
         "import importlib.metadata as m; "
         "v=m.version('cryptography'); "
+        "parts=tuple(int(x) for x in v.split('.')[:2]); "
+        "assert (46, 0) <= parts < (49, 0), f'unsupported cryptography version: {v}'; "
         "import platform, ssl; "
         "from cryptography.hazmat.primitives.ciphers.aead import AESGCM; "
         "from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey; "
@@ -290,7 +292,11 @@ def install(target: Path, source_ref: str = "main") -> None:
     print()
     print("Node Core installed successfully.")
     print()
-    print(f"Status: NODE_CORE_READY")
+    print("Status: NODE_CORE_READY")
+    print("Network Status: SEARCHING FOR CONNECTIONS")
+    print("Connected Nodes: 0")
+    print("Protocol Readiness: NOT READY")
+    print("Minimum Nodes Required: 5")
     print("CPG Protocol: NOT INSTALLED")
     print("Protocol associations: []")
 
