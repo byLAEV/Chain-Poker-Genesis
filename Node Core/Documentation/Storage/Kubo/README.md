@@ -55,6 +55,48 @@ Writes are controlled by Storage Policy. Node Core must distinguish:
 
 A DUAL write requires explicit provider operations and durable operation state. Provider failure must not silently convert a required DUAL write into LOCAL_ONLY.
 
+
+## Managed Kubo node
+
+Node Core supports an explicit managed Kubo installation in addition to the provider adapter.
+
+The adapter remains small and provider-neutral. The managed installation downloads the complete official Kubo distribution selected for the host, verifies it, installs it under the Node Core External Providers directory, initializes a dedicated Kubo repository, sets an absolute `IPFS_PATH`, and records the provider version/state.
+
+Linux is the first target. Windows follows the same logical contract with platform-specific mechanics. iOS is a later platform target and requires its own implementation contract.
+
+### Canonical managed paths
+
+```text
+<Node Core Root>/
+├── External Providers/Kubo/<version>/
+└── node-storage/providers/kubo/
+    ├── repository/
+    ├── runtime/
+    ├── logs/
+    ├── state/
+    └── synchronization/
+```
+
+Kubo's repository remains Kubo-owned. Node Core does not copy or recreate Kubo's internal directory structure.
+
+### Activation
+
+```text
+Install Kubo
+    ↓
+Initialize repository
+    ↓
+Health check
+    ↓
+Initial local → Kubo synchronization
+    ↓
+Integrity/coherence verification
+    ↓
+Enable DUAL_STORAGE
+```
+
+`DUAL_STORAGE` is therefore a Storage Preference, not a different storage implementation.
+
 ## Kubo boundary
 
 Kubo is accessed through its supported local API/RPC or another explicitly supported provider interface. The Node Core installer MUST NOT silently install Kubo merely because a protocol requests decentralized storage.
