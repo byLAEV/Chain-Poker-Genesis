@@ -1,6 +1,6 @@
 # Node Core Runtime
 
-**Status:** IMPLEMENTED  
+**Status:** SUPPORTING / RECONCILED  
 **Version:** 1.1.0
 
 Runtime is the lifecycle and execution boundary of Node Core.
@@ -18,3 +18,8 @@ Shutdown:
 RUNNING → SHUTTING_DOWN → STOPPED
 
 Failure/recovery states remain explicit in the runtime state machine.
+
+
+**Authority:** `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md`.
+
+RuntimeManager and node_runtime.py implement the same canonical state machine; they do not define an alternate lifecycle. Configuration readiness is evaluated through the canonical Configuration Manager. Engine Runtime is subordinate to this Node Core lifecycle.
