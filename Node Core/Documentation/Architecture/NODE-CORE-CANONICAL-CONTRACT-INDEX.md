@@ -33,7 +33,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL | `Recovery/recovery_manager.py` | `Tests/Recovery/test_recovery_implementation.py`, `Tests/Engine Runtime/test_health_recovery.py` | Evidence mapped |
 | Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL | `Network/network_manager.py`, `peer_registry.py`, `transport.py`, `Synchronization/synchronization_state.py` | `Tests/Network/test_network_contract.py`, `test_synchronization_state.py` | Contract, implementation, synchronization boundary and protocol isolation mapped |
 | Node Manager | `Documentation/Interfaces/NODE-MANAGER-CONTRACT.md` | CANONICAL | `Node Manager/node_manager.py` | `Tests/Node Manager/test_node_manager_contract.py` | Contract/implementation aligned; protocol installation routed through Protocol Interface |
-| Security | `Documentation/Interfaces/NODE-CORE-SECURITY-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Security/security_service.py`, security manifest | `Tests/Security/test_security_contract.py` | Boundary and baseline controls mapped; audit/secure-config remain partial |
+| Security | `Documentation/Interfaces/NODE-CORE-SECURITY-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Security/security_service.py` | `Tests/Security/test_security_contract.py` | Path, fail-closed authorization and protocol-isolation baseline reconciled; audit log and secure-configuration enforcement remain partial |
 | Time | `Documentation/Interfaces/NODE-CORE-TIME-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Time/time_service.py`, time manifest | `Tests/Time/test_time_contract.py` | Timestamp, logical ordering and hash-chain integrity mapped; network-time consensus intentionally excluded |
 | Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
 | API | `Documentation/Interfaces/NODE-CORE-API-CONTRACT.md` | CANONICAL | `API/node_core_api.py` (partial facade) | `Tests/API/test_node_core_api_contract.py` | Contract authority established; implementation remains explicitly PARTIAL |
@@ -382,3 +382,27 @@ Resolved:
 - Version and status contradictions are treated as validation failures rather than implementation choices.
 
 **Manifest Authority PHASE 2 gate: SATISFIED.**
+
+
+## PHASE 2 — Security reconciliation
+
+**Component:** Security  
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+
+Reconciled chain:
+
+`NODE-CORE-SECURITY-CONTRACT.md`
+→ `Security/security_service.py`
+→ `Tests/Security/test_security_contract.py`.
+
+Resolved:
+- Security remains a protocol-neutral boundary and does not replace Identity, Cryptography, Storage, Runtime, Network or Protocol Interface.
+- Path validation now fails closed for invalid/empty input, absolute paths, traversal components and protocol-reserved prefixes.
+- Authorization guard remains fail-closed and cannot silently elevate privileges.
+- Protocol-reserved state remains protected without implementing CPG semantics.
+- Security does not define cryptographic algorithms or custody private keys.
+- Negative-path coverage was expanded.
+
+Remaining partial scope is explicit: security audit logging and secure-configuration enforcement are not yet implemented.
+
+**PHASE 2 Security reconciliation: SATISFIED.**
