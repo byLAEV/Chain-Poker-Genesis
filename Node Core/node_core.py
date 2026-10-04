@@ -23,6 +23,6 @@ class NodeCore:
     def initialize(self):
         self.manager.initialize(); return self.manager.snapshot()
     def activate(self):
-        return self.manager.activate().state
+        return self.manager.start().state
     def snapshot(self):
         return {"node_core_version":self.VERSION,"node":self.manager.snapshot(),"engines":self.engines.snapshot(),"time_sequence":self.time.sequence}
