@@ -9,3 +9,6 @@ class RecoveryRecord:
     started_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     completed_at: str | None = None
     details: dict = field(default_factory=dict)
+
+    def terminal(self) -> bool:
+        return self.status in {"RECOVERY_READY", "RECOVERY_FAILED"}
