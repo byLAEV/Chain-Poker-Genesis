@@ -70,7 +70,7 @@ class RuntimeManager:
         return self.runtime.snapshot()
 
     def stop(self):
-        if self.runtime.state in (RuntimeState.RUNNING, RuntimeState.DEGRADED):
+        if self.runtime.state in (RuntimeState.NODE_CORE_READY, RuntimeState.RUNNING, RuntimeState.DEGRADED):
             self.runtime.transition(RuntimeState.SHUTTING_DOWN)
             self.runtime.transition(RuntimeState.STOPPED)
         return self.runtime.snapshot()
