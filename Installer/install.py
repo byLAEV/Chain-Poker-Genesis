@@ -192,33 +192,31 @@ def install(target: Path, source_ref: str = "main") -> None:
             )
 
     target.parent.mkdir(parents=True, exist_ok=True)
+    staging = target.parent / f".{target.name}.staging-{os.getpid()}"
+    if staging.exists():
+        raise InstallationError(f"Installation staging path already exists: {staging}")
 
-    with tempfile.TemporaryDirectory(prefix="cpg-node-core-") as temp:
-        temp_root = Path(temp)
-        archive = temp_root / "repository.tar.gz"
-        extracted = temp_root / "node-core"
-        staging = temp_root / "staging"
+    try:
+        with tempfile.TemporaryDirectory(prefix="cpg-node-core-") as temp:
+            temp_root = Path(temp)
+            archive = temp_root / "repository.tar.gz"
+            extracted = temp_root / "node-core"
+            extracted.mkdir()
 
-        extracted.mkdir()
-        staging.mkdir()
+            download_archive(archive, source_ref)
+            extract_node_core(archive, extracted, staging)
 
-        download_archive(archive, source_ref)
-        extract_node_core(archive, extracted, staging)
-        python_executable = prepare_python_environment(staging, temp_root)
-        bootstrap(staging, python_executable)
-        verify(staging, python_executable)
+        staging.rename(target)
 
-        target.mkdir(parents=True, exist_ok=False)
-        try:
-            for item in staging.iterdir():
-                destination = target / item.name
-                if item.is_dir():
-                    shutil.copytree(item, destination)
-                else:
-                    shutil.copy2(item, destination)
-        except Exception:
+        python_executable = prepare_python_environment(target, target)
+        bootstrap(target, python_executable)
+        verify(target, python_executable)
+    except Exception:
+        if target.exists() and not (target / "node-installation-manifest.json").exists():
             shutil.rmtree(target, ignore_errors=True)
-            raise
+        if staging.exists():
+            shutil.rmtree(staging, ignore_errors=True)
+        raise
 
     print("")
     print("Node Core installation completed.")
