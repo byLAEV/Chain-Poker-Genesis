@@ -78,6 +78,16 @@ class NodeManager:
         self._event("NODE_STOPPED")
         return self.status
 
+    def degrade(self) -> NodeStatus:
+        """Enter the canonical degraded state after an external subsystem fault."""
+        if self.status.state != "RUNNING": raise RuntimeError("node must be running")
+        if self.runtime_manager is None: raise RuntimeError("Runtime Manager is required")
+        from runtime_state import RuntimeState
+        self.runtime_manager.runtime.transition(RuntimeState.DEGRADED)
+        self.status.state = "DEGRADED"
+        self._event("NODE_DEGRADED")
+        return self.status
+
     def recover(self) -> NodeStatus:
         if self.status.state not in {"DEGRADED","RECOVERY"}:
             raise RuntimeError("node is not in recovery condition")
@@ -86,6 +96,9 @@ class NodeManager:
         result = self.recovery.recover()
         if result.get("status") not in {"RECOVERY_READY","RECOVERED","READY"}:
             raise RuntimeError("recovery did not reach a ready state")
+        if self.runtime_manager is not None:
+            readiness = self.runtime_manager.readiness()
+            self.runtime_manager.complete_recovery_to_ready(readiness)
         self.status.state = "READY"
         self._event("NODE_RECOVERED")
         return self.status
