@@ -91,12 +91,13 @@ Implemented:
 - Runtime readiness field validation;
 - installation verification integration.
 
-Remaining:
+Implemented in the current reconciliation:
 
-- centralized configuration manager;
+- centralized Configuration Manager;
 - explicit storage mode mutation API with readiness gate;
 - administrative CLI delegation to Configuration Manager;
-- storage mode negative-path tests.
+- storage mode negative-path tests;
+- configured/effective storage state reporting.
 
 ## 11. Verification
 
@@ -112,6 +113,9 @@ Tests MUST verify:
 8. integrity participation;
 9. runtime readiness dependency;
 10. no schema authority duplication in Runtime/Node Manager.
+11. storage mode changes delegate to Configuration Manager.
+12. Dual Storage activation requires coherence evidence.
+13. administrative status distinguishes configured mode from effective availability.
 
 
 ## 12. Storage mode administration
