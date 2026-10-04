@@ -1,0 +1,15 @@
+{
+  "format": "Node Core Cryptographic Test Vector Format",
+  "version": "1.0",
+  "profile": "Canonical Serialization Profile v1.0",
+  "vectors": [
+    {"id":"canonical.ordering.001","operation":"canonicalize","inputs":{"b":2,"a":1},"expected":{"utf8_hex":"7b2261223a312c2262223a327d","text":"{\"a\":1,\"b\":2}"},"result":"PASS"},
+    {"id":"canonical.nested.001","operation":"canonicalize","inputs":{"z":{"b":2,"a":1},"a":[3,2,1]},"expected":{"text":"{\"a\":[3,2,1],\"z\":{\"a\":1,\"b\":2}}"},"result":"PASS"},
+    {"id":"canonical.unicode.001","operation":"canonicalize","inputs":{"message":"á","emoji":"🦄"},"expected":{"text":"{\"emoji\":\"🦄\",\"message\":\"á\"}"},"result":"PASS"},
+    {"id":"canonical.escape.001","operation":"canonicalize","inputs":{"text":"quote \" slash \\ newline\n"},"expected":{"text":"{\"text\":\"quote \\\" slash \\\\ newline\\n\"}"},"result":"PASS"},
+    {"id":"canonical.integer.001","operation":"canonicalize","inputs":{"n":9007199254740993},"expected":{"text":"{\"n\":9007199254740993}"},"result":"PASS"},
+    {"id":"canonical.float.001","operation":"canonicalize","inputs":{"value":1.5},"expected":{"failure":"floating-point values are prohibited"},"result":"REJECT"},
+    {"id":"canonical.nan.001","operation":"canonicalize","inputs":{"value":"NaN"},"expected":{"failure":"non-finite/floating-point values are prohibited"},"result":"REJECT"},
+    {"id":"canonical.unsupported.001","operation":"canonicalize","inputs":{"value":"unsupported runtime object"},"expected":{"failure":"unsupported protocol value"},"result":"REJECT"}
+  ]
+}
