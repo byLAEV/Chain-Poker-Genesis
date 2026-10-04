@@ -56,5 +56,9 @@ jobs:
       - name: Run Node Core full lifecycle test
         run: python "Node Core/Tests/Integration/test_node_core_full_lifecycle.py"
 
+      - name: Validate installation manifest against canonical schema
+        run: |
+          python "Node Core/Tests/Integration/test_installation_manifest.py"
+          python "Node Core/Tools/Validation/validate_installation_manifest_schema.py" /tmp/cpg-node-schema-test
       - name: Run Node Core final audit
         run: python "Node Core/Tools/Validation/final_node_core_audit.py"
