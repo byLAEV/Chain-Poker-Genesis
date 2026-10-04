@@ -12,7 +12,7 @@
     "ed25519_key_generation": true,
     "ed25519_signing": true,
     "ed25519_verification": true,
-    "aead": false,
+    "aead": true,
     "merkle": false
   },
   "key_custody": "EXTERNAL",
@@ -30,7 +30,7 @@
     "production_security_audit": false,
     "csprng_failure_contract_test": "Node Core/Tests/Cryptography/test_crypto_core.py",
     "aead_profile": "Node Core/Cryptography/Core/ENCRYPTION-AEAD-PROFILE-v1.0.md",
-    "aead_vectors": "PENDING",
+    "aead_vectors": "VERIFIED — Node Core CI Run #605 — commit 815fa46cb8499a17dd1ea3fce9489628513ae967",
     "merkle_profile": "Node Core/Cryptography/Core/MERKLE-PROFILE-v1.0.md"
   }
 }
