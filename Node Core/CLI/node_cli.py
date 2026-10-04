@@ -28,7 +28,21 @@ class NodeCLI:
             if args.group == "storage":
                 config = self.node.configuration_manager
                 if args.command == "status":
-                    result = config.get()["decentralized_storage"]
+                    configured = config.get()["decentralized_storage"]
+                    health = self.node.kubo_health.check()
+                    if configured.get("mode", "LOCAL") == "DUAL_STORAGE":
+                        coherence = self.node.storage_coherence.verify_all()
+                        effective = "READY" if coherence.get("dual_storage_ready") else "DEGRADED"
+                    else:
+                        coherence = None
+                        effective = "READY"
+                    result = {
+                        "configured_mode": configured.get("mode", "LOCAL"),
+                        "configured_status": configured["status"],
+                        "effective_status": effective,
+                        "kubo_health": health,
+                        "coherence": coherence,
+                    }
                 elif args.mode_command == "get":
                     result = {"mode": config.get()["decentralized_storage"].get("mode","LOCAL"), "status": config.get()["decentralized_storage"]["status"]}
                 elif args.mode_command == "set":
