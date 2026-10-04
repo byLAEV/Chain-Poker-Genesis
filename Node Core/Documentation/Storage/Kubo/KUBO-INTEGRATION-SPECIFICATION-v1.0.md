@@ -1,10 +1,10 @@
-# Kubo Integration Specification v1.0
+# Kubo Integration Specification v1.1
 
 **Project:** Chain Poker Genesis by LAEV  
 **Layer:** Node Core  
 **Subsystem:** Storage  
 **Provider:** Kubo / IPFS  
-**Status:** Architectural integration specification
+**Status:** CANONICAL ARCHITECTURAL INTEGRATION SPECIFICATION
 
 ---
 
@@ -40,6 +40,152 @@ Kubo is a provider and must not redefine:
 Kubo's repository layout is not the Node Core storage layout.
 
 ---
+
+
+## 2A. Kubo installation model
+
+Node Core shall support two provider levels:
+
+1. **Kubo Adapter Available** — the Node Core adapter exists and can communicate with an already provisioned Kubo node.
+2. **Kubo Node Provisioned** — Node Core downloads and installs the complete official Kubo binary distribution selected for the host platform, initializes a dedicated Kubo repository, and manages the resulting local Kubo node through the adapter.
+
+The adapter is therefore **not** the Kubo implementation. It is the integration boundary.
+
+The Kubo installation package is acquired at installation time from the official upstream release distribution. "Latest" means the latest compatible stable release selected by the installer at that moment; the installed version is then recorded and treated as immutable until an explicit provider upgrade.
+
+Node Core MUST verify the downloaded package before installation using the upstream release integrity information available for that distribution. An unverified package MUST NOT be activated.
+
+## 2B. Canonical Node Core paths
+
+The installer defines one absolute **Node Core Root**. All Node Core-managed Kubo paths are derived from that root.
+
+Linux reference layout:
+
+```text
+<NODE_CORE_ROOT>/
+├── External Providers/
+│   └── Kubo/
+│       └── <kubo-version>/
+│           ├── bin/
+│           │   └── ipfs
+│           ├── release/
+│           └── metadata/
+│
+└── node-storage/
+    └── providers/
+        └── kubo/
+            ├── repository/
+            ├── runtime/
+            ├── logs/
+            ├── state/
+            └── synchronization/
+```
+
+The Kubo repository MUST be an absolute path supplied to Kubo through `IPFS_PATH`.
+
+Node Core MUST NOT rewrite Kubo's internal repository layout to resemble the Node Core storage layout.
+
+The separation is intentional:
+
+```
+Node Core Storage
+    └── canonical logical objects
+
+Kubo Repository
+    └── Kubo-owned IPFS datastore/configuration/state
+```
+
+The Node Core storage metadata and the Kubo repository therefore remain physically and logically independent.
+
+## 2C. Relocation rule
+
+Changing the Node Core installation root MUST change the generated absolute Kubo paths together.
+
+Node Core MUST NOT rely on:
+- the operator's home-directory `.ipfs`;
+- implicit current working directory;
+- hard-coded `~/.ipfs`;
+- relative paths that escape the selected Node Core root.
+
+The installer sets `IPFS_PATH` explicitly for every Kubo process.
+
+Kubo's own default internal paths remain Kubo-owned. Node Core controls only the outer repository location and process environment.
+
+## 2D. Installation lifecycle
+
+```text
+NOT_PROVISIONED
+      ↓
+RELEASE_SELECTED
+      ↓
+PACKAGE_DOWNLOADED
+      ↓
+PACKAGE_VERIFIED
+      ↓
+KUBO_INSTALLED
+      ↓
+REPOSITORY_INITIALIZED
+      ↓
+CONFIGURED
+      ↓
+HEALTHY
+      ↓
+INITIAL_SYNC_PENDING
+      ↓
+INITIAL_SYNCING
+      ↓
+DUAL_STORAGE_READY
+```
+
+Failure at any installation stage MUST leave the provider unavailable rather than falsely reporting Dual Storage readiness.
+
+## 2E. Initial synchronization
+
+After a complete Kubo node is initialized, Node Core performs an initial local-to-Kubo synchronization before enabling Dual Storage.
+
+```
+Node Core Local Storage
+        ↓
+eligibility + encryption policy
+        ↓
+Kubo provider
+        ↓
+CID/integrity verification
+        ↓
+coherence verification
+        ↓
+DUAL_STORAGE_READY
+```
+
+The initial synchronization is not a blind filesystem copy. It is a Storage Manager operation over logical Node Core objects.
+
+For private/restricted objects, Node Core encryption occurs before distribution. Kubo receives the resulting bytes; Kubo does not become the key-custody layer.
+
+Temporary objects and objects excluded by Storage Policy remain excluded according to the canonical policy.
+
+The synchronization process MUST be resumable and MUST preserve a durable pending/retry state.
+
+## 2F. Dual Storage preference
+
+Node Core configuration exposes the provider mode:
+
+```text
+LOCAL_ONLY
+DUAL_STORAGE
+```
+
+`DUAL_STORAGE` may be selected only after:
+
+- Kubo is installed;
+- the Kubo repository is initialized;
+- the provider health check succeeds;
+- the initial synchronization completes;
+- CID/content integrity has been verified;
+- no unresolved synchronization conflict blocks readiness.
+
+Selecting `DUAL_STORAGE` changes the active Storage Policy; it does not replace the Local Provider.
+
+When Dual Storage is active, Kubo is the preferred distributed read provider when available and valid, while Local Storage remains the authoritative node-local fallback.
 
 ## 3. Provider capabilities
 
