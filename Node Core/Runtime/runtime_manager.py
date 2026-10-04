@@ -1,68 +1,46 @@
 #!/usr/bin/env python3
-"""Protocol-neutral Node Core runtime manager."""
+"""Protocol-neutral Node Core runtime manager.
+
+RuntimeManager is an orchestration facade over the canonical Runtime state
+machine and readiness evaluator. It does not define a second lifecycle.
+"""
 from __future__ import annotations
 from pathlib import Path
-from .State.runtime_state import Runtime,RuntimeState,Readiness
-try:
-    from Bootstrap.Verification.bootstrap_verifier import verify as verify_bootstrap
-except ImportError:
-    verify_bootstrap=None
+import sys
+
+_RUNTIME_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(_RUNTIME_DIR))
+from node_runtime import evaluate_readiness
+from State.runtime_state import Runtime, RuntimeState
 
 class RuntimeManager:
-    version="1.1.0"
-    def __init__(self,node_root):
-        self.root=Path(node_root).resolve()
-        self.runtime=Runtime()
+    version = "1.1.0"
+
+    def __init__(self, node_root):
+        self.root = Path(node_root).resolve()
+        self.runtime = Runtime()
 
     def readiness(self):
-        storage=self.root/"node-storage"
-        config=storage/"configuration/node-config.json"
-        state=storage/"state/node-state.json"
-        recovery=storage/"recovery"
-        identity=storage/"identity"
-        bootstrap_ok=False
-        if verify_bootstrap is not None:
-            try:
-                bootstrap_ok=verify_bootstrap(self.root).get("status")=="VERIFIED"
-            except Exception:
-                bootstrap_ok=False
-        return Readiness(
-            environment_ready=self.root.is_dir(),
-            identity_ready=identity.is_dir() and any(identity.iterdir()),
-            storage_ready=storage.is_dir(),
-            configuration_ready=config.is_file(),
-            structure_ready=all((storage/p).is_dir() for p in ("configuration","state","recovery")),
-            integrity_ready=bootstrap_ok,
-            recovery_ready=recovery.is_dir(),
-            provider_ready=True,
-            coherence_coherent=True,
-            protocol_associations_empty=(self._config(config).get("protocol_associations",[])==[] if config.is_file() else False),
-            cpg_not_installed=(self._config(config).get("cpg_protocol") in (None,"NOT_INSTALLED") if config.is_file() else True))
-
-    @staticmethod
-    def _config(path):
         try:
-            import json
-            return json.loads(path.read_text(encoding="utf-8"))
-        except (OSError,ValueError):
-            return {}
+            return evaluate_readiness(self.root)
+        except (OSError, ValueError, TypeError, KeyError, FileNotFoundError):
+            from State.runtime_state import Readiness
+            return Readiness()
 
     def start(self):
-        r=self.readiness()
-        self.runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED,r)
-        if not r.identity_ready:
-            raise RuntimeError("Node identity must be provisioned before runtime start")
-        self.runtime.transition(RuntimeState.IDENTITY_INITIALIZED,r)
-        self.runtime.transition(RuntimeState.STORAGE_INITIALIZED,r)
-        self.runtime.transition(RuntimeState.STORAGE_STRUCTURE_VERIFIED,r)
-        self.runtime.transition(RuntimeState.INTEGRITY_VERIFIED,r)
-        self.runtime.transition(RuntimeState.RECOVERY_READY,r)
-        self.runtime.transition(RuntimeState.NODE_CORE_READY,r)
-        self.runtime.transition(RuntimeState.RUNNING,r)
+        readiness = self.readiness()
+        self.runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED, readiness)
+        self.runtime.transition(RuntimeState.IDENTITY_INITIALIZED, readiness)
+        self.runtime.transition(RuntimeState.STORAGE_INITIALIZED, readiness)
+        self.runtime.transition(RuntimeState.STORAGE_STRUCTURE_VERIFIED, readiness)
+        self.runtime.transition(RuntimeState.INTEGRITY_VERIFIED, readiness)
+        self.runtime.transition(RuntimeState.RECOVERY_READY, readiness)
+        self.runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
+        self.runtime.transition(RuntimeState.RUNNING, readiness)
         return self.runtime.snapshot()
 
     def stop(self):
-        if self.runtime.state in (RuntimeState.RUNNING,RuntimeState.DEGRADED):
+        if self.runtime.state in (RuntimeState.RUNNING, RuntimeState.DEGRADED):
             self.runtime.transition(RuntimeState.SHUTTING_DOWN)
             self.runtime.transition(RuntimeState.STOPPED)
         return self.runtime.snapshot()
