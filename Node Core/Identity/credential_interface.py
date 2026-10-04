@@ -30,4 +30,4 @@ class Ed25519CredentialVerifier:
             key.verify(signature,payload)
             return VerificationResult("VERIFIED",credential.credential_type,credential.key_id,self.name)
         except Exception as exc:
-            return VerificationResult("INVALID",credential.credential_type,credential.key_id,self.name,str(exc))
+            return VerificationResult("INVALID",credential.credential_type,credential.key_id,self.name,"verification_failed")
