@@ -8,8 +8,13 @@ The test exercises NodeManager, RuntimeManager and RecoveryManager through
 their public boundaries. CPG protocol state and Merkle remain untouched.
 """
 from __future__ import annotations
+import sys
 import tempfile
 from pathlib import Path
+
+BASE = Path(__file__).resolve().parents[2]
+for p in (BASE, BASE / "Bootstrap" / "Installer"):
+    sys.path.insert(0, str(p))
 
 from node_core import NodeCore
 from bootstrap_node import install
