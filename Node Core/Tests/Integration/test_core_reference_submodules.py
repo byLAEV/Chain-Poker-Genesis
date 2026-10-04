@@ -77,6 +77,76 @@ class CoreReferenceSubmoduleTests(unittest.TestCase):
             self.assertEqual(config[section]["path"], path)
             self.assertEqual(config[section]["url"], url)
 
+        time_expected = {
+            "opentimestamps/javascript-opentimestamps": (
+                "Node Core/Time/External References/OpenTimestamps--javascript-opentimestamps",
+                "https://github.com/opentimestamps/javascript-opentimestamps.git",
+            ),
+            "opentimestamps/opentimestamps-client": (
+                "Node Core/Time/External References/OpenTimestamps--opentimestamps-client",
+                "https://github.com/opentimestamps/opentimestamps-client.git",
+            ),
+            "opentimestamps/opentimestamps-server": (
+                "Node Core/Time/External References/OpenTimestamps--opentimestamps-server",
+                "https://github.com/opentimestamps/opentimestamps-server.git",
+            ),
+            "opentimestamps/python-opentimestamps": (
+                "Node Core/Time/External References/OpenTimestamps--python-opentimestamps",
+                "https://github.com/opentimestamps/python-opentimestamps.git",
+            ),
+            "opentimestamps/rust-opentimestamps": (
+                "Node Core/Time/External References/OpenTimestamps--rust-opentimestamps",
+                "https://github.com/opentimestamps/rust-opentimestamps.git",
+            ),
+            "Time-Appliances-Project/DC-PTP-Profile": (
+                "Node Core/Time/External References/Time-Appliances-Project--DC-PTP-Profile",
+                "https://github.com/Time-Appliances-Project/DC-PTP-Profile.git",
+            ),
+            "Time-Appliances-Project/Open-Time-Server": (
+                "Node Core/Time/External References/Time-Appliances-Project--Open-Time-Server",
+                "https://github.com/Time-Appliances-Project/Open-Time-Server.git",
+            ),
+            "Time-Appliances-Project/Precise-Time-API": (
+                "Node Core/Time/External References/Time-Appliances-Project--Precise-Time-API",
+                "https://github.com/Time-Appliances-Project/Precise-Time-API.git",
+            ),
+            "Time-Appliances-Project/Time-Card": (
+                "Node Core/Time/External References/Time-Appliances-Project--Time-Card",
+                "https://github.com/Time-Appliances-Project/Time-Card.git",
+            ),
+            "Time-Appliances-Project/TimeHAT": (
+                "Node Core/Time/External References/Time-Appliances-Project--TimeHAT",
+                "https://github.com/Time-Appliances-Project/TimeHAT.git",
+            ),
+            "eggert/tz": (
+                "Node Core/Time/External References/eggert--tz",
+                "https://github.com/eggert/tz.git",
+            ),
+            "ntpsec/ntpsec": (
+                "Node Core/Time/External References/ntpsec--ntpsec",
+                "https://github.com/ntpsec/ntpsec.git",
+            ),
+            "richardcochran/linuxptp": (
+                "Node Core/Time/External References/richardcochran--linuxptp",
+                "https://github.com/richardcochran/linuxptp.git",
+            ),
+        }
+
+        for repository, (path, url) in time_expected.items():
+            section = f'submodule "{path}"'
+            self.assertIn(section, config.sections())
+            self.assertEqual(config[section]["path"], path)
+            self.assertEqual(config[section]["url"], url)
+
+        self.assertIn(
+            'submodule "Node Core/Time/OpenTimestamps/opentimestamps-client"',
+            config.sections(),
+        )
+        self.assertEqual(
+            config['submodule "Node Core/Time/OpenTimestamps/opentimestamps-client"']["url"],
+            "https://github.com/opentimestamps/opentimestamps-client.git",
+        )
+
         manifest_repositories = {
             item["repository"]: item for item in manifest["references"]
         }
