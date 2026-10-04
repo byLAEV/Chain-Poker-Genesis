@@ -27,6 +27,18 @@ class RuntimeManager:
             from State.runtime_state import Readiness
             return Readiness()
 
+    def initialize(self):
+        """Advance the canonical runtime from UNINITIALIZED to NODE_CORE_READY."""
+        readiness = self.readiness()
+        self.runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED, readiness)
+        self.runtime.transition(RuntimeState.IDENTITY_INITIALIZED, readiness)
+        self.runtime.transition(RuntimeState.STORAGE_INITIALIZED, readiness)
+        self.runtime.transition(RuntimeState.STORAGE_STRUCTURE_VERIFIED, readiness)
+        self.runtime.transition(RuntimeState.INTEGRITY_VERIFIED, readiness)
+        self.runtime.transition(RuntimeState.RECOVERY_READY, readiness)
+        self.runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
+        return self.runtime.snapshot()
+
     def start(self):
         readiness = self.readiness()
         self.runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED, readiness)
