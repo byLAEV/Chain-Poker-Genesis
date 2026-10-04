@@ -96,7 +96,7 @@ Remaining:
 - centralized configuration manager;
 - explicit storage mode mutation API with readiness gate;
 - administrative CLI delegation to Configuration Manager;
-- full negative-path test matrix.
+- storage mode negative-path tests.
 
 ## 11. Verification
 
