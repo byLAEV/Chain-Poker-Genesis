@@ -61,7 +61,7 @@ class KuboCoherenceVerifier:
 class DualStorageReadiness:
     """Configuration gate; readiness is evidence-based and does not copy data."""
 
-    def evaluate(self, coherence_report):
+    def evaluate(self, coherence_report, configuration_manager=None):
         if coherence_report.get("dual_storage_ready") is not True:
             raise KuboCoherenceError("Dual Storage cannot be enabled before coherent Kubo mirror verification")
         return {
