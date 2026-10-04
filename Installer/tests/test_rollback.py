@@ -17,6 +17,19 @@ class RollbackTests(unittest.TestCase):
 
             self.assertFalse(target.exists())
 
+    def test_nonempty_target_is_never_overwritten(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "node-core"
+            target.mkdir()
+            marker = target / "partial-file"
+            marker.write_text("incomplete")
+
+            with self.assertRaises(InstallationError):
+                install(target, "main")
+
+            self.assertTrue(marker.exists())
+            self.assertEqual(marker.read_text(), "incomplete")
+
     def test_target_is_not_created_when_source_download_fails(self):
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "node-core"
