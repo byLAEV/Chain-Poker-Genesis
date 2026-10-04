@@ -25,7 +25,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Capability | Canonical source | Status | Implementation mapped | Test mapped | Decision |
 |---|---|---|---|---|---|
 | Bootstrap / Installation | `Documentation/Interfaces/NODE-CORE-BOOTSTRAP-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Bootstrap/bootstrap.py`, `Installer/bootstrap_node.py`, `Initialization/node_initializer.py`, `Verification/bootstrap_verifier.py`, `Recovery/bootstrap_recovery_impl.py` | `Tests/Bootstrap/test_bootstrap.py`, `Tests/Integration/test_node_installation_e2e.py`, `test_installation_manifest.py` | Clean bootstrap, isolation, integrity, failure and idempotent recovery mapped; broader production identity remains separate |
-| Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Configuration/Schemas/node-configuration.schema.json`, Bootstrap, Runtime readiness | `Tests/Configuration/test_configuration_contract.py`, installation E2E | Schema/default/integrity/runtime boundary mapped; centralized manager and full negative matrix remain |
+| Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Configuration/configuration_manager.py`, `Configuration/Schemas/node-configuration.schema.json` | `Tests/Configuration/test_configuration_manager_canonical.py` | Schema boundary and explicit validated mutation path reconciled; full negative-path matrix and deeper schema execution integration remain |
 | Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Identity/identity_core.py`, `identity_api.py`, schema, binding, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Canonical identity lifecycle and activation boundary reconciled; trust/registration authority, revocation and durable secure identity storage remain partial |
 | Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Cryptography/Core/crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Canonical serialization, SHA-256, CSPRNG and Ed25519 boundary reconciled; AEAD profile remains open and Merkle is explicitly deferred to a separate specification |
 | Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL / IMPLEMENTED | `Storage/storage_engine.py`, `Storage/API/storage_api.py`, `Storage/Storage Manager/storage_manager.py`, `Storage/Object Registry/object_registry.py`, `Storage/Providers/storage_provider.py`, `Storage/storage_locator.py`, `Storage/Synchronization/synchronization_manager.py`, `Storage/Disaster Recovery/storage_recovery.py` | `Tests/Storage/test_storage_engine.py`, `test_storage_api.py`, `test_storage_locator.py`, `test_object_registry.py`, `test_storage_complete.py` | Required create/read/write/update/delete/exists/locate/verify/synchronize/recover boundary reconciled; canonical metadata now enforced |
@@ -37,7 +37,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Time | `Documentation/Interfaces/NODE-CORE-TIME-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Time/time_service.py` | `Tests/Time/test_time_contract.py` | Timestamp, logical ordering and hash-chain integrity including predecessor verification reconciled; network-time consensus intentionally excluded |
 | Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
 | API | `Documentation/Interfaces/NODE-CORE-API-CONTRACT.md` | CANONICAL | `API/node_core_api.py` (partial facade) | `Tests/API/test_node_core_api_contract.py` | Contract authority established; implementation remains explicitly PARTIAL |
-| CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL / PARTIAL | `CLI/node_cli.py` | `Tests/CLI/test_cli_contract.py` | Lifecycle subset mapped; deterministic JSON/error/exit boundary established |
+| CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `CLI/node_cli.py` | `Tests/CLI/test_node_cli_canonical.py` | Canonical command subset delegates to Node Manager; parser behavior remains standard and broader command catalog remains intentionally closed |
 | Protocol Interface | `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Protocol Interface/protocol_interface.py`, `protocol_catalog.py`, `protocol_source_resolver.py`, `protocol_download.py`, `protocol_package.py` | `Tests/Protocol Interface/test_protocol_interface.py`, `test_protocol_catalog.py`, `test_protocol_package_installation.py` | Catalog/download, manifest verification, identity, persistent installation and baseline shared Engine Runtime association are mapped; final administrative UI remains separate work |
 | Consensus Infrastructure | N/A for PHASE 1 Node Core scope | OUT OF SCOPE | `Consensus/` | Protocol-specific verification belongs to CPG Protocol | Node Core provides Engine Runtime/Protocol Interface boundaries; CPG consensus is excluded from generic Node Core authority |
 | Manifest Authority | `Documentation/Interfaces/NODE-CORE-MANIFEST-AUTHORITY-CONTRACT.md` | CANONICAL | `NODE-CORE-MANIFEST.json`, `Configuration/Schemas/node-core-installation-manifest.schema.json`, installation-manifest generation/validation | `Tools/Validation/validate_manifest_authority.py`, `Tests/Test Vectors/NODE-MANIFEST-AUTHORITY-0001.json`, installation manifest tests | Component manifest vs instance installation manifest separated; legacy duplicate schema explicitly classified; conflict rules established |
@@ -501,7 +501,7 @@ Remaining partial scope:
 
 **PHASE 2 Cryptography reconciliation: SATISFIED.**
 
-**Next PHASE 2 component:** CLI / Configuration residual.
+**Next PHASE 2 component:** Bootstrap residual / cross-component validation.
 
 
 ## PHASE 2 — Storage reconciliation
@@ -575,3 +575,42 @@ Remaining partial scope:
 **PHASE 2 Recovery reconciliation: SATISFIED.**
 
 **Next PHASE 2 component:** CLI / Configuration residual.
+
+
+## PHASE 2 — CLI / Configuration residual reconciliation
+
+### CLI
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+
+Resolved:
+- canonical command set remains limited to `status`, `readiness`, `start`, `stop`, `recover`;
+- CLI delegates lifecycle operations to Node Manager;
+- CLI does not own lifecycle state;
+- successful output is deterministic compact JSON;
+- operational failures return non-zero status with structured JSON errors;
+- CPG-specific operations remain outside the Node Core CLI;
+- canonical CLI tests were added.
+
+Remaining:
+- complete command catalog is intentionally not expanded until remaining Node Core contracts close.
+
+### Configuration
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+
+Resolved:
+- canonical schema remains the structural authority;
+- Configuration Manager retains validation as the runtime implementation boundary;
+- explicit `update()` operation now validates the complete candidate configuration before atomic replacement;
+- unknown properties and invalid states fail closed;
+- CPG cannot be installed or activated through Configuration Manager;
+- configuration writes use an atomic replacement boundary;
+- canonical configuration mutation is separated from Protocol Interface lifecycle control;
+- canonical Configuration tests were added.
+
+Remaining:
+- complete negative-path matrix;
+- deeper automated execution against the JSON Schema authority rather than relying primarily on equivalent runtime validation.
+
+**PHASE 2 CLI / Configuration reconciliation: SATISFIED.**
+
+**Next PHASE 2 component:** Bootstrap residual / cross-component validation.
