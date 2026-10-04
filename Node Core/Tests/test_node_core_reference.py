@@ -3,6 +3,7 @@ import sys
 import tempfile
 import unittest
 import json
+import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,14 +24,13 @@ spec.loader.exec_module(mod)
 class NodeCoreReferenceTests(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
-        root = Path(self.temp_dir.name) / "node-storage" / "configuration"
-        root.mkdir(parents=True)
-        (root / "node-config.json").write_text(json.dumps({
-            "node_core_version": "1.0.0",
-            "decentralized_storage": {"status": "NOT_PROVISIONED", "mode": "LOCAL"},
-            "protocol_associations": [],
-            "cpg_protocol": "NOT_INSTALLED",
-        }), encoding="utf-8")
+        bootstrap = ROOT / "Bootstrap" / "Installer" / "bootstrap_node.py"
+        subprocess.run(
+            [sys.executable, str(bootstrap), self.temp_dir.name],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
 
     def tearDown(self):
         self.temp_dir.cleanup()
@@ -40,7 +40,7 @@ class NodeCoreReferenceTests(unittest.TestCase):
 
     def test_boot_initialize_activate(self):
         n = self.node()
-        self.assertEqual(n.initialize()["state"], "INITIALIZED")
+        self.assertEqual(n.initialize()["state"], "READY")
         self.assertEqual(n.activate(), "RUNNING")
 
     def test_crypto(self):
