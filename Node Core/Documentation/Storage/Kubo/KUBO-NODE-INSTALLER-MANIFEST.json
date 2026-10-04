@@ -1,0 +1,63 @@
+{
+  "manifest_type": "KUBO-NODE-INSTALLATION-MANIFEST",
+  "manifest_version": "1.0.0",
+  "status": "CANONICAL_DESIGN",
+  "platform_priority": [
+    "linux",
+    "windows",
+    "ios"
+  ],
+  "provider": "Kubo",
+  "installation": {
+    "root_relative_path": "External Providers/Kubo/<kubo-version>/",
+    "repository_relative_path": "node-storage/providers/kubo/repository/",
+    "runtime_relative_path": "node-storage/providers/kubo/runtime/",
+    "logs_relative_path": "node-storage/providers/kubo/logs/",
+    "state_relative_path": "node-storage/providers/kubo/state/",
+    "synchronization_relative_path": "node-storage/providers/kubo/synchronization/",
+    "ipfs_path_policy": "absolute repository path derived from Node Core root"
+  },
+  "release_selection": {
+    "source": "official Kubo release distribution",
+    "channel": "stable",
+    "selection": "latest compatible stable at explicit provisioning time",
+    "installed_version_immutable_until_explicit_upgrade": true
+  },
+  "verification": {
+    "package_integrity_required": true,
+    "release_metadata_required": true,
+    "executable_presence_required": true,
+    "repository_identity_required": true,
+    "health_check_required_before_activation": true,
+    "initial_sync_required_before_dual_storage": true
+  },
+  "lifecycle_states": [
+    "NOT_PROVISIONED",
+    "RELEASE_SELECTED",
+    "PACKAGE_DOWNLOADING",
+    "PACKAGE_DOWNLOADED",
+    "PACKAGE_VERIFIED",
+    "INSTALLING",
+    "INSTALLED",
+    "REPOSITORY_INITIALIZING",
+    "REPOSITORY_INITIALIZED",
+    "CONFIGURING",
+    "CONFIGURED",
+    "STARTING",
+    "HEALTHY",
+    "INITIAL_SYNC_PENDING",
+    "INITIAL_SYNCING",
+    "COHERENCE_VERIFICATION",
+    "READY",
+    "STOPPING",
+    "STOPPED",
+    "DEGRADED",
+    "FAILED"
+  ],
+  "dual_storage_activation": "READY only after HEALTHY + INITIAL_SYNC complete + coherence verification",
+  "ownership": {
+    "node_core": "installation lifecycle, paths, environment, health, synchronization orchestration",
+    "kubo": "internal repository layout, datastore, IPFS configuration semantics",
+    "storage_manager": "logical object selection, policy, mirror state and coherence"
+  }
+}
