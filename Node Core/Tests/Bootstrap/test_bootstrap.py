@@ -8,7 +8,7 @@ BASE=Path(__file__).resolve().parents[2]/"Bootstrap"
 sys.path.insert(0,str(BASE))
 sys.path.insert(0,str(BASE/"Installer"))
 from bootstrap import Bootstrap
-from Installer.bootstrap_node import BootstrapInstallationError, install
+from bootstrap_node import BootstrapInstallationError, install
 from Verification.bootstrap_verifier import BootstrapVerificationError
 
 with TemporaryDirectory() as root:
