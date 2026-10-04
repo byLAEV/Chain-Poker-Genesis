@@ -93,8 +93,9 @@ Implemented:
 
 Remaining:
 
-- one centralized configuration manager;
-- explicit runtime configuration mutation API;
+- centralized configuration manager;
+- explicit storage mode mutation API with readiness gate;
+- administrative CLI delegation to Configuration Manager;
 - full negative-path test matrix.
 
 ## 11. Verification
@@ -111,3 +112,17 @@ Tests MUST verify:
 8. integrity participation;
 9. runtime readiness dependency;
 10. no schema authority duplication in Runtime/Node Manager.
+
+
+## 12. Storage mode administration
+
+The canonical administrative surface exposes the decentralized storage mode as:
+
+- `LOCAL`;
+- `DUAL_STORAGE`.
+
+The CLI MUST delegate storage mode changes to `ConfigurationManager`. It MUST NOT implement its own readiness rules.
+
+`DUAL_STORAGE` may be persisted only when the Storage/Kubo coherence verifier returns `dual_storage_ready=true`.
+
+The administrative surface returns both the configured mode and the technical storage status. A Kubo provider degradation does not silently rewrite the user's selected mode; effective availability is reported separately by the provider/runtime lifecycle.
