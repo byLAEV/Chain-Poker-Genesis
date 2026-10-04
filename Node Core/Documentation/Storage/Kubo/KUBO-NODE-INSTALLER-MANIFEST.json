@@ -66,13 +66,13 @@
       "release_resolution",
       "canonical_path_derivation",
       "absolute_ipfs_path",
-      "provider_state_persistence"
+      "provider_state_persistence",
+      "verified_package_installation"
     ],
     "not_implemented": [
       "remote_release_metadata_retrieval",
       "package_download",
       "package_verification",
-      "installation",
       "repository_initialization",
       "process_manager",
       "health_manager",
@@ -107,5 +107,6 @@
       "KUBO-INSTALL-0021",
       "KUBO-INSTALL-0022"
     ]
-  }
+  },
+  "installation_manifest_schema": "Documentation/Storage/Kubo/KUBO-ACTIVE-MANIFEST-SCHEMA.json"
 }
