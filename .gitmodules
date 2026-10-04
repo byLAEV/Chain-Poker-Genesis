@@ -33,3 +33,59 @@
 [submodule "Node Core/Cryptography/External References/pgpainless--pgpainless"]
 	path = Node Core/Cryptography/External References/pgpainless--pgpainless
 	url = https://github.com/pgpainless/pgpainless.git
+
+[submodule "Node Core/Time/External References/OpenTimestamps--javascript-opentimestamps"]
+	path = Node Core/Time/External References/OpenTimestamps--javascript-opentimestamps
+	url = https://github.com/opentimestamps/javascript-opentimestamps.git
+
+[submodule "Node Core/Time/External References/OpenTimestamps--opentimestamps-client"]
+	path = Node Core/Time/External References/OpenTimestamps--opentimestamps-client
+	url = https://github.com/opentimestamps/opentimestamps-client.git
+
+[submodule "Node Core/Time/External References/OpenTimestamps--opentimestamps-server"]
+	path = Node Core/Time/External References/OpenTimestamps--opentimestamps-server
+	url = https://github.com/opentimestamps/opentimestamps-server.git
+
+[submodule "Node Core/Time/External References/OpenTimestamps--python-opentimestamps"]
+	path = Node Core/Time/External References/OpenTimestamps--python-opentimestamps
+	url = https://github.com/opentimestamps/python-opentimestamps.git
+
+[submodule "Node Core/Time/External References/OpenTimestamps--rust-opentimestamps"]
+	path = Node Core/Time/External References/OpenTimestamps--rust-opentimestamps
+	url = https://github.com/opentimestamps/rust-opentimestamps.git
+
+[submodule "Node Core/Time/External References/Time-Appliances-Project--DC-PTP-Profile"]
+	path = Node Core/Time/External References/Time-Appliances-Project--DC-PTP-Profile
+	url = https://github.com/Time-Appliances-Project/DC-PTP-Profile.git
+
+[submodule "Node Core/Time/External References/Time-Appliances-Project--Open-Time-Server"]
+	path = Node Core/Time/External References/Time-Appliances-Project--Open-Time-Server
+	url = https://github.com/Time-Appliances-Project/Open-Time-Server.git
+
+[submodule "Node Core/Time/External References/Time-Appliances-Project--Precise-Time-API"]
+	path = Node Core/Time/External References/Time-Appliances-Project--Precise-Time-API
+	url = https://github.com/Time-Appliances-Project/Precise-Time-API.git
+
+[submodule "Node Core/Time/External References/Time-Appliances-Project--Time-Card"]
+	path = Node Core/Time/External References/Time-Appliances-Project--Time-Card
+	url = https://github.com/Time-Appliances-Project/Time-Card.git
+
+[submodule "Node Core/Time/External References/Time-Appliances-Project--TimeHAT"]
+	path = Node Core/Time/External References/Time-Appliances-Project--TimeHAT
+	url = https://github.com/Time-Appliances-Project/TimeHAT.git
+
+[submodule "Node Core/Time/External References/eggert--tz"]
+	path = Node Core/Time/External References/eggert--tz
+	url = https://github.com/eggert/tz.git
+
+[submodule "Node Core/Time/External References/ntpsec--ntpsec"]
+	path = Node Core/Time/External References/ntpsec--ntpsec
+	url = https://github.com/ntpsec/ntpsec.git
+
+[submodule "Node Core/Time/External References/richardcochran--linuxptp"]
+	path = Node Core/Time/External References/richardcochran--linuxptp
+	url = https://github.com/richardcochran/linuxptp.git
+
+[submodule "Node Core/Time/OpenTimestamps/opentimestamps-client"]
+	path = Node Core/Time/OpenTimestamps/opentimestamps-client
+	url = https://github.com/opentimestamps/opentimestamps-client.git
