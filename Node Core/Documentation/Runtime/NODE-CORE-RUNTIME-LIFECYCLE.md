@@ -1,136 +1,148 @@
 # Node Core Runtime Lifecycle
 
-## Formal Specification
+## Formal Contract
 
 **Project:** Chain Poker Genesis by LAEV  
 **Component:** Node Core  
-**Status:** Architectural Definition  
-**Scope:** Node Core lifecycle only
+**Status:** Normative contract baseline  
+**Scope:** Protocol-neutral Node Core lifecycle
 
 ### 1. Purpose
 
-This specification defines the lifecycle of a protocol-neutral Node Core from initialization through shutdown and recovery.
+This contract defines the lifecycle of Node Core from initialization through operational readiness, shutdown and recovery.
 
-The lifecycle does not install, activate, associate, or execute the Chain Poker Genesis protocol.
+The lifecycle does not install, activate, associate or execute the Chain Poker Genesis protocol.
 
-### 2. Lifecycle States
+### 2. Canonical lifecycle states
+
+Normal states:
 
 - UNINITIALIZED
-- INITIALIZING
-- VERIFYING
-- READY
+- ENVIRONMENT_VALIDATED
+- IDENTITY_INITIALIZED
+- STORAGE_INITIALIZED
+- STORAGE_STRUCTURE_VERIFIED
+- INTEGRITY_VERIFIED
+- RECOVERY_READY
+- NODE_CORE_READY
 - RUNNING
 - DEGRADED
 - RECOVERY
 - SHUTTING_DOWN
 - STOPPED
-- INITIALIZATION_FAILED
-- VERIFICATION_FAILED
+
+Failure states:
+
+- ENVIRONMENT_INVALID
+- IDENTITY_FAILED
+- STORAGE_FAILED
+- STRUCTURE_MISMATCH
+- INTEGRITY_FAILED
 - RECOVERY_FAILED
+- MANIFEST_INVALID
+- PROTOCOL_ISOLATION_FAILED
 
-### 3. Valid Transitions
+### 3. Canonical transitions
 
-~~~text
+```text
 UNINITIALIZED
-      |
-      v
-INITIALIZING -----> INITIALIZATION_FAILED
-      |
-      v
-VERIFYING --------> VERIFICATION_FAILED
-      |
-      v
-READY
-      |
-      +-----------> RUNNING
-      |               |
-      |               +--> DEGRADED
-      |               |       |
-      |               |       v
-      |               |    RECOVERY --> READY
-      |               |       |
-      |               |       +------> RECOVERY_FAILED
-      |               |
-      |               +--> SHUTTING_DOWN
-      |
-      v
-SHUTTING_DOWN
-      |
-      v
-STOPPED
-      |
-      v
-INITIALIZING
-~~~
+      ↓
+ENVIRONMENT_VALIDATED
+      ↓
+IDENTITY_INITIALIZED
+      ↓
+STORAGE_INITIALIZED
+      ↓
+STORAGE_STRUCTURE_VERIFIED
+      ↓
+INTEGRITY_VERIFIED
+      ↓
+RECOVERY_READY
+      ↓
+NODE_CORE_READY
+      ↓
+RUNNING
+      ├──→ DEGRADED → RECOVERY → NODE_CORE_READY
+      ├──→ RECOVERY → NODE_CORE_READY
+      └──→ SHUTTING_DOWN → STOPPED → ENVIRONMENT_VALIDATED
+```
 
-### 4. Runtime Readiness Preconditions
+At each controlled validation boundary, the corresponding failure state may be entered.
 
-READY requires all of the following:
+Invalid transitions MUST fail explicitly.
 
-- identity is initialized;
-- configuration is valid;
-- storage is available;
-- storage provider is ready;
-- local storage coherence is verified;
-- recovery is ready;
-- protocol associations are empty;
-- CPG protocol status is NOT_INSTALLED.
+### 4. Readiness contract
 
-RUNNING may only be entered from READY and only after the same readiness conditions remain true.
+NODE_CORE_READY requires:
 
-### 5. Protocol Boundary
+- environment available;
+- identity initialized;
+- storage available;
+- configuration valid;
+- storage structure verified;
+- integrity verified;
+- recovery ready;
+- provider ready;
+- storage coherence verified;
+- protocol associations empty;
+- CPG status NOT_INSTALLED.
 
-The runtime lifecycle is intentionally protocol-neutral.
+RUNNING requires the same readiness conditions.
 
-The runtime implementation MUST NOT:
+### 5. Protocol boundary
 
-- install Chain Poker Genesis;
-- activate Chain Poker Genesis;
-- create a protocol association;
-- claim network synchronization merely from local coherence;
-- write protocol-reserved storage objects.
+Runtime MUST NOT:
 
-The expected baseline remains:
+- install CPG;
+- activate CPG;
+- create a CPG protocol association;
+- claim network synchronization from local coherence;
+- write protocol-reserved objects.
 
-~~~text
+Baseline:
+
+```text
 CPG = NOT_INSTALLED
 CPG = NOT_ASSOCIATED
 CPG = NOT_ACTIVE
-~~~
+```
 
 ### 6. Recovery
 
-Recovery is an explicit lifecycle state. A degraded runtime may enter RECOVERY.
+DEGRADED may enter RECOVERY.
 
-Recovery may return to READY only after readiness conditions are revalidated. Failed recovery enters RECOVERY_FAILED and does not silently restore the runtime to a healthy state.
+RECOVERY may return to NODE_CORE_READY only after readiness is revalidated.
+
+RECOVERY_FAILED is a terminal failure for that recovery attempt and MUST NOT silently become healthy.
 
 ### 7. Shutdown
 
-SHUTTING_DOWN represents an intentional controlled stop. The final state is STOPPED.
+SHUTTING_DOWN is a controlled stop. It transitions to STOPPED.
 
-A stopped Node Core may be initialized again; this does not install or activate any protocol.
+STOPPED may return to ENVIRONMENT_VALIDATED for a subsequent initialization sequence.
 
-### 8. Health and Readiness
+### 8. Health and readiness
 
-Health is an observation of runtime conditions. Readiness is a gate for entering operational states.
-
-A healthy Node Core reports:
-
-~~~text
-Identity         = READY
-Configuration    = READY
-Storage          = READY
-Provider         = READY
-Coherence        = COHERENT
-Recovery         = READY
-Synchronization  = NOT_EVALUATED
-CPG              = NOT_INSTALLED
-
-NODE CORE        = READY
-~~~
+Health describes condition. Readiness describes whether Node Core satisfies the operational gate.
 
 COHERENT MUST NOT be interpreted as SYNCHRONIZED.
 
-### 9. Determinism
+### 9. Implementation authority
 
-The reference implementation uses explicit state-transition validation so invalid lifecycle transitions fail rather than being silently accepted.
+The canonical implementation state machine is:
+
+`Node Core/Runtime/State/runtime_state.py`
+
+The lifecycle contract and implementation MUST remain semantically synchronized.
+
+### 10. Verification
+
+The lifecycle verification suite MUST cover:
+
+1. valid normal transitions;
+2. invalid transitions;
+3. readiness prerequisites;
+4. shutdown;
+5. recovery;
+6. failure states;
+7. protocol isolation.
