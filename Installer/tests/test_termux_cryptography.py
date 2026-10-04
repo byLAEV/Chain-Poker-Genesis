@@ -70,6 +70,9 @@ class TermuxCryptographyDependencyTests(unittest.TestCase):
             str(environment / "bin/python"),
         )
         self.assertEqual(calls[2][1], "-c")
+        self.assertIn("AESGCM.generate_key", calls[2][2])
+        self.assertIn("Ed25519PrivateKey.generate", calls[2][2])
+        self.assertIn("ssl.OPENSSL_VERSION", calls[2][2])
         self.assertEqual(len(calls[2]), 3)
 
         pip_commands = [
