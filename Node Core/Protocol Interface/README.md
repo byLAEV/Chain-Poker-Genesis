@@ -37,17 +37,27 @@ PROTOCOLS
 Installed Protocols
 - <installed protocol>
 
-Install Protocol
-- <recognized installer>
+Install Protocols
+- <remote protocol catalog>
 ```
 
-The installer view represents `Node Core/Protocols/Installers/`. Installed protocols are represented under `Node Core/Protocols/Installed/`.
+**Install Protocols** opens a remote protocol catalog. Catalog entries may point to CID or GitHub sources and MUST expose the corresponding download/reference link.
 
-The presentation layer is not a second registry. It delegates protocol state and installation decisions to Protocol Interface.
+The download action writes the selected package into:
+
+`Node Core/Protocols/`
+
+That local package is then used by Protocol Interface for verification and installation. The remote catalog is therefore a source directory/catalog, while `Node Core/Protocols/` is the local protocol package area.
+
+Installed protocols are represented under:
+
+`Node Core/Protocols/Installed/`
+
+The presentation layer is not a second registry. It delegates protocol state, download tracking and installation decisions to Protocol Interface.
 
 ## State distinction
 
-`AVAILABLE INSTALLER ≠ INSTALLED ≠ ACTIVE ≠ RUNNING`
+`REMOTE CATALOG ENTRY ≠ DOWNLOADED PACKAGE ≠ INSTALLED ≠ ACTIVE ≠ RUNNING`
 
 The interface must never imply that installation automatically means activation or execution.
 
