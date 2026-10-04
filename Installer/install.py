@@ -153,7 +153,7 @@ def _termux_install_native_cryptography() -> None:
         )
 
     completed = subprocess.run(
-        [pkg, "install", "-y", "python", "python-cryptography"],
+        [pkg, "install", "-y", "python-cryptography"],
         text=True,
         capture_output=True,
     )
