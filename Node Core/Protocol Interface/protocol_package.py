@@ -73,11 +73,19 @@ class ProtocolPackageVerifier:
         staging = Path(tempfile.mkdtemp(prefix=".protocol-", dir=self.installed_root))
         try:
             if source.is_dir():
-                shutil.copytree(source, staging / source.name)
-                payload = staging / source.name
+                payload = staging / "Package"
+                shutil.copytree(source, payload)
             else:
-                payload = staging / "package.zip"
-                shutil.copy2(source, payload)
+                payload = staging / "Package"
+                payload.mkdir()
+                with zipfile.ZipFile(source) as archive:
+                    root = payload.resolve()
+                    for member in archive.infolist():
+                        target = (payload / member.filename).resolve()
+                        if root != target and root not in target.parents:
+                            raise ValueError("protocol package contains unsafe path")
+                    archive.extractall(payload)
+
             (staging / "INSTALLATION-MANIFEST.json").write_text(
                 json.dumps(
                     {
@@ -87,7 +95,7 @@ class ProtocolPackageVerifier:
                     },
                     sort_keys=True,
                     indent=2,
-                ) + "\n",
+                ) + "\\n",
                 encoding="utf-8",
             )
             staging.replace(destination)
