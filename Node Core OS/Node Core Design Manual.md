@@ -14,23 +14,82 @@ This manual is developed step by step. Each new design decision should be docume
 
 ## 1. Node Core OS
 
-Node Core OS is the infrastructure layer that organizes the Node Core BIOS, Node Core, and the protocols installed over the Node Core.
+The design strategy for **Node Core OS** is to develop the node infrastructure through a **BIOS-oriented work format**.
+
+For this reason, the architecture is organized into three distinct instances:
+
+1. **Node Core BIOS**
+2. **Node Core**
+3. **Protocols**
+
+In the repository, the main **Node Core OS** directory contains these three instances and the Node Core OS README.
+
+The structure is:
+
+```text
+Node Core OS/
+│
+├── README.md
+│
+├── Node Core BIOS/
+│   ├── BIOS-MANIFEST.json
+│   ├── README.md
+│   ├── Configuration/
+│   ├── EAL/
+│   ├── Boot/
+│   ├── Storage/
+│   ├── IPFS/
+│   ├── Security/
+│   ├── Materializer/
+│   ├── Recovery/
+│   └── UI/
+│
+├── Node Core/
+│   ├── ...
+│
+└── Protocols/
+    └── Chain Poker Genesis/
+```
+
+These three instances are architecturally related, but they have different responsibilities.
 
 ### 1.1 Node Core BIOS
 
-The **Node Core BIOS** is the infrastructure firmware layer responsible for boot, configuration, verification, storage, content resolution, materialization, recovery, and controlled activation of the Node Core.
+The **Node Core BIOS** is the infrastructure firmware instance of Node Core OS.
+
+It is responsible for the infrastructure operations required to initialize and manage the Node Core environment, including configuration, boot, verification, storage, IPFS/Kubo integration, security, materialization, recovery, and administrative interaction.
+
+The BIOS is therefore designed as an independent infrastructure layer rather than as the Node Core itself.
+
+Its internal design begins with:
+
+- **BIOS-MANIFEST.json**
+- **README.md**
+- **Configuration/**
+- **EAL/**
+- **Boot/**
+- **Storage/**
+- **IPFS/**
+- **Security/**
+- **Materializer/**
+- **Recovery/**
+- **UI/**
 
 ### 1.2 Node Core
 
-The **Node Core** is the protocol-neutral core and runtime of the node.
+The **Node Core** is the protocol-neutral core and runtime instance of the node.
 
 It provides the common infrastructure required by installed protocols while remaining separate from protocol-specific logic.
 
+The Node Core is not the BIOS and is not itself a protocol. Its internal structure is developed independently within the Node Core instance.
+
 ### 1.3 Protocols
 
-The **Protocols** layer contains protocol implementations installed over the Node Core.
+The **Protocols** instance contains protocol implementations installed over the Node Core.
 
-Chain Poker Genesis belongs to this layer and must remain architecturally separated from the Node Core infrastructure.
+**Chain Poker Genesis** belongs inside this layer.
+
+This separation allows Chain Poker Genesis to be developed as a protocol over the Node Core infrastructure without merging protocol-specific responsibilities into the BIOS or the protocol-neutral Node Core.
 
 # Design Development Record
 
@@ -38,4 +97,6 @@ This document is a living record of the Node Core OS design.
 
 The design will be expanded progressively as each architectural component is defined, normalized, canonicalized, specified, tested, and implemented.
 
-New sections should document the design in sequence rather than silently replacing previously established architectural decisions.
+The BIOS-oriented work strategy establishes the initial architectural separation between **Node Core BIOS**, **Node Core**, and **Protocols**.
+
+New design decisions should be documented here in sequence so that the evolution of the architecture remains explicit and traceable.
