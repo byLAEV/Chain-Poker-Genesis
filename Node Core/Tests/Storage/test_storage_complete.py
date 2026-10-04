@@ -44,6 +44,11 @@ class FakeKubo:
         self.pins.discard(cid)
         return True
 
+
+class FailingKubo(FakeKubo):
+    def get(self, cid):
+        raise RuntimeError("Kubo unavailable")
+
 def test_local_crud():
     with TemporaryDirectory() as root:
         manager = StorageManager(root)
@@ -93,6 +98,16 @@ def test_local_fallback():
         assert data == b"fallback"
         assert read_meta["read_source"] == "LOCAL_FALLBACK"
 
+
+def test_kubo_unavailable_local_fallback():
+    with TemporaryDirectory() as root:
+        kubo = FailingKubo()
+        manager = StorageManager(root, kubo=kubo)
+        manager.put("public", "object-kubo-down", b"fallback-on-provider-failure", mirror=True)
+        data, read_meta = manager.get("public", "object-kubo-down")
+        assert data == b"fallback-on-provider-failure"
+        assert read_meta["read_source"] == "LOCAL_FALLBACK"
+
 def test_disaster_recovery():
     with TemporaryDirectory() as root:
         kubo = FakeKubo()
@@ -117,6 +132,7 @@ if __name__ == "__main__":
     test_path_traversal()
     test_kubo_mirror_and_preferred_read()
     test_local_fallback()
+    test_kubo_unavailable_local_fallback()
     test_disaster_recovery()
     test_sync_state_machine()
     print("Node Core Storage integration tests: PASS")
