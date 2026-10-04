@@ -36,6 +36,34 @@ def main():
     assert i.get(d.protocol_id).state=="INSTALLED"
     assert i.activate(d.protocol_id).state=="ACTIVE"
 
+
+    try:
+        i.register(d.protocol_id)
+        raise AssertionError("already registered protocol accepted re-registration")
+    except RuntimeError:
+        pass
+
+    incompatible=ProtocolDescriptor(
+        "incompatible.protocol",
+        "1.0.0",
+        "engine.incompatible",
+        "def456",
+        ("capability.not.available",),
+    )
+    i.discover(incompatible)
+    assert not i.check_compatibility(incompatible.protocol_id, ("storage",))
+    try:
+        i.register(incompatible.protocol_id)
+        raise AssertionError("incompatible protocol registered")
+    except RuntimeError:
+        pass
+
+    try:
+        i.install(incompatible.protocol_id)
+        raise AssertionError("unregistered/incompatible protocol installed")
+    except RuntimeError:
+        pass
+
     try:
         i.activate("missing.protocol")
         raise AssertionError("unknown protocol activated")
