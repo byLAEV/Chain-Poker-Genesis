@@ -28,6 +28,8 @@ recovery=_load("node_core_recovery","Recovery/recovery_manager.py")
 runtime=_load("node_core_engine_runtime","Engine Runtime/engine_runtime.py")
 time_service=_load("node_core_time","Time/time_service.py")
 security=_load("node_core_security","Security/security_service.py")
+kubo_health=_load("node_core_kubo_health","Storage/Kubo/kubo_health_manager.py")
+kubo_coherence=_load("node_core_kubo_coherence","Storage/Kubo/kubo_coherence_verifier.py")
 
 
 class NodeCore:
@@ -39,6 +41,8 @@ class NodeCore:
         self.identity=identity.IdentityManager()
         self.engines=runtime.EngineRuntime()
         self.storage=storage.StorageAPI(self.root)
+        self.kubo_health=kubo_health.KuboHealthManager()
+        self.storage_coherence=kubo_coherence.KuboCoherenceVerifier(self.storage.manager, self.kubo_health)
         self.recovery=recovery.RecoveryManager(self.root)
         self.protocol_interface=protocol.ProtocolInterface(
             protocols_root=self.root/"protocols",
@@ -52,6 +56,10 @@ class NodeCore:
         )
         self.time=time_service.TimeService()
         self.security=security.SecurityService()
+
+    @property
+    def configuration(self):
+        return self.manager.configuration_manager
 
     def initialize(self):
         self.manager.initialize()
