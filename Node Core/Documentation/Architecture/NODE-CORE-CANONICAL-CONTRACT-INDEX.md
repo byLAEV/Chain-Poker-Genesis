@@ -90,3 +90,23 @@ All currently scoped Node Core capabilities have a named canonical authority, im
 ## 8. Governing principle
 
 > One capability. One normative contract. Supporting documents may explain it. Implementations must conform to it. Tests must verify it.
+
+
+## PHASE 2 — Bootstrap reconciliation
+
+**Component:** Bootstrap / Installation  
+**Status:** PASS
+
+Manifest, README/supporting documentation and implementation were reconciled against the canonical Bootstrap Contract.
+
+Resolved conflicts:
+- bootstrap documentation versions below the canonical contract;
+- legacy `NODE_BOOTSTRAPPED` state wording versus implementation `NODE_CORE_READY`;
+- identity wording implying deterministic test identity generation;
+- README flow omitting verification/integrity boundaries;
+- installation schema not requiring `storage.required_paths`;
+- distinction between local provider readiness and decentralized-storage provider provisioning.
+
+**Authority remains:** canonical contract → manifest/schema → implementation → tests.
+
+**Next PHASE 2 component:** Configuration.
