@@ -32,3 +32,7 @@ The Node Core custody boundary is reference-based. Cryptography Core MUST NOT re
 - `public_key(key_ref: str) -> bytes`
 
 The provider owns private-key material and returns only the operation result or public material explicitly requested by the contract. The existing direct `sign(message, private_key)` primitive remains an internal/low-level primitive until the provider integration is separately reconciled and verified.
+
+
+## Leakage audit finding
+The identity credential verification boundary was found to propagate raw exception text through `VerificationResult.reason`. This was reconciled to the stable value `verification_failed`; the raw exception is no longer part of the result surface. A regression test now verifies sanitized failure output.
