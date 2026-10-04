@@ -54,6 +54,22 @@ class TimeService:
         self.previous_hash = digest
         return TimeRecord(sequence, ts, previous, digest)
 
+    @staticmethod
+    def verify_record(record: TimeRecord, expected_previous_hash: str | None = None) -> bool:
+        if not isinstance(record, TimeRecord):
+            raise ValueError("record must be a TimeRecord")
+        if record.previous_hash != expected_previous_hash:
+            return False
+        body = {
+            "sequence": record.sequence,
+            "timestamp": record.timestamp,
+            "previous_hash": record.previous_hash,
+        }
+        digest = hashlib.sha256(
+            json.dumps(body, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        return digest == record.record_hash
+
     def reference_status(self) -> dict:
         return {
             "clock": "system",
