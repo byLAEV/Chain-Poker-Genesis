@@ -676,3 +676,29 @@ Initial synchronization is a logical Storage Manager operation, not a filesystem
 Linux is the first implementation target. Windows follows the same logical contract. iOS remains a later platform-specific target and must not be assumed to run the same Kubo daemon model.
 
 This decision preserves the Node Core baseline invariant: Kubo is **never silently installed**, but it can be fully provisioned when the operator explicitly chooses decentralized/dual storage.
+
+
+## PHASE 4 — Kubo Node Installer / Manager design gate
+
+**Status:** CANONICAL DESIGN / IMPLEMENTATION NOT STARTED
+
+The Kubo provider is now divided into two explicit boundaries:
+
+1. **Kubo Adapter** — translates Node Core Storage operations to Kubo's supported API/RPC.
+2. **Kubo Node Installer / Manager** — provisions the complete official Kubo distribution, owns the installation environment and manages its lifecycle.
+
+The Installer / Manager design freezes:
+- versioned Kubo installation paths;
+- separate Kubo repository path;
+- absolute `IPFS_PATH` management;
+- explicit stable-release selection;
+- package verification before activation;
+- repository initialization through Kubo's own mechanisms;
+- persistent provider state;
+- complete installation/runtime lifecycle;
+- failure-closed activation;
+- explicit upgrade boundary;
+- Linux-first platform policy;
+- `KUBO READY ≠ DUAL STORAGE READY`.
+
+No installer implementation is authorized yet. The next gate is to freeze the release-source/architecture matrix, provider-state schema and installation test vectors.
