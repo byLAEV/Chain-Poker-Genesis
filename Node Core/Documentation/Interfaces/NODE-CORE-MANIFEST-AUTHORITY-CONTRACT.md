@@ -72,6 +72,8 @@ Canonical manifest serialization MUST be deterministic:
 
 The installation manifest is generated from the actual installed state. It MUST NOT be used to redefine the Node Core architecture or contract.
 
+A component manifest status MUST reflect the reconciled implementation status recorded by the canonical contract index. A component MUST NOT be declared fully IMPLEMENTED when its canonical implementation mapping remains partial.
+
 In particular:
 
 `cpg_protocol.status = NOT_INSTALLED`
@@ -91,7 +93,8 @@ Manifest authority is closed only when:
 - legacy duplicate schema is classified;
 - validation detects conflicts;
 - implementation and tests map to the authority;
-- version rules are explicit.
+- version rules are explicit;
+- component implementation-status declarations match the canonical reconciliation state.
 
 ## 9. Phase 2 relationship
 
