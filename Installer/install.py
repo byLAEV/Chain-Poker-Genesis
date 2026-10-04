@@ -99,7 +99,7 @@ def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
     if not requirements.is_file():
         return Path(sys.executable)
 
-    environment = temp_root / "python-environment"
+    environment = temp_root / ".node-core-python"
     print("Preparing Node Core Python environment...")
     completed = subprocess.run(
         [sys.executable, "-m", "venv", str(environment)],
