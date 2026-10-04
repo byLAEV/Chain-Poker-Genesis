@@ -16,6 +16,8 @@ sys.path.insert(0, str(_STORAGE_DIR / "Storage Manager"))
 
 from storage_provider import LocalStorageProvider
 from runtime_state import Readiness, Runtime, RuntimeState
+sys.path.insert(0, str(_RUNTIME_DIR.parent / "Configuration"))
+from configuration_manager import ConfigurationError, validate_configuration
 
 REQUIRED_PATHS = [
     "node-storage",
@@ -69,6 +71,7 @@ def evaluate_readiness(root: Path) -> Readiness:
     config = _load_json(root / "node-storage/configuration/node-config.json")
     recovery = _load_json(root / "node-storage/recovery/recovery.json")
     installation = _load_json(root / "node-installation-manifest.json")
+    config=validate_configuration(config, fresh_node=True)
     return Readiness(
         environment_ready=root.is_dir(),
         identity_ready=identity.get("identity_status") == "INITIALIZED",
@@ -108,7 +111,7 @@ def main() -> int:
         return 1
     try:
         runtime = initialize_and_verify(root)
-    except (OSError, ValueError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError, json.JSONDecodeError, ConfigurationError) as exc:
         print("status = FAILED")
         print(f"reason = {exc}")
         return 1
