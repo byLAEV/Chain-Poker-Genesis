@@ -6,7 +6,7 @@
     "Apache-2.0",
     "MIT"
   ],
-  "integration_type": "external_provider_adapter",
+  "integration_type": "external_provider_adapter_and_managed_node",
   "node_core_owns": [
     "storage_api",
     "storage_manager",
@@ -51,6 +51,37 @@
   },
   "installation_policy": {
     "silent_install": false,
-    "provider_optional_at_baseline": true
-  }
+    "provider_optional_at_baseline": true,
+    "managed_install_supported": true,
+    "release_selection": "latest_compatible_stable_at_install_time",
+    "package_verification_required": true,
+    "explicit_ipfs_path": true,
+    "repository_location": "node-storage/providers/kubo/repository/",
+    "activation_requires_initial_sync": true
+  },
+  "node_core_managed_paths": {
+    "installation": "External Providers/Kubo/<kubo-version>/",
+    "repository": "node-storage/providers/kubo/repository/",
+    "runtime": "node-storage/providers/kubo/runtime/",
+    "logs": "node-storage/providers/kubo/logs/",
+    "state": "node-storage/providers/kubo/state/",
+    "synchronization": "node-storage/providers/kubo/synchronization/"
+  },
+  "provider_modes": [
+    "LOCAL_ONLY",
+    "DUAL_STORAGE"
+  ],
+  "dual_storage_activation_requirements": [
+    "kubo_installed",
+    "repository_initialized",
+    "provider_healthy",
+    "initial_sync_complete",
+    "integrity_verified",
+    "no_unresolved_sync_conflict"
+  ],
+  "platform_order": [
+    "linux",
+    "windows",
+    "ios"
+  ]
 }
