@@ -52,7 +52,6 @@ class TermuxCryptographyDependencyTests(unittest.TestCase):
                 "/data/data/com.termux/files/usr/bin/pkg",
                 "install",
                 "-y",
-                "python",
                 "python-cryptography",
             ],
         )
