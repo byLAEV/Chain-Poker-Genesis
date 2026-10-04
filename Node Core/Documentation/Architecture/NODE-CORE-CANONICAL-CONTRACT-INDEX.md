@@ -28,7 +28,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Configuration/Schemas/node-configuration.schema.json`, Bootstrap, Runtime readiness | `Tests/Configuration/test_configuration_contract.py`, installation E2E | Schema/default/integrity/runtime boundary mapped; centralized manager and full negative matrix remain |
 | Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Identity/identity_core.py`, `identity_api.py`, schema, binding, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Canonical identity lifecycle and activation boundary reconciled; trust/registration authority, revocation and durable secure identity storage remain partial |
 | Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Cryptography/Core/crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Canonical serialization, SHA-256, CSPRNG and Ed25519 boundary reconciled; AEAD profile remains open and Merkle is explicitly deferred to a separate specification |
-| Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL | `Storage/storage_engine.py`, `storage_api.py`, `Storage Manager/storage_manager.py`, `storage_locator.py` | `Tests/Storage/test_storage_locator.py`, `test_storage_complete.py` | Evidence mapped |
+| Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL / IMPLEMENTED | `Storage/storage_engine.py`, `Storage/API/storage_api.py`, `Storage/Storage Manager/storage_manager.py`, `Storage/Object Registry/object_registry.py`, `Storage/Providers/storage_provider.py`, `Storage/storage_locator.py`, `Storage/Synchronization/synchronization_manager.py`, `Storage/Disaster Recovery/storage_recovery.py` | `Tests/Storage/test_storage_engine.py`, `test_storage_api.py`, `test_storage_locator.py`, `test_object_registry.py`, `test_storage_complete.py` | Required create/read/write/update/delete/exists/locate/verify/synchronize/recover boundary reconciled; canonical metadata now enforced |
 | Runtime | `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md` | CANONICAL | `Runtime/State/runtime_state.py`, `Runtime/runtime_manager.py`, `Runtime/node_runtime.py` | Existing runtime tests plus lifecycle tests; dedicated contract coverage remains to be expanded | Lifecycle source and implementation state machine reconciled; readiness bug corrected |
 | Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL | `Recovery/recovery_manager.py` | `Tests/Recovery/test_recovery_implementation.py`, `Tests/Engine Runtime/test_health_recovery.py` | Evidence mapped |
 | Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL | `Network/network_manager.py`, `peer_registry.py`, `transport.py`, `Synchronization/synchronization_state.py` | `Tests/Network/test_network_contract.py`, `test_synchronization_state.py` | Contract, implementation, synchronization boundary and protocol isolation mapped |
@@ -501,4 +501,42 @@ Remaining partial scope:
 
 **PHASE 2 Cryptography reconciliation: SATISFIED.**
 
-**Next PHASE 2 component:** Storage.
+**Next PHASE 2 component:** Recovery.
+
+
+## PHASE 2 — Storage reconciliation
+
+**Component:** Storage  
+**Status:** IMPLEMENTED / RECONCILED
+
+Reconciled chain:
+
+`Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md`
+→ Storage Engine
+→ Storage Manager
+→ Storage API
+→ Object Registry
+→ Provider boundary
+→ Locator
+→ Synchronization
+→ Disaster Recovery
+→ Storage tests.
+
+Resolved:
+- The public Storage boundary now exposes the complete required operation set: `create`, `read`, `write`, `update`, `delete`, `exists`, `locate`, `verify`, `synchronize`, and `recover`.
+- `StorageManager` remains the orchestration authority; `StorageEngine` remains the physical/provider execution layer.
+- Canonical metadata is now explicit: `object_id`, `version`, `content_hash`, `storage_class`, `location`, `state`, `created_at`, and `updated_at`, while compatibility fields remain available where required.
+- Object version increments on update while creation time remains stable.
+- Object Registry now enforces the canonical metadata relationship `object_class == storage_class` and `state == object_state`.
+- Protocol-reserved storage remains protected from ordinary Node Core writes.
+- Local Storage remains the authoritative node-local fallback.
+- Kubo/IPFS remains an external provider adapter and is never treated as a second local registry.
+- Distributed reads require content-hash verification; invalid/unavailable distributed data falls back to valid local state.
+- Recovery requires a verified distributed source before restoring local state.
+- Storage path traversal and provider/state validation remain fail-closed.
+- CID remains distinct from `object_id`, `operation_id`, and `content_hash`.
+- Storage contains no CPG ledger, consensus, poker state, settlement or rake semantics.
+
+**PHASE 2 Storage reconciliation: SATISFIED.**
+
+**Next PHASE 2 component:** Recovery.
