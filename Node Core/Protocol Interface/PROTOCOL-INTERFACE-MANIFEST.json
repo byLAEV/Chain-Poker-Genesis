@@ -1,11 +1,15 @@
 {
   "component": "Node Core Protocol Interface",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "status": "IMPLEMENTED_PARTIAL",
   "scope": "Protocol discovery, verification, compatibility, registration, installation and lifecycle boundary",
   "implemented": {
     "discovery": true,
     "manifest_validation": true,
+    "package_integrity_verification": true,
+    "protocol_identity_verification": true,
+    "persistent_installation": true,
+    "engine_association": true,
     "capability_negotiation": true,
     "registration": true,
     "installation_state": true,
@@ -21,5 +25,5 @@
   "engine_versioning": "INDEPENDENT",
   "node_core_updates_protocol_engines": false,
   "cpg_logic": "NOT_INCLUDED",
-  "implementation_note": "Lifecycle reference implementation exists; remote catalog/download handling, installer verification, persistent protocol directories, engine-association execution and rendered UI remain implementation work."
+  "implementation_note": "Manifest verification, identity verification, persistent package installation and baseline engine association are implemented. Remote catalog transport and rendered UI remain implementation work; broader multi-engine execution remains to be completed."
 }
