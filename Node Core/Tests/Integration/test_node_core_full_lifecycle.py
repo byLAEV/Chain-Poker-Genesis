@@ -15,7 +15,8 @@ from pathlib import Path
 BASE = Path(__file__).resolve().parents[2]
 CRYPTO = BASE / "Cryptography" / "Core"
 CRYPTO_PROVIDERS = BASE / "Cryptography" / "Providers"
-for p in (BASE, BASE / "Bootstrap" / "Installer", CRYPTO, CRYPTO_PROVIDERS):
+RECOVERY = BASE / "Recovery"
+for p in (BASE, BASE / "Bootstrap" / "Installer", CRYPTO, CRYPTO_PROVIDERS, RECOVERY):
     sys.path.insert(0, str(p))
 
 from node_core import NodeCore
