@@ -55,7 +55,7 @@ def main() -> int:
         assert snapshot["node"]["state"] == "STOPPED"
         assert snapshot["node"]["protocols"] == []
         assert snapshot["node"]["engines"] == []
-        assert node.protocol_interface.list_installed() == []
+        assert node.protocol_interface.all() == ()
         assert snapshot["node_core_version"] == "1.0.0"
 
         print("Node Core full lifecycle: PASS")
