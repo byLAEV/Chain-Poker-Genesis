@@ -15,3 +15,18 @@ def test_unknown_storage_state_rejected():
     try: validate_configuration(c)
     except ConfigurationError: pass
     else: raise AssertionError("unknown storage state accepted")
+
+
+def test_dual_storage_mode_requires_readiness(tmp_path):
+    from configuration_manager import ConfigurationManager
+    import json
+    p=tmp_path/"node.json"; p.write_text(json.dumps(base()))
+    manager=ConfigurationManager(p); manager.load()
+    try:
+        manager.set_storage_mode("DUAL_STORAGE", readiness={"dual_storage_ready":False})
+    except ConfigurationError:
+        pass
+    else:
+        raise AssertionError("Dual Storage enabled without readiness")
+    result=manager.set_storage_mode("DUAL_STORAGE", readiness={"dual_storage_ready":True})
+    assert result["decentralized_storage"]["mode"]=="DUAL_STORAGE"
