@@ -39,6 +39,28 @@ class RuntimeManager:
         self.runtime.transition(RuntimeState.RUNNING, readiness)
         return self.runtime.snapshot()
 
+    def observe_storage_provider(self, health_manager):
+        """Observe an external storage provider without redefining Node Core readiness."""
+        result = health_manager.check()
+        if result.get("health_state") != "HEALTHY":
+            if self.runtime.state == RuntimeState.RUNNING:
+                self.runtime.transition(RuntimeState.DEGRADED)
+            return {"runtime_state": self.runtime.state.value, "provider_state": "DEGRADED",
+                    "local_fallback": True, "health": result}
+        return {"runtime_state": self.runtime.state.value, "provider_state": "HEALTHY",
+                "local_fallback": False, "health": result}
+
+    def complete_storage_provider_recovery(self, readiness):
+        """Return from provider recovery only after canonical Node Core readiness passes."""
+        if self.runtime.state == RuntimeState.RUNNING:
+            return self.runtime.snapshot()
+        if self.runtime.state == RuntimeState.DEGRADED:
+            self.runtime.transition(RuntimeState.RECOVERY)
+        if self.runtime.state == RuntimeState.RECOVERY:
+            self.runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
+            self.runtime.transition(RuntimeState.RUNNING, readiness)
+        return self.runtime.snapshot()
+
     def stop(self):
         if self.runtime.state in (RuntimeState.RUNNING, RuntimeState.DEGRADED):
             self.runtime.transition(RuntimeState.SHUTTING_DOWN)
