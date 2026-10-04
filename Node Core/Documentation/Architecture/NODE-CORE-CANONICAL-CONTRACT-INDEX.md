@@ -37,7 +37,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Time | `Documentation/Time/NODE-CORE-TIME-SERVICE-CONTRACT.md` | CANONICAL CANDIDATE | `Time/`, `TIME-CORE-MANIFEST.json`, external references | Dedicated Time conformance test not identified | Test mapping blocks PASS |
 | Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
 | API | `Documentation/Interfaces/NODE-CORE-API-CONTRACT.md` | CANONICAL | `API/node_core_api.py` (partial facade) | `Tests/API/test_node_core_api_contract.py` | Contract authority established; implementation remains explicitly PARTIAL |
-| CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL CANDIDATE | Explicit implementation path requires mapping | Dedicated CLI test not identified | Mapping blocks PASS |
+| CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL / PARTIAL | `CLI/node_cli.py` | `Tests/CLI/test_cli_contract.py` | Lifecycle subset mapped; deterministic JSON/error/exit boundary established |
 | Protocol Interface | `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` | CANONICAL | `Protocol Interface/protocol_interface.py`, protocol installation boundary | `Tests/Protocol Interface/test_protocol_interface.py` | Single installation/activation boundary established; invalid transitions tested |
 | Consensus Infrastructure | No single canonical contract | CANONICAL REQUIRED | `Consensus/` | Explicit state/evidence mapping required | Protocol-neutral scope only |
 | Manifests | `NODE-CORE-MANIFEST.json` plus subsystem manifests | CANONICAL CANDIDATE | `*MANIFEST*` | Audit/verification tooling exists | Hierarchy reconciled in PHASE 2 |
@@ -58,6 +58,7 @@ These currently have a named normative profile/contract plus mapped implementati
 - Protocol Interface
 - Security
 - Time
+- CLI
 
 This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
