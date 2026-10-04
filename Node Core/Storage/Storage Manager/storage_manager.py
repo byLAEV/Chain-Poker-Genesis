@@ -93,8 +93,15 @@ class StorageManager:
         return data, {**entry, "read_source": "LOCAL_FALLBACK" if cid else "LOCAL"}
 
     def update(self, object_class, object_id, data, *, mirror=True, encrypted=False):
-        self.registry.get(object_id)
-        return self.put(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
+        existing = self.registry.get(object_id)
+        if existing.get("object_class") != object_class:
+            raise StorageError("object class does not match registry entry")
+        metadata = self.create(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
+        metadata["version"] = int(existing.get("version", 1)) + 1
+        metadata["created_at"] = existing["created_at"]
+        from datetime import datetime, timezone
+        metadata["updated_at"] = datetime.now(timezone.utc).isoformat()
+        return self.registry.upsert(metadata)
 
     def delete(self, object_class, object_id):
         self.policy.validate_delete(object_class)
