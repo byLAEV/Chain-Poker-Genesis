@@ -47,6 +47,29 @@ def test_invalid_transition() -> None:
         raise AssertionError("invalid transition was accepted")
 
 
+def assert_invalid_transition(current: RuntimeState, target: RuntimeState) -> None:
+    runtime = Runtime()
+    runtime._state = current
+    try:
+        runtime.transition(target)
+    except ValueError:
+        return
+    raise AssertionError(f"invalid transition accepted: {current.value} -> {target.value}")
+
+
+def test_invalid_transition_matrix() -> None:
+    invalid = (
+        (RuntimeState.UNINITIALIZED, RuntimeState.RUNNING),
+        (RuntimeState.UNINITIALIZED, RuntimeState.STOPPED),
+        (RuntimeState.NODE_CORE_READY, RuntimeState.READY if hasattr(RuntimeState, "READY") else RuntimeState.UNINITIALIZED),
+        (RuntimeState.RUNNING, RuntimeState.READY if hasattr(RuntimeState, "READY") else RuntimeState.UNINITIALIZED),
+        (RuntimeState.STOPPED, RuntimeState.RUNNING),
+        (RuntimeState.STOPPED, RuntimeState.NODE_CORE_READY),
+    )
+    for current, target in invalid:
+        assert_invalid_transition(current, target)
+
+
 def test_running_requires_readiness() -> None:
     runtime = Runtime()
     incomplete = Readiness(True, True, True, False, True, True)
