@@ -11,7 +11,6 @@ sys.path.insert(0,str(BASE/"Protocol Interface"))
 sys.path.insert(0,str(BASE/"Engine Runtime"))
 
 from protocol_interface import ProtocolInterface
-from protocol_package import ProtocolPackageVerifier
 from engine_runtime import EngineRuntime
 
 
@@ -50,7 +49,9 @@ def main():
 
         installed=root/"Protocols"/"Installed"/"example.protocol"
         assert installed.is_dir()
-        assert (installed/"package.zip").is_file()
+        assert (installed/"Package"/"PROTOCOL-MANIFEST.json").is_file()
+        assert (installed/"Package"/"protocol.txt").is_file()
+        assert (installed/"INSTALLATION-MANIFEST.json").is_file()
         assert record.descriptor.metadata["installed_path"] == str(installed)
         assert "engine.main" in engines.engines
 
