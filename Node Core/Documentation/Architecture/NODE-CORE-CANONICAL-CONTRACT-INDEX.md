@@ -38,7 +38,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
 | API | `Documentation/Interfaces/NODE-CORE-API-CONTRACT.md` | CANONICAL | `API/node_core_api.py` (partial facade) | `Tests/API/test_node_core_api_contract.py` | Contract authority established; implementation remains explicitly PARTIAL |
 | CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL / PARTIAL | `CLI/node_cli.py` | `Tests/CLI/test_cli_contract.py` | Lifecycle subset mapped; deterministic JSON/error/exit boundary established |
-| Protocol Interface | `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Protocol Interface/protocol_interface.py`, protocol installation boundary | `Tests/Protocol Interface/test_protocol_interface.py` | Administrative interface, installer boundary and isolation are canonically specified; lifecycle implementation is mapped; persistent installer/installed storage, installer verification execution, engine association execution and rendered UI remain partial |
+| Protocol Interface | `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Protocol Interface/protocol_interface.py`, `protocol_catalog.py`, `protocol_source_resolver.py`, `protocol_download.py`, `protocol_package.py` | `Tests/Protocol Interface/test_protocol_interface.py`, `test_protocol_catalog.py`, `test_protocol_package_installation.py` | Catalog/download, manifest verification, identity, persistent installation and baseline shared Engine Runtime association are mapped; final administrative UI remains separate work |
 | Consensus Infrastructure | N/A for PHASE 1 Node Core scope | OUT OF SCOPE | `Consensus/` | Protocol-specific verification belongs to CPG Protocol | Node Core provides Engine Runtime/Protocol Interface boundaries; CPG consensus is excluded from generic Node Core authority |
 | Manifest Authority | `Documentation/Interfaces/NODE-CORE-MANIFEST-AUTHORITY-CONTRACT.md` | CANONICAL | `NODE-CORE-MANIFEST.json`, `Configuration/Schemas/node-core-installation-manifest.schema.json`, installation-manifest generation/validation | `Tools/Validation/validate_manifest_authority.py`, `Tests/Test Vectors/NODE-MANIFEST-AUTHORITY-0001.json`, installation manifest tests | Component manifest vs instance installation manifest separated; legacy duplicate schema explicitly classified; conflict rules established |
 
@@ -358,3 +358,27 @@ Security boundary:
 - Protocol Interface never implements CPG semantics.
 
 Current status remains **IMPLEMENTED_PARTIAL** because the complete multi-engine declaration/execution model and rendered administrative UI are not yet closed.
+
+
+## PHASE 2 — Manifest Authority reconciliation
+
+**Component:** Manifest Authority  
+**Status:** PASS
+
+Reconciled chain:
+
+`NODE-CORE-MANIFEST-AUTHORITY-CONTRACT.md`
+→ `NODE-CORE-MANIFEST.json`
+→ canonical installation schema
+→ manifest authority validator
+→ manifest authority test vector.
+
+Resolved:
+- `NODE-CORE-MANIFEST.json` remains the sole component-manifest authority.
+- `Configuration/Schemas/node-core-installation-manifest.schema.json` remains the sole installation-manifest schema authority.
+- The legacy `node-installation-manifest.schema.json` remains explicitly classified as legacy/conflicting and cannot become a second authority.
+- Component implementation status is now checked against the reconciled state; Protocol Interface is correctly declared `IMPLEMENTED_PARTIAL`.
+- Fresh Node Core installation remains protocol-neutral: `protocol_associations=[]` and `cpg_protocol.status=NOT_INSTALLED`.
+- Version and status contradictions are treated as validation failures rather than implementation choices.
+
+**Manifest Authority PHASE 2 gate: SATISFIED.**
