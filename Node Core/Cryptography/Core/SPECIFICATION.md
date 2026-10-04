@@ -2,7 +2,7 @@
 
 Protocol: Chain Poker Genesis by LAEV
 Version: 0.1.0
-Status: Architectural foundation — non-normative pending cryptographic profile approval
+Status: Architectural foundation — normative profile closure established; implementation remains subject to conformance verification
 
 ## Purpose
 The Cryptographic Core Engine is the protocol's shared cryptographic infrastructure layer. It provides primitive cryptographic operations required by Chain Poker Genesis while remaining separate from the Cryptographic Connection Engine.
@@ -119,24 +119,17 @@ The Core Engine must expose references and operation results without unnecessari
 ## Determinism
 Operations used for protocol evidence, replay, commitments, hash verification, and Merkle construction must have deterministic definitions wherever deterministic output is required. Randomness must be explicit and auditable when randomness is part of protocol state.
 
-## What remains OPEN
-- exact hash algorithm;
-- signature scheme;
-- authenticated-encryption profile;
-- key-derivation profile;
-- key/address format;
-- BIP-32/BIP-39/BIP-44 derivation policy;
-- Merkle tree variant;
-- canonical serialization format;
-- protocol domain-separation labels.
+## Profile closure status
+The previously open normative boundaries are now defined by the v1.0 subordinate profiles: Canonical Serialization, Cryptographic Test Vector Format, CSPRNG Failure Contract, Key Lifecycle Boundary, Encryption/AEAD, Merkle, and Production Cryptographic Security Requirements.
 
-These belong to the Formal Cryptographic Profile and must be selected through explicit protocol decisions and test vectors.
+The following remain explicitly outside this Node Core profile unless separately approved: BIP-32/BIP-39/BIP-44 wallet derivation policy, application-specific address formats, CPG consensus randomness, poker randomness, and protocol-specific ledger semantics.
 
-## Required next specifications
-1. Formal Cryptographic Profile
-2. Canonical Serialization Specification
-3. Merkle Tree Specification
-4. Cryptographic Test Vector Suite
+## Subsequent implementation evidence
+1. Implement the closed profiles without changing their normative semantics.
+2. Commit the required test vectors.
+3. Execute conformance and negative-path tests.
+4. Run CI and record verification evidence.
+5. Perform the security review required by the Production Cryptographic Security Requirements.
 
 ## Architectural conclusion
 The Cryptographic Connection Engine remains responsible for identity connection and credential lifecycle.
