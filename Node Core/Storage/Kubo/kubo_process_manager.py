@@ -35,13 +35,11 @@ class KuboProcessManager:
         except OSError as exc:
             log.close()
             raise KuboProcessError("unable to start Kubo daemon") from exc
-        self.pid_path.write_text(str(proc.pid)+"
-",encoding="utf-8")
+        self.pid_path.write_text(str(proc.pid)+"\n",encoding="utf-8")
         self.process_meta.write_text(json.dumps({
             "pid":proc.pid,"version":version,"executable_path":str(executable),
             "ipfs_path":str(self.paths.ipfs_path),"log_path":str(log_path)
-        },indent=2)+"
-",encoding="utf-8")
+        },indent=2)+"\n",encoding="utf-8")
         log.close()
         return proc.pid
 
