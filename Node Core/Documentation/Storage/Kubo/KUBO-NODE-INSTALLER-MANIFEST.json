@@ -70,11 +70,13 @@
       "verified_package_installation",
       "safe_package_extraction",
       "executable_verification",
-      "active_installation_manifest"
+      "active_installation_manifest",
+      "repository_initialization",
+      "repository_config_verification",
+      "kubo_peerid_verification"
     ],
     "not_implemented": [
       "remote_release_metadata_retrieval",
-      "repository_initialization",
       "process_manager",
       "health_manager",
       "initial_synchronization",
@@ -89,13 +91,13 @@
       "KUBO-INSTALL-0005",
       "KUBO-INSTALL-0008",
       "KUBO-INSTALL-0009",
-      "KUBO-INSTALL-0010"
+      "KUBO-INSTALL-0010",
+      "KUBO-INSTALL-0011"
     ],
     "pending": [
       "KUBO-INSTALL-0004",
       "KUBO-INSTALL-0006",
       "KUBO-INSTALL-0007",
-      "KUBO-INSTALL-0011",
       "KUBO-INSTALL-0012",
       "KUBO-INSTALL-0013",
       "KUBO-INSTALL-0014",
