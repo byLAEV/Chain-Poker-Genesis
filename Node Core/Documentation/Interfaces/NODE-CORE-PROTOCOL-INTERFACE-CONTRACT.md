@@ -119,6 +119,8 @@ The canonical semantic distinction is:
 
 The interface MUST NOT represent the remote catalog as if it were the local installer directory.
 
+The installed directory MUST contain the verified protocol package contents and an installation record identifying the protocol ID, version and verified manifest hash.
+
 Installing a protocol MUST result in an installed protocol association represented under the Installed protocol boundary.
 
 Node Core hosts and manages the protocol; the protocol remains a separately versioned protocol and is not part of the Node Core implementation itself.
