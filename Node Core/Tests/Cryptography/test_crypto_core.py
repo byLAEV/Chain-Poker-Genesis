@@ -77,3 +77,26 @@ if __name__ == "__main__":
         if name.startswith("test_") and callable(value):
             value()
     print("cryptography_core_tests = PASS")
+
+
+def test_canonical_serialization_rejects_finite_float() -> None:
+    try:
+        canonicalize({"value": 1.5})
+    except TypeError:
+        return
+    raise AssertionError("finite floating-point values must be rejected")
+
+
+def test_canonical_serialization_rejects_unsupported_type() -> None:
+    class Unsupported:
+        pass
+
+    try:
+        canonicalize({"value": Unsupported()})
+    except TypeError:
+        return
+    raise AssertionError("unsupported protocol values must be rejected")
+
+
+def test_canonical_serialization_preserves_large_integer() -> None:
+    assert canonicalize({"n": 9007199254740993}) == b'{"n":9007199254740993}'
