@@ -1,5 +1,7 @@
 # Node Core — Implementation Matrix
-Status: SPECIFICATION BASELINE
+Status: RECONCILED IMPLEMENTATION BASELINE
+
+**Verification evidence:** GitHub Actions Node Core Verification Run #561 (`794aa43f2561a252efbb851fbf51ff7ea2e94296`) — all workflow gates PASS.
 
 | Subsystem | Defined | Reference implementation | Remaining implementation |
 |---|---|---|---|
