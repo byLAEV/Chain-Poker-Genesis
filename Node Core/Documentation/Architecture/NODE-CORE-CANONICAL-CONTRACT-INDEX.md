@@ -633,3 +633,46 @@ After Storage, Recovery, CLI and Configuration reconciliation, the reference com
 This does **not** yet mean the full Node Core lifecycle integration is closed. Runtime ↔ Identity ↔ Storage ↔ Recovery ↔ Network ↔ Protocol Interface still requires end-to-end validation.
 
 **Next logical work:** cross-component lifecycle tests, then full Node lifecycle.
+
+
+## PHASE 4 — Managed Kubo / Dual Storage architectural decision
+
+The previous adapter-only model is superseded by the following canonical provider architecture:
+
+**Adapter layer**
+- remains small;
+- translates Node Core Storage operations to Kubo API/RPC;
+- does not contain Kubo itself.
+
+**Managed provider layer**
+- downloads the complete official Kubo distribution;
+- verifies the release package;
+- installs the selected version under the Node Core root;
+- initializes a dedicated Kubo repository;
+- sets an explicit absolute `IPFS_PATH`;
+- records version, repository, runtime and health state;
+- starts/stops the Kubo node through a controlled provider manager.
+
+**Canonical Linux layout**
+
+`<Node Core Root>/External Providers/Kubo/<version>/`
+
+for Kubo installation, and
+
+`<Node Core Root>/node-storage/providers/kubo/repository/`
+
+for the Kubo repository.
+
+Node Core does not modify Kubo's internal repository structure. The explicit `IPFS_PATH` is the relocation mechanism that prevents Kubo's default `~/.ipfs` assumptions from leaking into the installation.
+
+**Dual Storage activation**
+
+`LOCAL_ONLY → KUBO_PROVISIONING → INITIAL_SYNC → COHERENCE_VERIFIED → DUAL_STORAGE`
+
+The user-facing Storage Preference `DUAL_STORAGE` is enabled only after complete Kubo provisioning and successful initial synchronization.
+
+Initial synchronization is a logical Storage Manager operation, not a filesystem copy. Restricted/private objects are encrypted before distribution. Temporary or policy-excluded objects remain governed by Storage Policy.
+
+Linux is the first implementation target. Windows follows the same logical contract. iOS remains a later platform-specific target and must not be assumed to run the same Kubo daemon model.
+
+This decision preserves the Node Core baseline invariant: Kubo is **never silently installed**, but it can be fully provisioned when the operator explicitly chooses decentralized/dual storage.
