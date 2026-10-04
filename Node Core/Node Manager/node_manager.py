@@ -1,6 +1,10 @@
 """Node Core Manager reference implementation."""
 from __future__ import annotations
 from dataclasses import dataclass, field
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "Configuration"))
+from configuration_manager import ConfigurationManager, ConfigurationError
 
 @dataclass
 class NodeStatus:
@@ -14,13 +18,17 @@ class NodeManager:
         "RECOVERY", "SHUTTING_DOWN", "STOPPED",
     }
 
-    def __init__(self, protocol_interface=None):
+    def __init__(self, protocol_interface=None, configuration_path=None):
         self.status = NodeStatus()
         self.protocol_interface = protocol_interface
+        self.configuration_manager = ConfigurationManager(Path(configuration_path)) if configuration_path else None
+        self.configuration = None
 
     def initialize(self) -> NodeStatus:
         if self.status.state != "UNINITIALIZED":
             raise RuntimeError("node must be uninitialized")
+        if self.configuration_manager is not None:
+            self.configuration = self.configuration_manager.load()
         self.status.state = "READY"
         return self.status
 
@@ -74,7 +82,7 @@ class NodeManager:
         return self.snapshot()
 
     def readiness(self) -> bool:
-        return self.status.state in {"READY", "RUNNING"}
+        return self.status.state in {"READY", "RUNNING"} and (self.configuration_manager is None or self.configuration is not None)
 
     def snapshot(self) -> dict:
         return {
