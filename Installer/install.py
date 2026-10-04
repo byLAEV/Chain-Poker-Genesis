@@ -45,8 +45,7 @@ def default_target(platform_name: str) -> Path:
 
 def download_archive(destination: Path, source_ref: str) -> None:
     archive_url = (
-        f"https://github.com/{REPOSITORY}/archive/refs/heads/"
-        f"{source_ref}.tar.gz"
+        f"https://github.com/{REPOSITORY}/archive/{source_ref}.tar.gz"
     )
     print(f"Downloading Node Core package from {REPOSITORY}@{source_ref}...")
     request = urllib.request.Request(
