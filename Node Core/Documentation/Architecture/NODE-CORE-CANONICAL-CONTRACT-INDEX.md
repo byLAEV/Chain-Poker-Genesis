@@ -27,7 +27,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Bootstrap / Installation | `Documentation/Interfaces/NODE-CORE-BOOTSTRAP-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Bootstrap/bootstrap.py`, `Installer/bootstrap_node.py`, `Initialization/node_initializer.py`, `Verification/bootstrap_verifier.py`, `Recovery/bootstrap_recovery_impl.py` | `Tests/Bootstrap/test_bootstrap.py`, `Tests/Integration/test_node_installation_e2e.py`, `test_installation_manifest.py` | Clean bootstrap, isolation, integrity, failure and idempotent recovery mapped; broader production identity remains separate |
 | Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Configuration/Schemas/node-configuration.schema.json`, Bootstrap, Runtime readiness | `Tests/Configuration/test_configuration_contract.py`, installation E2E | Schema/default/integrity/runtime boundary mapped; centralized manager and full negative matrix remain |
 | Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Identity/identity_core.py`, `identity_api.py`, schema, binding, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Canonical identity lifecycle and activation boundary reconciled; trust/registration authority, revocation and durable secure identity storage remain partial |
-| Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL | `crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Evidence mapped; AEAD/Merkle remain profile-dependent |
+| Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Cryptography/Core/crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Canonical serialization, SHA-256, CSPRNG and Ed25519 boundary reconciled; AEAD profile remains open and Merkle is explicitly deferred to a separate specification |
 | Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL | `Storage/storage_engine.py`, `storage_api.py`, `Storage Manager/storage_manager.py`, `storage_locator.py` | `Tests/Storage/test_storage_locator.py`, `test_storage_complete.py` | Evidence mapped |
 | Runtime | `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md` | CANONICAL | `Runtime/State/runtime_state.py`, `Runtime/runtime_manager.py`, `Runtime/node_runtime.py` | Existing runtime tests plus lifecycle tests; dedicated contract coverage remains to be expanded | Lifecycle source and implementation state machine reconciled; readiness bug corrected |
 | Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL | `Recovery/recovery_manager.py` | `Tests/Recovery/test_recovery_implementation.py`, `Tests/Engine Runtime/test_health_recovery.py` | Evidence mapped |
@@ -467,3 +467,38 @@ Remaining partial scope:
 **PHASE 2 Identity reconciliation: SATISFIED.**
 
 **Next PHASE 2 component:** Cryptography.
+
+
+## PHASE 2 — Cryptography reconciliation
+
+**Component:** Cryptography  
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+
+Reconciled chain:
+
+`FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md`
+→ `Cryptography/Core/crypto_core.py`
+→ `crypto_service.py`
+→ `signatures.py`
+→ compatibility primitives
+→ Cryptography tests.
+
+Resolved:
+- Canonical UTF-8 JSON serialization is centralized in `crypto_core.py`.
+- SHA-256 and canonical-object hashing use one deterministic implementation.
+- CSPRNG generation and invalid-size rejection remain fail-closed.
+- Ed25519 key generation, exact-byte signing and verification are exposed through one service boundary.
+- Invalid Ed25519 signatures now fail closed instead of propagating backend `InvalidSignature` exceptions.
+- The previous duplicate Merkle implementation was removed from the generic primitive layer because the canonical profile explicitly reserves Merkle tree construction for a separate deterministic specification.
+- Node Core composition now exposes the Cryptography Core path required by the Crypto Service import boundary.
+- Private-key custody remains external; cryptographic functions only receive key material as operation input.
+- CPG-specific cryptography remains outside this component.
+
+Remaining partial scope:
+- production AEAD algorithm/profile, nonce construction, key derivation and key lifecycle;
+- AEAD test vectors;
+- deterministic Merkle specification and test vectors.
+
+**PHASE 2 Cryptography reconciliation: SATISFIED.**
+
+**Next PHASE 2 component:** Storage.
