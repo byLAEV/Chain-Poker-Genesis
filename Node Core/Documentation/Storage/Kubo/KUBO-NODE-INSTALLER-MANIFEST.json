@@ -59,5 +59,53 @@
     "node_core": "installation lifecycle, paths, environment, health, synchronization orchestration",
     "kubo": "internal repository layout, datastore, IPFS configuration semantics",
     "storage_manager": "logical object selection, policy, mirror state and coherence"
+  },
+  "implementation": {
+    "status": "PARTIAL",
+    "implemented": [
+      "release_resolution",
+      "canonical_path_derivation",
+      "absolute_ipfs_path",
+      "provider_state_persistence"
+    ],
+    "not_implemented": [
+      "remote_release_metadata_retrieval",
+      "package_download",
+      "package_verification",
+      "installation",
+      "repository_initialization",
+      "process_manager",
+      "health_manager",
+      "initial_synchronization",
+      "dual_storage_activation"
+    ]
+  },
+  "test_vectors": {
+    "foundation": [
+      "KUBO-INSTALL-0001",
+      "KUBO-INSTALL-0002",
+      "KUBO-INSTALL-0003",
+      "KUBO-INSTALL-0005",
+      "KUBO-INSTALL-0008",
+      "KUBO-INSTALL-0009",
+      "KUBO-INSTALL-0010"
+    ],
+    "pending": [
+      "KUBO-INSTALL-0004",
+      "KUBO-INSTALL-0006",
+      "KUBO-INSTALL-0007",
+      "KUBO-INSTALL-0011",
+      "KUBO-INSTALL-0012",
+      "KUBO-INSTALL-0013",
+      "KUBO-INSTALL-0014",
+      "KUBO-INSTALL-0015",
+      "KUBO-INSTALL-0016",
+      "KUBO-INSTALL-0017",
+      "KUBO-INSTALL-0018",
+      "KUBO-INSTALL-0019",
+      "KUBO-INSTALL-0020",
+      "KUBO-INSTALL-0021",
+      "KUBO-INSTALL-0022"
+    ]
   }
 }
