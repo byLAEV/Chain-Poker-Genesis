@@ -789,3 +789,12 @@ Implemented:
 - installer safety tests.
 
 The installer does not initialize the Kubo repository, configure the daemon, start Kubo, or activate Dual Storage.
+
+
+## PHASE 4 — Kubo repository initialization
+
+**Status:** IMPLEMENTED_PARTIAL / REPOSITORY INITIALIZATION PASS
+
+The installed Kubo executable is invoked with an explicit absolute IPFS_PATH. The initializer verifies the generated repository config, Kubo PeerID and repository version marker. Kubo repository identity is explicitly separate from Node Core cryptographic identity.
+
+The initializer does not start the daemon, perform initial synchronization or activate Dual Storage.
