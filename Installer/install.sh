@@ -9,19 +9,36 @@ say() {
     printf '%s\n' "$*"
 }
 
-if command -v python3 >/dev/null 2>&1; then
+is_termux() {
+    [ -n "${TERMUX_VERSION:-}" ] || printf '%s' "${PREFIX:-}" | grep -q 'com.termux'
+}
+
+if is_termux; then
+    if ! command -v pkg >/dev/null 2>&1; then
+        say "ERROR: Termux package manager 'pkg' is required."
+        exit 1
+    fi
+    say "Termux detected. Installing native Python dependencies..."
+    pkg install -y python python-cryptography
+    PYTHON="python"
+elif command -v python3 >/dev/null 2>&1; then
     PYTHON="python3"
 elif command -v python >/dev/null 2>&1; then
     PYTHON="python"
 else
-    if command -v pkg >/dev/null 2>&1; then
-        say "Python is not installed. Installing Python through Termux pkg..."
-        pkg install -y python python-cryptography
-        PYTHON="python"
-    else
-        say "ERROR: Python 3 is required to install Node Core."
-        exit 1
-    fi
+    say "ERROR: Python 3 is required to install Node Core on Linux."
+    say "Install Python 3, its venv module, and pip using your Linux distribution package manager."
+    exit 1
+fi
+
+if ! "$PYTHON" - <<'PY'
+import sys
+if sys.version_info < (3, 9):
+    raise SystemExit(1)
+PY
+then
+    say "ERROR: Node Core requires Python 3.9 or newer."
+    exit 1
 fi
 
 TMP_DIR="$(mktemp -d 2>/dev/null || mktemp -d -t cpg-installer)"
@@ -35,7 +52,7 @@ import urllib.request
 url, destination = sys.argv[1], sys.argv[2]
 request = urllib.request.Request(
     url,
-    headers={"User-Agent": "Chain-Poker-Genesis-Node-Core-Launcher/1.0"},
+    headers={"User-Agent": "Chain-Poker-Genesis-Node-Core-Launcher/1.4.0"},
 )
 with urllib.request.urlopen(request, timeout=60) as response, open(destination, "wb") as output:
     output.write(response.read())
