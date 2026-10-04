@@ -299,8 +299,8 @@ Resolved:
 - Protocol Interface is explicitly the boundary between protocol-neutral Node Core and independently installed protocols.
 - The administrative interface is now specified as a minimal Protocols layer with Installed Protocols and Install Protocol sections.
 - Visual baseline is fixed at white / black / dark gray / light gray, with hierarchy driven by information importance.
-- The canonical installer boundary is `Node Core/Protocols/Installers/`.
-- The canonical installed-protocol boundary is `Node Core/Protocols/Installed/`.
+- The remote protocol catalog is the source boundary for available protocols. Supported sources include CID and GitHub. Downloaded packages are written to `Node Core/Protocols/` and become the local source for verification and installation.
+- The canonical installed-protocol boundary is `Node Core/Protocols/Installed/`. The remote catalog is never itself treated as an installed protocol.
 - The distinction `AVAILABLE INSTALLER ≠ INSTALLED ≠ ACTIVE ≠ RUNNING` is normative.
 - Protocol identity remains manifest/descriptor authority.
 - Required engine association is delegated to Engine Runtime; Protocol Interface cannot create a second engine lifecycle.
@@ -309,3 +309,4 @@ Resolved:
 Implementation remains partial because the repository does not yet implement the complete persistent installer/installed directory workflow, installer verification execution, engine-association execution and a rendered administrative UI.
 
 **Next PHASE 2 action:** implement the protocol installation filesystem boundary and installer verification against the canonical contract before declaring Protocol Interface PASS.
+
