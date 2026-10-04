@@ -3,6 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 import importlib.util, sys
 ROOT=Path(__file__).resolve().parent
+PROTOCOL_INTERFACE_ROOT=ROOT/"Protocol Interface"
+if str(PROTOCOL_INTERFACE_ROOT) not in sys.path:
+    sys.path.insert(0,str(PROTOCOL_INTERFACE_ROOT))
 def _load(name,path):
     spec=importlib.util.spec_from_file_location(name,ROOT/path); mod=importlib.util.module_from_spec(spec); assert spec and spec.loader; sys.modules[name]=mod; spec.loader.exec_module(mod); return mod
 crypto=_load("node_core_crypto","Cryptography/Core/crypto_service.py")
@@ -19,7 +22,10 @@ class NodeCore:
         self.crypto=crypto.CryptoService()
         self.identity=identity.IdentityManager()
         self.engines=runtime.EngineRuntime()
-        self.protocol_interface=protocol.ProtocolInterface()
+        self.protocol_interface=protocol.ProtocolInterface(
+            protocols_root=self.root/"protocols",
+            engine_runtime=self.engines,
+        )
         self.manager=manager.NodeManager(
             protocol_interface=self.protocol_interface,
             configuration_path=self.root/"node-storage/configuration/node-config.json",
