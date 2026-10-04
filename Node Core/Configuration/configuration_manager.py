@@ -11,7 +11,7 @@ import os
 import tempfile
 from pathlib import Path
 
-REQUIRED=("node_core_version","decentralized_storage","protocol_associations","cpg_protocol")
+REQUIRED=("node_core_version","decentralized_storage","protocol_associations","cpg_protocol","network")
 CPG_STATES={"NOT_INSTALLED","INSTALLED","ACTIVE"}
 STORAGE_STATES={"NOT_PROVISIONED","READY","FAILED","DUAL_STORAGE_READY"}
 STORAGE_MODES={"LOCAL","DUAL_STORAGE"}
@@ -41,6 +41,11 @@ def validate_configuration(config: dict, *, fresh_node: bool=True) -> dict:
         raise ConfigurationError("invalid cpg_protocol")
     if fresh_node and cpg!="NOT_INSTALLED":
         raise ConfigurationError("fresh Node Core cannot activate or install CPG")
+    network=config["network"]
+    if not isinstance(network,dict) or set(network) != {"minimum_protocol_nodes"}:
+        raise ConfigurationError("invalid network")
+    if network["minimum_protocol_nodes"] != 5:
+        raise ConfigurationError("minimum_protocol_nodes must be 5")
     return config
 
 def load(path: Path, *, fresh_node: bool=True) -> dict:
