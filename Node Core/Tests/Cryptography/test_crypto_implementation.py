@@ -22,3 +22,34 @@ def main():
 
 if __name__=="__main__":
     main()
+
+
+def test_private_material_is_not_exposed_by_custody_interface():
+    from crypto_provider import KeyCustodyProvider
+
+    class TestCustody(KeyCustodyProvider):
+        name = "test-custody"
+        version = "1.0"
+
+        def capabilities(self):
+            return ("sign_ed25519", "public_key")
+
+        def sign_ed25519(self, message, key_ref):
+            return b"signature"
+
+        def public_key(self, key_ref):
+            return b"public-key"
+
+    provider = TestCustody()
+    assert not hasattr(provider, "private_key")
+    assert not hasattr(provider, "secret")
+    assert "private" not in repr(provider).lower()
+    assert "secret" not in repr(provider).lower()
+
+
+def test_custody_boundary_uses_key_reference_not_private_bytes():
+    import inspect
+    from crypto_provider import KeyCustodyProvider
+    params = inspect.signature(KeyCustodyProvider.sign_ed25519).parameters
+    assert "key_ref" in params
+    assert "private_key" not in params
