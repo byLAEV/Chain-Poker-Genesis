@@ -64,8 +64,11 @@ class DualStorageReadiness:
     def evaluate(self, coherence_report, configuration_manager=None):
         if coherence_report.get("dual_storage_ready") is not True:
             raise KuboCoherenceError("Dual Storage cannot be enabled before coherent Kubo mirror verification")
-        return {
+        result = {
             "storage_mode":"DUAL_STORAGE",
             "state":"READY",
             "coherence_verified_at":coherence_report["verified_at"],
         }
+        if configuration_manager is not None:
+            configuration_manager.set_storage_mode("DUAL_STORAGE", readiness=coherence_report)
+        return result
