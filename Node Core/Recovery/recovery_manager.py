@@ -46,6 +46,15 @@ class RecoveryManager:
             "identity": (storage / "identity/node-identity.json").is_file(),
         }
 
+    def observe_provider_failure(self, provider_result):
+        """Record provider degradation without declaring Node Core recovery failed."""
+        return self._finish(
+            "FAILED" if provider_result.get("provider_state") == "DEGRADED" and not provider_result.get("local_fallback") else "RECOVERED",
+            {"provider": provider_result},
+            "storage provider degraded; local fallback remains available"
+            if provider_result.get("local_fallback") else "storage provider healthy",
+        )
+
     def recover(self):
         self.recovery_dir.mkdir(parents=True, exist_ok=True)
         checks = self.inspect()
