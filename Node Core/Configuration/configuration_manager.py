@@ -15,6 +15,8 @@ REQUIRED=("node_core_version","decentralized_storage","protocol_associations","c
 CPG_STATES={"NOT_INSTALLED","INSTALLED","ACTIVE"}
 STORAGE_STATES={"NOT_PROVISIONED","READY","FAILED","DUAL_STORAGE_READY"}
 STORAGE_MODES={"LOCAL","DUAL_STORAGE"}
+NETWORK_KEYS={"minimum_protocol_nodes"}
+MINIMUM_PROTOCOL_NODES=5
 
 class ConfigurationError(ValueError):
     pass
@@ -22,7 +24,7 @@ class ConfigurationError(ValueError):
 def validate_configuration(config: dict, *, fresh_node: bool=True) -> dict:
     if not isinstance(config,dict):
         raise ConfigurationError("configuration must be an object")
-    unknown=set(config)-set(REQUIRED)
+    unknown=set(config)-set(REQUIRED)-{"network"}
     missing=set(REQUIRED)-set(config)
     if unknown: raise ConfigurationError("unknown configuration properties: "+", ".join(sorted(unknown)))
     if missing: raise ConfigurationError("missing required configuration properties: "+", ".join(sorted(missing)))
@@ -39,6 +41,10 @@ def validate_configuration(config: dict, *, fresh_node: bool=True) -> dict:
     cpg=config["cpg_protocol"]
     if cpg not in CPG_STATES:
         raise ConfigurationError("invalid cpg_protocol")
+    if "network" in config:
+        network=config["network"]
+        if not isinstance(network,dict) or set(network)-NETWORK_KEYS or network.get("minimum_protocol_nodes") != MINIMUM_PROTOCOL_NODES:
+            raise ConfigurationError("invalid network")
     if fresh_node and cpg!="NOT_INSTALLED":
         raise ConfigurationError("fresh Node Core cannot activate or install CPG")
     return config
