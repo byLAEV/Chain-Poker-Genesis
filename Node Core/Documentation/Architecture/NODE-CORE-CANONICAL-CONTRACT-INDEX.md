@@ -614,3 +614,22 @@ Remaining:
 **PHASE 2 CLI / Configuration reconciliation: SATISFIED.**
 
 **Next PHASE 2 component:** Bootstrap residual / cross-component validation.
+
+
+## PHASE 4 — Cross-component integration started
+
+After Storage, Recovery, CLI and Configuration reconciliation, the reference composition was updated so that:
+
+- `NodeCore` owns one Storage API boundary;
+- `NodeCore` owns one Recovery Manager;
+- the same Recovery Manager is injected into Node Manager;
+- Engine Runtime remains shared between Node Manager and Protocol Interface;
+- Protocol Interface does not receive or own Recovery;
+- Storage remains separate from protocol semantics;
+- a composition integration test now checks these dependency boundaries.
+
+**PHASE 4 initial composition gate: IMPLEMENTED / TEST VECTOR ADDED.**
+
+This does **not** yet mean the full Node Core lifecycle integration is closed. Runtime ↔ Identity ↔ Storage ↔ Recovery ↔ Network ↔ Protocol Interface still requires end-to-end validation.
+
+**Next logical work:** cross-component lifecycle tests, then full Node lifecycle.
