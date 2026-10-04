@@ -30,6 +30,26 @@ def test_recovery_state_machine():
         assert again["state"]=="RECOVERED"
         assert len(__import__("json").loads(journal.read_text()))==1
 
+def test_recovery_invalid_transition_is_rejected():
+    with tempfile.TemporaryDirectory() as d:
+        manager = RecoveryManager(Path(d))
+        invalid = (
+            ("NORMAL", "RECOVERING"),
+            ("RECOVERY_PENDING", "RECOVERED"),
+            ("RECOVERING", "RECOVERED"),
+            ("VERIFYING", "RECOVERING"),
+            ("RECOVERED", "RECOVERING"),
+            ("FAILED", "RECOVERED"),
+        )
+        for current, target in invalid:
+            try:
+                manager._transition(current, target)
+            except RuntimeError:
+                continue
+            raise AssertionError(
+                f"invalid recovery transition accepted: {current} -> {target}"
+            )
+
 def test_failed_recovery_is_explicit():
     with tempfile.TemporaryDirectory() as d:
         result=RecoveryManager(Path(d)).recover()
