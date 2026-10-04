@@ -44,6 +44,9 @@ jobs:
       - name: Run AEAD conformance tests
         run: python "Node Core/Tests/Cryptography/test_aead.py"
 
+      - name: Run deterministic Merkle conformance tests
+        run: python "Node Core/Tests/Cryptography/test_merkle.py"
+
       - name: Run Node Core installation manifest test
         run: python "Node Core/Tests/Integration/test_installation_manifest.py"
 
@@ -58,7 +61,8 @@ jobs:
 
       - name: Validate installation manifest against canonical schema
         run: |
-          python "Node Core/Tests/Integration/test_installation_manifest.py"
+          rm -rf /tmp/cpg-node-manifest-test
+          python "Node Core/Bootstrap/Installer/bootstrap_node.py" /tmp/cpg-node-manifest-test
           python "Node Core/Tools/Validation/validate_installation_manifest_schema.py" /tmp/cpg-node-manifest-test
       - name: Run Node Core final audit
         run: python "Node Core/Tools/Validation/final_node_core_audit.py"
