@@ -749,3 +749,27 @@ Not yet implemented:
 - Dual Storage activation.
 
 The implementation deliberately stops before executing external Kubo code.
+
+
+## PHASE 4 — Kubo verified acquisition implementation
+
+**Status:** IMPLEMENTED_PARTIAL / ACQUISITION PASS
+
+Implemented:
+- official Kubo distribution source boundary;
+- stable release metadata retrieval;
+- release artifact URL construction;
+- official SHA-512 sidecar retrieval;
+- bounded temporary package download;
+- SHA-512 verification before promotion;
+- atomic promotion from incoming package to verified package area.
+
+Not yet implemented:
+- Kubo installation/extraction;
+- repository initialization;
+- process lifecycle;
+- health management;
+- initial synchronization;
+- Dual Storage activation.
+
+The acquisition layer cannot execute the downloaded Kubo binary.
