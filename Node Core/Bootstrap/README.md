@@ -1,6 +1,6 @@
 # Node Core Bootstrap
 
-Status: IMPLEMENTED
+Status: SUPPORTING / RECONCILED
 Version: 1.0.0
 
 Bootstrap is the fixed, protocol-neutral installation boundary for Node Core.
@@ -12,10 +12,10 @@ Responsibilities:
 - recover incomplete bootstrap;
 - report Node Core readiness.
 
-Bootstrap does not generate cryptographic identities, create private keys, install CPG, create a CPG ledger, select a protocol, install protocol engines, or manage decentralized storage providers.
+Bootstrap initializes identity metadata only; it does not generate production cryptographic keys, create private keys, install CPG, create a CPG ledger, select a protocol, install protocol engines, or manage decentralized storage providers.
 
 Flow:
-Installer -> Initialization -> Verification -> Node Core Ready
+Environment Validation -> Initialization -> Storage Structure Verification -> Integrity Verification -> Recovery Ready -> Node Core Ready
 
 Interrupted installation:
 Recovery -> Verification -> Node Core Ready
