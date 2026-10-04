@@ -1,61 +1,49 @@
 # Node Core API
 
-## API Surface Specification
+**Status:** SUPPORTING / RECONCILED
 
-The Node Core API directory defines the stable interfaces through which Node Core subsystems and authorized higher-level protocols consume node infrastructure.
+The canonical API authority is:
+`Documentation/Interfaces/NODE-CORE-API-CONTRACT.md`.
 
-The APIs are contracts. They are not application implementations and must remain independent from CPG semantics.
+This directory contains supporting documentation for Node Core service domains. A documented operation is not automatically implemented.
 
-## Required API surface
+## Canonical API domains
 
-1. Node API
-2. Node Manager API
-3. Runtime API
-4. Health / Readiness API
-5. Recovery API
-6. Configuration API
-7. Identity API
-8. Cryptography API
-9. Time API
-10. Storage API
-11. Storage Provider API
-12. Network API
-13. Synchronization API
-14. Consensus API
-15. Proof of Function API
-16. Evidence API
-17. Engine API
-18. Protocol API
-19. Security API
-20. Manifest API
+1. Node
+2. Identity
+3. Storage
+4. Engines
+5. Protocol Interface
+6. Verification
 
-## External provider APIs
+These domains form the canonical Node Core API surface. Domain READMEs are supporting documentation and MUST NOT expand or contradict the canonical contract.
 
-External implementations are integrated through adapters rather than copied into Node Core:
+## Implementation availability
 
-- Kubo HTTP/RPC API — IPFS/Kubo
-- libp2p APIs — networking provider
-- GPGME API — GnuPG provider where selected
-- OpenPGP.js API — OpenPGP provider where selected
+Current implementation availability is authoritative in:
+`API/NODE-CORE-API-MANIFEST.json`.
 
-Node Core owns the adapter contract and security boundary.
+The current reference facade is **IMPLEMENTED_PARTIAL** and exposes:
+- `health()`
+- `node_status()`
+- `read(object_id)`
 
-## API rule
-
-A higher-level protocol must use Node Core APIs instead of writing directly to private subsystem storage or implementation internals.
+Other domain operations remain DECLARED or PARTIAL until implementation and tests establish availability.
 
 ## Dependency direction
 
-~~~text
 Higher-Level Protocol
         ↓
-Protocol API
+Protocol Interface API
         ↓
-Node Core APIs
+Node Core API
         ↓
 Node Core Subsystems
         ↓
 External Provider Adapters
-~~~
 
-CPG must not become a dependency of these APIs.
+CPG-specific table state, poker rules, Table Wallet, settlement, rake, ledger and consensus are outside Node Core API semantics.
+
+## External providers
+
+External provider APIs are integrated through adapters. Node Core owns the adapter contract and security boundary; provider APIs do not become Node Core authorities.
