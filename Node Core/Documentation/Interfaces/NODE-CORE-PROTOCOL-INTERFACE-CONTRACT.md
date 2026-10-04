@@ -38,40 +38,56 @@ Optional capabilities and metadata may be supplied.
 
 The protocol identity belongs to the protocol descriptor/manifest. Node Core MUST NOT replace it with a CPG-specific identity or infer protocol identity from presentation text.
 
-## 4. Installer boundary
+## 4. Protocol catalog and download boundary
 
-A protocol installer is an installable protocol package/entry recognized by Node Core.
+**Install Protocol** is a protocol catalog, not a direct view of the local installer directory.
 
-A recognized installer MUST expose or resolve, before installation:
+The catalog may contain protocol packages published through supported remote sources, including:
 
-- protocol identity;
-- protocol version;
-- required engines;
-- required Node Core capabilities/interfaces;
-- protocol manifest;
-- integrity/manifest evidence required by the applicable Node Core verification boundary.
+- CID / content-addressed sources;
+- GitHub repositories or release/download sources.
 
-The Protocol Interface MUST verify the installer before changing the protocol to `INSTALLED`.
+Each catalog entry MUST expose the source type and a usable download/reference link.
 
-Unrecognized files MUST NOT be treated as protocol installers merely because they exist in the installer directory.
+The catalog flow is:
 
-## 5. Canonical protocol storage boundary
+`Protocol Catalog → Source Link → Download → Node Core/Protocols/ → Local Protocol Package → Verification → Installation`
 
-Node Core provides a dedicated protocol area:
+The user MUST be able to see where a protocol package will be obtained before downloading it.
+
+A downloaded package is written into the local Node Core protocol directory:
 
 ```text
 Node Core/
 └── Protocols/
-    ├── Installers/
-    │   └── <protocol-installer>/
+    └── <downloaded-protocol-package>/
+```
+
+The downloaded package is then the local source used by Protocol Interface for verification and protocol installation.
+
+A remote catalog entry is **not** itself an installed protocol.
+
+An unverified downloaded package MUST NOT be treated as an installed or active protocol.
+
+## 5. Canonical protocol storage boundary
+
+Node Core provides one local protocol area for downloaded protocol packages and installed protocol associations:
+
+```text
+Node Core/
+└── Protocols/
+    ├── <downloaded-protocol-package>/
     └── Installed/
         └── <protocol-id>/
 ```
 
 The canonical semantic distinction is:
 
-- `Protocols/Installers/` = available installation sources;
-- `Protocols/Installed/` = protocols installed into this Node Core instance.
+- remote CID/GitHub catalog = available protocol sources;
+- `Protocols/<downloaded-protocol-package>/` = locally downloaded package awaiting or undergoing verification/installation;
+- `Protocols/Installed/<protocol-id>/` = protocol installed into this Node Core instance.
+
+The interface MUST NOT represent the remote catalog as if it were the local installer directory.
 
 Installing a protocol MUST result in an installed protocol association represented under the Installed protocol boundary.
 
@@ -165,17 +181,32 @@ A protocol entry SHOULD expose at minimum:
 
 ### 10.3 Install Protocol view
 
-Selecting **Install Protocol** MUST open the recognized installer view corresponding to:
+Selecting **Install Protocol** MUST open the protocol catalog.
 
-`Node Core/Protocols/Installers/`
+The catalog MUST support remote protocol sources and MUST present, at minimum:
 
-The view MUST list recognized installers and MUST distinguish an installer from an already installed protocol.
+- protocol name/identifier;
+- version when available;
+- source type (CID or GitHub);
+- source/download link;
+- enough metadata to identify the package before download.
 
-The interface MUST NOT present arbitrary files as valid protocol installers.
+Selecting **Download** MUST write the selected protocol package into:
 
-Selecting an installer begins the controlled installation sequence:
+`Node Core/Protocols/`
 
-`Installer → Verification → Protocol Identity → Required Engines → Compatibility → Installation → Installed Protocol Association`
+The downloaded package then enters the local installation pipeline:
+
+`Catalog → Download → Local Protocol Package → Verification → Protocol Identity → Required Engines → Compatibility → Installation → Installed Protocol Association`
+
+The interface MUST distinguish:
+
+- remote catalog entry;
+- downloaded local package;
+- installed protocol;
+- active protocol.
+
+The interface MUST NOT treat a remote link or a downloaded-but-unverified package as an installed protocol.
 
 ### 10.4 State presentation
 
@@ -228,8 +259,11 @@ The canonical verification suite MUST verify:
 2. discovery;
 3. capability compatibility;
 4. registration;
-5. installer recognition/validation;
-6. installation;
+5. remote catalog source representation;
+6. visible CID/GitHub download reference;
+7. local download destination under `Node Core/Protocols/`;
+8. installer/package recognition and validation;
+9. installation;
 7. installed-protocol association;
 8. activation;
 9. suspension;
