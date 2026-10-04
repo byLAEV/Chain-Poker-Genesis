@@ -6,8 +6,9 @@ import importlib.util, json, sys
 ROOT=Path(__file__).resolve().parent
 CRYPTO_CORE_ROOT=ROOT/"Cryptography"/"Core"
 PROTOCOL_INTERFACE_ROOT=ROOT/"Protocol Interface"
+NETWORK_ROOT=ROOT/"Network"
 
-for path in (CRYPTO_CORE_ROOT, PROTOCOL_INTERFACE_ROOT):
+for path in (CRYPTO_CORE_ROOT, PROTOCOL_INTERFACE_ROOT, NETWORK_ROOT):
     if str(path) not in sys.path:
         sys.path.insert(0,str(path))
 
