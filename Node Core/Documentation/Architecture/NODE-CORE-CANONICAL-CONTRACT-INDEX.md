@@ -193,3 +193,27 @@ Resolved:
 The manifest remains `IMPLEMENTED_PARTIAL` because sandbox/resource-limit controls are not yet implemented; this is an implementation-status fact, not a contract-authority conflict.
 
 **Next PHASE 2 component:** API.
+
+
+## PHASE 2 — API reconciliation
+
+**Component:** Node Core API  
+**Status:** PASS
+
+Reconciled chain:
+
+`Documentation/Interfaces/NODE-CORE-API-CONTRACT.md`
+→ `API/NODE-CORE-API-MANIFEST.json`
+→ `API/node_core_api.py`
+→ API supporting READMEs
+→ `Tests/API/test_node_core_api_contract.py`.
+
+Resolved:
+- The top-level API README previously listed a broader set of 20 required API domains than the canonical API contract; it now defers to the six canonical domains and treats domain READMEs as supporting documentation.
+- API implementation availability remains governed by the API manifest; the facade remains IMPLEMENTED_PARTIAL.
+- `health()` no longer unconditionally claims READY when no manager exists.
+- `read()` now rejects an empty object identifier deterministically.
+- Domain documentation remains subordinate to the canonical API contract and cannot promote DECLARED operations to IMPLEMENTED.
+- Protocol isolation is preserved; CPG-specific application semantics remain outside Node Core API.
+
+**Next PHASE 2 component:** Node Manager.
