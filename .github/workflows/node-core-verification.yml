@@ -41,6 +41,9 @@ jobs:
       - name: Run Node Core verification tests
         run: python -m unittest discover -s "Node Core/Tests/Verification" -p "test_*.py" -v
 
+      - name: Run AEAD conformance tests
+        run: python "Node Core/Tests/Cryptography/test_aead.py"
+
       - name: Run Node Core installation manifest test
         run: python "Node Core/Tests/Integration/test_installation_manifest.py"
 
