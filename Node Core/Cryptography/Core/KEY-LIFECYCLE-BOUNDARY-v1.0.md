@@ -21,3 +21,6 @@ Private material MUST NOT appear in logs, manifests, errors, telemetry, or test 
 Cryptography Core MUST NOT define private-key recovery. Recovery belongs to the custody authority.
 
 **Closure criterion:** custody boundary accepted, provider interface defined, and tests prove no private-key leakage.
+
+## Current verification gap
+The boundary is contractually closed but is not yet implementation-verified. The repository must provide an explicit custody/provider interface and automated evidence that private material is absent from manifests, ordinary logs, errors, telemetry, and test reports. Until those artifacts and tests pass CI, this boundary remains IMPLEMENTED / PARTIAL.
