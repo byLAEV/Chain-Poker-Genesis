@@ -1,9 +1,13 @@
 # Node Core Recovery
 
-**Status:** IMPLEMENTED
-**Version:** 1.1.0
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+**Version:** 1.2.0
 
 Recovery is the protocol-neutral recovery boundary for Node Core installation and runtime prerequisites.
+
+Canonical lifecycle: `NORMAL → FAILURE_DETECTED → RECOVERY_PENDING → RECOVERING → VERIFYING → RECOVERED / FAILED`.
+
+Recovery records preserve a journal of attempts and do not silently overwrite an already verified recovered state.
 
 It:
 - inspects the Node Core environment;
