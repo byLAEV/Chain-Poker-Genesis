@@ -73,12 +73,13 @@
       "active_installation_manifest",
       "repository_initialization",
       "repository_config_verification",
-      "kubo_peerid_verification"
+      "kubo_peerid_verification",
+      "process_manager",
+      "health_manager",
+      "stale_pid_recovery"
     ],
     "not_implemented": [
       "remote_release_metadata_retrieval",
-      "process_manager",
-      "health_manager",
       "initial_synchronization",
       "dual_storage_activation"
     ]
@@ -92,14 +93,14 @@
       "KUBO-INSTALL-0008",
       "KUBO-INSTALL-0009",
       "KUBO-INSTALL-0010",
-      "KUBO-INSTALL-0011"
+      "KUBO-INSTALL-0011",
+      "KUBO-INSTALL-0012",
+      "KUBO-INSTALL-0013"
     ],
     "pending": [
       "KUBO-INSTALL-0004",
       "KUBO-INSTALL-0006",
       "KUBO-INSTALL-0007",
-      "KUBO-INSTALL-0012",
-      "KUBO-INSTALL-0013",
       "KUBO-INSTALL-0014",
       "KUBO-INSTALL-0015",
       "KUBO-INSTALL-0016",
