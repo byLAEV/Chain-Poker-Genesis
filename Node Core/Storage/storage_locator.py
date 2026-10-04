@@ -34,6 +34,10 @@ class StorageLocator:
         return {
             "object_id": object_id,
             "logical_path": entry["relative_path"],
+            "location": entry["location"],
+            "storage_class": entry["storage_class"],
+            "state": entry["state"],
+            "version": entry["version"],
             "provider_type": entry["provider_type"],
             "cid": entry.get("cid"),
             "location_state": entry["location_state"],
