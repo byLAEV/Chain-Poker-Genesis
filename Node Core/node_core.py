@@ -38,18 +38,18 @@ class NodeCore:
         self.crypto=crypto.CryptoService()
         self.identity=identity.IdentityManager()
         self.engines=runtime.EngineRuntime()
+        self.storage=storage.StorageAPI(self.root)
+        self.recovery=recovery.RecoveryManager(self.root)
         self.protocol_interface=protocol.ProtocolInterface(
             protocols_root=self.root/"protocols",
             engine_runtime=self.engines,
-            recovery=self.recovery,
         )
         self.manager=manager.NodeManager(
             protocol_interface=self.protocol_interface,
             configuration_path=self.root/"node-storage/configuration/node-config.json",
             engine_runtime=self.engines,
+            recovery=self.recovery,
         )
-        self.storage=storage.StorageAPI(self.root)
-        self.recovery=recovery.RecoveryManager(self.root)
         self.time=time_service.TimeService()
         self.security=security.SecurityService()
 
