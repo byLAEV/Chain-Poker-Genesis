@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
-"""Direct remote installer for the protocol-neutral Node Core.
+"""Direct CLI installer for the protocol-neutral Node Core.
 
-This installer intentionally has no preflight subsystem. It performs the
-minimum direct sequence required to obtain, stage, install, bootstrap and
-verify Node Core from the Chain Poker Genesis repository.
-
-Node Core remains protocol-neutral. CPG is not installed by this process.
+The interactive interface is intentionally minimal: install Node Core or exit.
+The installation engine remains protocol-neutral and never installs CPG.
 """
 from __future__ import annotations
 
@@ -38,16 +35,11 @@ def detect_platform() -> str:
 
 
 def default_target(platform_name: str) -> Path:
-    if platform_name == "TERMUX":
-        return DEFAULT_TERMUX_TARGET
-    return DEFAULT_LINUX_TARGET
+    return DEFAULT_TERMUX_TARGET if platform_name == "TERMUX" else DEFAULT_LINUX_TARGET
 
 
 def download_archive(destination: Path, source_ref: str) -> None:
-    archive_url = (
-        f"https://github.com/{REPOSITORY}/archive/{source_ref}.tar.gz"
-    )
-    print(f"Downloading Node Core package from {REPOSITORY}@{source_ref}...")
+    archive_url = f"https://github.com/{REPOSITORY}/archive/{source_ref}.tar.gz"
     request = urllib.request.Request(
         archive_url,
         headers={"User-Agent": "Chain-Poker-Genesis-Node-Core-Installer/1.0"},
@@ -69,7 +61,6 @@ def extract_node_core(archive: Path, extraction_root: Path, staging: Path) -> No
                 if len(parts) >= 2 and parts[1] == "Node Core":
                     node_core_prefix = Path(parts[0]) / "Node Core"
                     break
-
             if node_core_prefix is None:
                 raise InstallationError("Downloaded repository does not contain Node Core")
 
@@ -80,18 +71,14 @@ def extract_node_core(archive: Path, extraction_root: Path, staging: Path) -> No
                     relative = Path(member.name).relative_to(node_core_prefix)
                     member.name = str(relative)
                     selected.append(member)
-
             package.extractall(extraction_root, members=selected)
-
     except (tarfile.TarError, OSError) as exc:
         raise InstallationError(f"Unable to extract Node Core package: {exc}") from exc
 
     extracted = extraction_root / "Bootstrap" / "Installer" / "bootstrap_node.py"
     if not extracted.is_file():
         raise InstallationError("Downloaded package is missing the canonical Node Core installer")
-
     shutil.copytree(extraction_root, staging, dirs_exist_ok=True)
-
 
 
 def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
@@ -100,17 +87,12 @@ def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
         return Path(sys.executable)
 
     environment = temp_root / ".node-core-python"
-    print("Preparing Node Core Python environment...")
+    print("[2/5] Preparing Node Core environment...", flush=True)
     completed = subprocess.run(
         [sys.executable, "-m", "venv", str(environment)],
-        text=True,
-        capture_output=True,
+        text=True, capture_output=True,
     )
     if completed.returncode != 0:
-        if completed.stdout:
-            print(completed.stdout, end="")
-        if completed.stderr:
-            print(completed.stderr, file=sys.stderr, end="")
         raise InstallationError("Unable to create the Node Core Python environment")
 
     python_executable = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
@@ -119,77 +101,51 @@ def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
 
     completed = subprocess.run(
         [str(python_executable), "-m", "pip", "install", "--disable-pip-version-check", "-r", str(requirements)],
-        text=True,
-        capture_output=True,
+        text=True, capture_output=True,
     )
     if completed.returncode != 0:
-        if completed.stdout:
-            print(completed.stdout, end="")
         if completed.stderr:
             print(completed.stderr, file=sys.stderr, end="")
         raise InstallationError("Unable to install Node Core Python dependencies")
-
     return python_executable
 
 
 def bootstrap(staging: Path, python_executable: Path) -> None:
+    print("[3/5] Running Node Core Bootstrap...", flush=True)
     installer = staging / "Bootstrap" / "Installer" / "bootstrap_node.py"
-    print("Bootstrapping Node Core...")
     completed = subprocess.run(
         [str(python_executable), str(installer), str(staging)],
-        text=True,
-        capture_output=True,
+        text=True, capture_output=True,
     )
     if completed.returncode != 0:
-        if completed.stdout:
-            print(completed.stdout, end="")
         if completed.stderr:
             print(completed.stderr, file=sys.stderr, end="")
         raise InstallationError("Node Core bootstrap failed")
 
-    if completed.stdout:
-        print(completed.stdout, end="")
-
 
 def verify(staging: Path, python_executable: Path) -> None:
+    print("[4/5] Verifying Node Core...", flush=True)
     verifier = staging / "Bootstrap" / "Verification" / "bootstrap_verifier.py"
-    print("Verifying Node Core...")
     completed = subprocess.run(
         [str(python_executable), str(verifier), str(staging)],
-        text=True,
-        capture_output=True,
+        text=True, capture_output=True,
     )
     if completed.returncode != 0:
-        if completed.stdout:
-            print(completed.stdout, end="")
         if completed.stderr:
             print(completed.stderr, file=sys.stderr, end="")
         raise InstallationError("Node Core verification failed")
 
-    if completed.stdout:
-        print(completed.stdout, end="")
-
 
 def install(target: Path, source_ref: str = "main") -> None:
     platform_name = detect_platform()
-    architecture = platform.machine()
-
-    print(f"Platform: {platform_name}")
-    print(f"Architecture: {architecture}")
-    print(f"Target: {target}")
-
     target = target.expanduser().resolve()
+
     if target.exists():
         manifest = target / "node-installation-manifest.json"
         if manifest.exists():
-            raise InstallationError(
-                f"Node Core is already installed at {target}. "
-                "The direct installer will not overwrite an existing installation."
-            )
+            raise InstallationError("An existing Node Core installation was detected; it will not be overwritten.")
         if any(target.iterdir()):
-            raise InstallationError(
-                f"Installation target is not empty: {target}"
-            )
+            raise InstallationError(f"Installation target is not empty: {target}")
 
     target.parent.mkdir(parents=True, exist_ok=True)
     staging = target.parent / f".{target.name}.staging-{os.getpid()}"
@@ -204,15 +160,16 @@ def install(target: Path, source_ref: str = "main") -> None:
             extracted = temp_root / "node-core"
             extracted.mkdir()
 
+            print("[1/5] Downloading Node Core...", flush=True)
             download_archive(archive, source_ref)
             extract_node_core(archive, extracted, staging)
 
         staging.rename(target)
         target_created = True
-
         python_executable = prepare_python_environment(target, target)
         bootstrap(target, python_executable)
         verify(target, python_executable)
+        print("[5/5] Finalizing installation...", flush=True)
     except Exception:
         if target_created and target.exists():
             shutil.rmtree(target, ignore_errors=True)
@@ -220,37 +177,100 @@ def install(target: Path, source_ref: str = "main") -> None:
             shutil.rmtree(staging, ignore_errors=True)
         raise
 
-    print("")
-    print("Node Core installation completed.")
-    print(f"Installed at: {target}")
+    print()
+    print("Node Core installed successfully.")
+    print()
+    print(f"Status: NODE_CORE_READY")
     print("CPG Protocol: NOT INSTALLED")
     print("Protocol associations: []")
+
+
+def print_menu() -> None:
+    print()
+    print("Chain Poker Genesis by LAEV")
+    print("Node Core Installer")
+    print()
+    print("1. Install Node Core")
+    print("2. Exit")
+    print()
+
+
+def confirm_install(target: Path) -> bool:
+    print("Node Core Installation")
+    print()
+    print(f"Target: {target}")
+    print("Source: Chain Poker Genesis by LAEV")
+    print()
+    answer = input("Proceed with installation? [Y/n]: ").strip().lower()
+    return answer in ("", "y", "yes")
+
+
+def interactive(source_ref: str, target: Path) -> int:
+    while True:
+        print_menu()
+        choice = input("Select an option: ").strip()
+
+        if choice == "2":
+            print("Exiting.")
+            return 0
+        if choice != "1":
+            print("Please select 1 or 2.")
+            continue
+
+        try:
+            target = target.expanduser().resolve()
+            if target.exists() and (target / "node-installation-manifest.json").exists():
+                print()
+                print("Existing Node Core installation detected.")
+                print("The existing installation will not be overwritten.")
+                print()
+                input("Press Enter to return to the menu.")
+                continue
+
+            print()
+            if not confirm_install(target):
+                print("Installation cancelled.")
+                continue
+            print()
+            install(target, source_ref)
+            print()
+            input("Press Enter to return to the menu.")
+        except (InstallationError, EOFError, KeyboardInterrupt) as exc:
+            if isinstance(exc, InstallationError):
+                print()
+                print("Installation failed.")
+                print(f"Reason: {exc}")
+            else:
+                print()
+                print("Exiting.")
+                return 0
+            print()
+            input("Press Enter to return to the menu.")
+    return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Install Node Core directly from the Chain Poker Genesis repository."
     )
+    parser.add_argument("--target", type=Path, help="installation directory")
+    parser.add_argument("--ref", default="main", help="repository branch, tag, or commit SHA")
     parser.add_argument(
-        "--target",
-        type=Path,
-        help="installation directory; defaults to a user-local Linux/Termux location",
-    )
-    parser.add_argument(
-        "--ref",
-        default="main",
-        help="Git branch containing the Node Core package (default: main)",
+        "--non-interactive",
+        action="store_true",
+        help="run the installation engine without the interactive CLI",
     )
     args = parser.parse_args()
 
     try:
         platform_name = detect_platform()
         target = args.target or default_target(platform_name)
+        if not args.non_interactive and sys.stdin.isatty() and sys.stdout.isatty():
+            return interactive(args.ref, target)
         install(target, args.ref)
     except InstallationError as exc:
         print(f"INSTALLATION FAILED: {exc}", file=sys.stderr)
         return 1
-
     return 0
 
 
