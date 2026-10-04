@@ -86,7 +86,7 @@ jobs:
           from pathlib import Path
           p = Path("/tmp/cpg-full-node-test/node-installation-manifest.json")
           data = json.loads(p.read_text(encoding="utf-8"))
-          assert data.get("cpg_protocol") == "NOT_INSTALLED", data
+          assert data.get("cpg_protocol", {}).get("status") == "NOT_INSTALLED", data
           assert data.get("protocol_associations", []) == [], data
           print("[PASS] CPG protocol remains NOT_INSTALLED in clean Node Core")
           PY
