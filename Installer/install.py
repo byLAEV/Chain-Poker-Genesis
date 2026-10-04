@@ -55,7 +55,10 @@ def _safe_archive_member(member: tarfile.TarInfo, node_core_prefix: Path) -> Pat
     """Validate a remote tar member before extraction."""
     if member.issym() or member.islnk() or member.isdev() or member.isfifo():
         raise InstallationError(f"Unsupported archive member type: {member.name}")
-    relative = Path(member.name).relative_to(node_core_prefix)
+    try:
+        relative = Path(member.name).relative_to(node_core_prefix)
+    except ValueError as exc:
+        raise InstallationError(f"Archive member is outside Node Core: {member.name}") from exc
     if relative.is_absolute() or ".." in relative.parts:
         raise InstallationError(f"Unsafe archive path: {member.name}")
     return relative
