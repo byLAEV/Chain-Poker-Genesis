@@ -41,7 +41,8 @@
     "dual_storage_preference": true,
     "initial_full_local_to_kubo_sync": true,
     "coherence_verification": true,
-    "dual_storage_readiness_gate": true
+    "dual_storage_readiness_gate": true,
+    "continuous_reconciliation": true
   },
   "security_boundary": {
     "key_custody": "external",
