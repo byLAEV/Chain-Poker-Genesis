@@ -31,7 +31,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL | `Storage/storage_engine.py`, `storage_api.py`, `Storage Manager/storage_manager.py`, `storage_locator.py` | `Tests/Storage/test_storage_locator.py`, `test_storage_complete.py` | Evidence mapped |
 | Runtime | `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md` | CANONICAL | `Runtime/State/runtime_state.py`, `Runtime/runtime_manager.py`, `Runtime/node_runtime.py` | Existing runtime tests plus lifecycle tests; dedicated contract coverage remains to be expanded | Lifecycle source and implementation state machine reconciled; readiness bug corrected |
 | Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL | `Recovery/recovery_manager.py` | `Tests/Recovery/test_recovery_implementation.py`, `Tests/Engine Runtime/test_health_recovery.py` | Evidence mapped |
-| Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL CANDIDATE | `Network/network_manager.py` | Dedicated Network contract test not identified | Test mapping blocks PASS |
+| Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL | `Network/network_manager.py`, `peer_registry.py`, `transport.py`, `Synchronization/synchronization_state.py` | `Tests/Network/test_network_contract.py`, `test_synchronization_state.py` | Contract, implementation, synchronization boundary and protocol isolation mapped |
 | Node Manager | `Documentation/Interfaces/NODE-MANAGER-CONTRACT.md` | CANONICAL | `Node Manager/node_manager.py` | `Tests/Node Manager/test_node_manager_contract.py` | Contract/implementation aligned; protocol installation routed through Protocol Interface |
 | Security | `Documentation/Security Model/NODE-CORE-SECURITY-BOUNDARY.md` | CANONICAL CANDIDATE | `Security/SECURITY-CORE-MANIFEST.json` plus enforcement | Dedicated Security test mapping not confirmed | Conformance open |
 | Time | `Documentation/Time/NODE-CORE-TIME-SERVICE-CONTRACT.md` | CANONICAL CANDIDATE | `Time/`, `TIME-CORE-MANIFEST.json`, external references | Dedicated Time conformance test not identified | Test mapping blocks PASS |
@@ -54,6 +54,7 @@ These currently have a named normative profile/contract plus mapped implementati
 - Engine Runtime
 - API
 - Node Manager
+- Network
 
 This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
