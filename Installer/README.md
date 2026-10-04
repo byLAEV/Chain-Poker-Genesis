@@ -102,7 +102,26 @@ menu.
 The installer intentionally has no Preflight subsystem. Required validation
 belongs to the installation, Bootstrap, and Verification stages.
 
-## Status
+## Verification status
 
-This CLI implementation must be exercised on real Linux and Termux
-environments before promotion to a stable installer release.
+The Installer is **IMPLEMENTED_AND_CI_VERIFIED**.
+
+CI verifies:
+
+- interactive two-option CLI behavior;
+- fresh installation flow;
+- existing/incomplete target protection;
+- interrupted installation rollback;
+- rollback after target creation;
+- archive extraction safety;
+- immutable source resolution;
+- Node Core Bootstrap;
+- Node Core Verification;
+- POSIX shell launcher syntax.
+
+Real-environment validation remains explicitly separate:
+
+- Linux real-device/host validation: not verified in the release environment used for this repository review.
+- Termux real-device validation: not verified.
+
+Therefore this status means **implementation and CI verification**, not a claim of physical Termux certification.
