@@ -15,8 +15,30 @@ import secrets
 from typing import Any
 
 
+_ALLOWED_SCALAR_TYPES = (str, int, bool, type(None))
+
+
+def _validate_canonical_value(value: Any) -> None:
+    if isinstance(value, float):
+        raise TypeError("floating-point values are prohibited")
+    if isinstance(value, _ALLOWED_SCALAR_TYPES):
+        return
+    if isinstance(value, list):
+        for item in value:
+            _validate_canonical_value(item)
+        return
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if not isinstance(key, str):
+                raise TypeError("canonical object keys must be strings")
+            _validate_canonical_value(item)
+        return
+    raise TypeError("unsupported protocol value")
+
+
 def canonicalize(value: Any) -> bytes:
     """Return deterministic UTF-8 JSON bytes for hash/signature inputs."""
+    _validate_canonical_value(value)
     return json.dumps(
         value,
         ensure_ascii=False,
