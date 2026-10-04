@@ -14,6 +14,7 @@ from pathlib import Path
 REQUIRED=("node_core_version","decentralized_storage","protocol_associations","cpg_protocol")
 CPG_STATES={"NOT_INSTALLED","INSTALLED","ACTIVE"}
 STORAGE_STATES={"NOT_PROVISIONED","READY","FAILED","DUAL_STORAGE_READY"}
+STORAGE_MODES={"LOCAL","DUAL_STORAGE"}
 
 class ConfigurationError(ValueError):
     pass
@@ -28,7 +29,7 @@ def validate_configuration(config: dict, *, fresh_node: bool=True) -> dict:
     if not isinstance(config["node_core_version"],str) or not config["node_core_version"]:
         raise ConfigurationError("node_core_version must be a non-empty string")
     storage=config["decentralized_storage"]
-    if not isinstance(storage,dict) or set(storage)!={"status"} or storage["status"] not in STORAGE_STATES:
+    if not isinstance(storage,dict) or set(storage) - {"status","mode"} or "status" not in storage or storage["status"] not in STORAGE_STATES or ("mode" in storage and storage["mode"] not in STORAGE_MODES):
         raise ConfigurationError("invalid decentralized_storage")
     associations=config["protocol_associations"]
     if not isinstance(associations,list) or any(not isinstance(x,str) or not x for x in associations):
@@ -68,6 +69,17 @@ class ConfigurationManager:
 
     def validate(self, config: dict) -> dict:
         return validate_configuration(config, fresh_node=False)
+
+    def set_storage_mode(self, mode: str, *, readiness=None) -> dict:
+        if mode not in STORAGE_MODES:
+            raise ConfigurationError("invalid storage mode")
+        if mode == "DUAL_STORAGE":
+            if not readiness or readiness.get("dual_storage_ready") is not True:
+                raise ConfigurationError("Dual Storage requires verified provider coherence")
+            return self.update({"decentralized_storage": {"status": "DUAL_STORAGE_READY", "mode": "DUAL_STORAGE"}})
+        current = self.get()["decentralized_storage"]
+        status = "READY" if current["status"] != "NOT_PROVISIONED" else "NOT_PROVISIONED"
+        return self.update({"decentralized_storage": {"status": status, "mode": "LOCAL"}})
 
     def update(self, changes: dict) -> dict:
         if not isinstance(changes, dict):
