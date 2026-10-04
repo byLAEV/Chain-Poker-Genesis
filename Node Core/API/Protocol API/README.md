@@ -24,10 +24,17 @@ The Protocols interface may request:
 
 - installed protocol listing;
 - protocol status/details;
-- recognized installer listing;
-- installer verification/install.
+- remote protocol catalog listing;
+- CID/GitHub source and download link;
+- protocol package download into `Node Core/Protocols/`;
+- local package verification;
+- protocol installation.
 
 These are presentation/control requests. They do not create a second protocol registry.
+
+The download and installation stages are distinct:
+
+`Remote Catalog → Download → Local Package → Verify → Install`
 
 ## Isolation
 
