@@ -8,6 +8,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+BASE = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(BASE / "Tools/Validation"))
+from validate_installation_manifest_schema import validate
+
 EXPECTED = {
     ("node", "status"): "READY",
     ("readiness", "state"): "NODE_CORE_READY",
@@ -44,6 +48,10 @@ def main() -> int:
 
     if manifest["protocol_associations"] != []:
         raise AssertionError("protocol_associations must be empty")
+
+    schema_path = BASE / "Configuration/Schemas/node-core-installation-manifest.schema.json"
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    validate(manifest, schema)
 
     print("manifest_status = VALID")
     print("node_core = READY")
