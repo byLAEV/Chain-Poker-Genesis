@@ -2,8 +2,8 @@
 
 **Project:** Chain Poker Genesis by LAEV  
 **Scope:** Node Core only  
-**Baseline:** Implementation baseline verified by GitHub Actions Run #608  
-**Verified commit:** `15abfd530579daaf983994468f822587f78901d8`
+**Baseline:** Node Core lifecycle baseline verified by GitHub Actions Run #631  
+**Verified commit:** `4a0a2dd694d38f7f5cfe1ce00ff1ead0467274b3`
 
 ## Status model
 
@@ -22,12 +22,12 @@
 | Identity | executable Identity Core + canonical profile + lifecycle/tamper tests + CI; production trust/registration remains open | IMPLEMENTED / PARTIAL | complete credential adapters, registration, persistence, propagation and recovery |
 | Cryptography Core | executable core primitives/service + canonical profile + crypto tests + CI; AEAD boundary and vectors are IMPLEMENTED_VERIFIED; Merkle and production security remain open | IMPLEMENTED / PARTIAL | complete Merkle specification/vectors and production security review |
 | Storage | executable local storage, registry, locator, synchronization/recovery boundaries + storage tests + CI; live Kubo operation remains environment-dependent | IMPLEMENTED / PARTIAL | expand failure/fallback matrix and live-provider evidence |
-| Runtime | canonical lifecycle + readiness implementation + runtime tests + E2E + final audit | IMPLEMENTED + VERIFIED | expand transition-negative coverage |
+| Runtime | canonical lifecycle + readiness implementation + cross-component lifecycle + full Node lifecycle + final audit; GitHub Actions Run #631 | IMPLEMENTED + VERIFIED | expand transition-negative coverage |
 | Health / Readiness | executable evaluator + installation/E2E verification + final audit | IMPLEMENTED + VERIFIED | expand failure-state coverage |
-| Recovery | executable recovery manager + recovery tests + E2E + final audit | IMPLEMENTED / PARTIAL | expand interruption/corruption/reconciliation scenarios |
+| Recovery | executable recovery manager + recovery tests + cross-component/full lifecycle coverage + final audit; GitHub Actions Run #631 | IMPLEMENTED / PARTIAL | expand interruption/corruption/reconciliation scenarios |
 | Network / Synchronization | executable peer registry, reference transport, framing, handshake, envelopes, propagation and synchronization state + tests + CI | IMPLEMENTED / PARTIAL | authenticated production transport, decentralized discovery and live synchronization |
 | Protocol Interface | executable catalog/download/package verification/installation boundary + protocol tests + E2E isolation + CI | IMPLEMENTED / PARTIAL | complete persistent administrative/install lifecycle and broader compatibility cases |
-| Node Manager | canonical contract + executable manager + management events + contract tests + CI | IMPLEMENTED / PARTIAL | complete recovery integration and broader management surface |
+| Node Manager | canonical contract + executable manager + lifecycle integration + contract tests + GitHub Actions Run #631 | IMPLEMENTED / PARTIAL | complete broader management surface |
 | API | canonical API contract + executable facade + API tests + CI | IMPLEMENTED / PARTIAL | expand service/command surface |
 | CLI | canonical CLI contract + executable command subset + CLI tests + CI | IMPLEMENTED / PARTIAL | expand operational command catalog |
 | Security | canonical security contract + executable security service + contract tests + CI | IMPLEMENTED / PARTIAL | audit logging and secure-configuration enforcement |
@@ -35,7 +35,19 @@
 | Consensus Infrastructure | protocol-neutral boundary only; CPG consensus remains protocol-specific and excluded from generic Node Core authority | OUT OF SCOPE | keep CPG consensus in CPG Protocol Core |
 | Engine Runtime | canonical contract + executable shared runtime + contract tests + CI | IMPLEMENTED / PARTIAL | complete sandbox/resource controls |
 | Release / Integrity | executable validation and manifest authority + CI final audit | IMPLEMENTED / PARTIAL | expand release verification evidence |
-| Tests / Test Vectors | automated verification, integration, E2E and final audit all PASS in Run #561 | IMPLEMENTED / PARTIAL | increase negative, mutation, cross-component and environmental coverage |
+| Tests / Test Vectors | automated verification, integration, E2E, cross-component lifecycle, full Node lifecycle and final audit all PASS in Run #631 | IMPLEMENTED / PARTIAL | increase negative, mutation and environmental coverage |
+
+## Lifecycle Verification Closure
+
+GitHub Actions Run #631 (`4a0a2dd694d38f7f5cfe1ce00ff1ead0467274b3`) completed the Node Core verification workflow successfully. The run passed Structural Audit, Python compilation, Node Core verification, AEAD conformance, installation manifest validation, E2E installation, cross-component lifecycle, full Node lifecycle, and the final Node Core audit.
+
+The verified lifecycle sequence is:
+
+```text
+UNINITIALIZED → READY → RUNNING → DEGRADED → RECOVERY → READY → STOPPED
+```
+
+The lifecycle evidence does not constitute completion of the entire Node Core implementation. Subsystems explicitly marked PARTIAL remain partial, and Merkle implementation/vectors plus production cryptographic security review remain open.
 
 ## Verified baseline boundary
 
