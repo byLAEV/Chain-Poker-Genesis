@@ -34,7 +34,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL | `Network/network_manager.py`, `peer_registry.py`, `transport.py`, `Synchronization/synchronization_state.py` | `Tests/Network/test_network_contract.py`, `test_synchronization_state.py` | Contract, implementation, synchronization boundary and protocol isolation mapped |
 | Node Manager | `Documentation/Interfaces/NODE-MANAGER-CONTRACT.md` | CANONICAL | `Node Manager/node_manager.py` | `Tests/Node Manager/test_node_manager_contract.py` | Contract/implementation aligned; protocol installation routed through Protocol Interface |
 | Security | `Documentation/Interfaces/NODE-CORE-SECURITY-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Security/security_service.py` | `Tests/Security/test_security_contract.py` | Path, fail-closed authorization and protocol-isolation baseline reconciled; audit log and secure-configuration enforcement remain partial |
-| Time | `Documentation/Interfaces/NODE-CORE-TIME-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Time/time_service.py`, time manifest | `Tests/Time/test_time_contract.py` | Timestamp, logical ordering and hash-chain integrity mapped; network-time consensus intentionally excluded |
+| Time | `Documentation/Interfaces/NODE-CORE-TIME-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Time/time_service.py` | `Tests/Time/test_time_contract.py` | Timestamp, logical ordering and hash-chain integrity including predecessor verification reconciled; network-time consensus intentionally excluded |
 | Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
 | API | `Documentation/Interfaces/NODE-CORE-API-CONTRACT.md` | CANONICAL | `API/node_core_api.py` (partial facade) | `Tests/API/test_node_core_api_contract.py` | Contract authority established; implementation remains explicitly PARTIAL |
 | CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL / PARTIAL | `CLI/node_cli.py` | `Tests/CLI/test_cli_contract.py` | Lifecycle subset mapped; deterministic JSON/error/exit boundary established |
@@ -406,3 +406,30 @@ Resolved:
 Remaining partial scope is explicit: security audit logging and secure-configuration enforcement are not yet implemented.
 
 **PHASE 2 Security reconciliation: SATISFIED.**
+
+
+## PHASE 2 — Time reconciliation
+
+**Component:** Time  
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+
+Reconciled chain:
+
+`NODE-CORE-TIME-CONTRACT.md`
+→ `Time/time_service.py`
+→ `Tests/Time/test_time_contract.py`.
+
+Resolved:
+- Local system time remains an observation, not consensus authority.
+- Timestamp validation rejects invalid and negative values.
+- Logical sequence remains independent of wall-clock confidence.
+- Record hashing follows the canonical deterministic serialization.
+- The first record requires a null predecessor.
+- Subsequent records reference the immediately preceding hash.
+- Explicit predecessor/hash verification is now implemented and tested.
+- Runtime and network components cannot promote Time into a consensus authority.
+- CPG timers and protocol-specific temporal consensus remain outside Node Core.
+
+Network-time consensus remains intentionally unimplemented.
+
+**PHASE 2 Time reconciliation: SATISFIED.**
