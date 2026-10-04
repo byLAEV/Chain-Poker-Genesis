@@ -1,162 +1,99 @@
 # Node Core — Canonical Contract Index
 
-**Status:** PHASE 1 — CANONICAL CONTRACTS / WORKING INDEX  
-**Version:** 1.0.0  
-**Scope:** Protocol-neutral Node Core  
+**Status:** PHASE 1 — CANONICAL CONTRACTS / RECONCILIATION PASS
+**Version:** 1.1.0
+**Scope:** Protocol-neutral Node Core
 **Project:** Chain Poker Genesis by LAEV
 
-## 1. Purpose
+## 1. Governing classification
 
-This index is the normative registry for Node Core contract artifacts during PHASE 1 of the Node Core closure program.
+- **CANONICAL** — authoritative normative source.
+- **SUPPORTING** — subordinate explanatory/specification material.
+- **DRAFT** — non-normative work in progress.
+- **IMPLEMENTATION** — executable/reference implementation.
+- **TEST** — verification material.
+- **OBSOLETE** — superseded/non-authoritative material.
 
-It does not replace subsystem specifications. It identifies which existing artifact is authoritative, which artifacts support it, which artifacts are implementation or verification material, and which artifacts must not be treated as normative.
+Normative chain:
 
-The classification values are:
+`CANONICAL CONTRACT → SUPPORTING → IMPLEMENTATION → TEST / VERIFICATION`
 
-- **CANONICAL** — authoritative normative source for the capability.
-- **SUPPORTING** — supporting specification, schema, architecture, or explanatory material; it must not contradict the canonical source.
-- **DRAFT** — work-in-progress material; non-normative.
-- **IMPLEMENTATION** — executable/reference implementation material.
-- **TEST** — tests, vectors, fixtures, or verification material.
-- **OBSOLETE** — historical or superseded material; must not be used as authority.
+Implementation may not silently create behavior that contradicts a canonical contract. A README is descriptive unless explicitly promoted here.
 
-## 2. Canonicalization rule
+## 2. Reconciliation matrix
 
-For each Node Core capability:
-
-`CANONICAL CONTRACT → SUPPORTING SPECIFICATIONS → IMPLEMENTATION → TEST / VERIFICATION`
-
-No implementation may introduce normative behavior that is absent from, or contradictory to, the canonical contract without first updating the canonical contract.
-
-A README is descriptive unless this index explicitly identifies it as the canonical contract.
-
-## 3. Contract index
-
-| Capability | Canonical artifact | Classification | Supporting artifacts | Implementation boundary | Verification |
+| Capability | Canonical source | Status | Implementation mapped | Test mapped | Decision |
 |---|---|---|---|---|---|
-| Bootstrap / Installation | `Node Core/Documentation/Interfaces/NODE-CORE-BOOTSTRAP-CONTRACT.md` if present; otherwise existing bootstrap specification must be reconciled before freeze | CANONICAL CANDIDATE | Bootstrap / installation specifications | `Node Core/Bootstrap/` | installation + verification tests |
-| Configuration | `Node Core/Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL CANDIDATE | configuration schemas/specifications | `Node Core/Configuration/` | configuration validation tests |
-| Identity | `Node Core/Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL CANDIDATE | `IDENTITY-IMPLEMENTATION-SPECIFICATION-v1.0.md`, implementation plan | `Node Core/Identity/` | identity tests / vectors |
-| Cryptography | `Node Core/Cryptography/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL CANDIDATE | `Cryptography/Core/SPECIFICATION.md`, provider specifications | `Node Core/Cryptography/` | cryptographic conformance tests / vectors |
-| Storage | `Node Core/Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL CANDIDATE | storage architecture / provider specifications | `Node Core/Storage/` | storage coherence + integrity tests |
-| Runtime | `Node Core/Documentation/Interfaces/NODE-CORE-RUNTIME-CONTRACT.md` if present; otherwise lifecycle/readiness specifications must be reconciled | CANONICAL CANDIDATE | lifecycle, readiness, health specifications | `Node Core/Runtime/` | lifecycle/readiness tests |
-| Recovery | `Node Core/Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL CANDIDATE | recovery integration specification | `Node Core/Recovery/` | recovery/failure tests |
-| Network | `Node Core/Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL CANDIDATE | transport/framing/discovery specifications | `Node Core/Network/` | network + two-node tests |
-| Node Manager | `Node Core/Documentation/Interfaces/NODE-MANAGER-CONTRACT.md` | CANONICAL CANDIDATE | Node Manager API README | `Node Core/Node Manager/` | lifecycle/integration tests |
-| Security | `Node Core/Documentation/Interfaces/NODE-CORE-SECURITY-BOUNDARY.md` | CANONICAL CANDIDATE | security specifications | `Node Core/Security/` | security/boundary tests |
-| Time | `Node Core/Documentation/Interfaces/NODE-CORE-TIME-SERVICE-CONTRACT.md` | CANONICAL CANDIDATE | time service specifications | `Node Core/Time/` | time/conformance tests |
-| Engine Runtime | **To be consolidated** | CANONICAL REQUIRED | Engine Runtime README/specifications | `Node Core/Engine Runtime/` | engine lifecycle tests |
-| API | **Subsystem contracts + API contract consolidation required** | CANONICAL REQUIRED | individual API READMEs | `Node Core/API/` | API contract tests |
-| CLI | `Node Core/Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL CANDIDATE | CLI README/help definitions | `Node Core/CLI/` | CLI/exit-code tests |
-| Protocol Interface | `Node Core/Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` if present; otherwise existing protocol boundary must be reconciled | CANONICAL CANDIDATE | protocol installation boundary | `Node Core/Protocol Interface/` | protocol-boundary tests |
-| Consensus Infrastructure | **Scope boundary required before freeze** | CANONICAL REQUIRED | consensus infrastructure specifications | `Node Core/Consensus/` | state/evidence/validation tests |
-| Manifests | Existing Node Core manifest/schema contract | CANONICAL CANDIDATE | manifest API README | `Node Core/*MANIFEST*` + manifest APIs | schema/integrity tests |
+| Bootstrap / Installation | Existing Bootstrap contract/specification; exact authoritative path requires final audit | CANONICAL CANDIDATE | `Node Core/Bootstrap/` | `Tests/Bootstrap/test_bootstrap.py` | Confirm exact normative source |
+| Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL CANDIDATE | Runtime/Node Manager consumers; dedicated implementation mapping open | Dedicated configuration test not confirmed | Mapping blocks PASS |
+| Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL | `Identity/identity_core.py`, schema, binding, manager, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Evidence mapped; semantic reconciliation remains |
+| Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL | `crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Evidence mapped; AEAD/Merkle remain profile-dependent |
+| Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL | `Storage/storage_engine.py`, `storage_api.py`, `Storage Manager/storage_manager.py`, `storage_locator.py` | `Tests/Storage/test_storage_locator.py`, `test_storage_complete.py` | Evidence mapped |
+| Runtime | Existing runtime/lifecycle specification; exact canonical path requires final audit | CANONICAL CANDIDATE | `Runtime/runtime_manager.py`, `node_runtime.py` | `Tests/Runtime/test_runtime_implementation.py`, `Tests/Engine Runtime/test_runtime_lifecycle.py` | Resolve one authority |
+| Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL | `Recovery/recovery_manager.py` | `Tests/Recovery/test_recovery_implementation.py`, `Tests/Engine Runtime/test_health_recovery.py` | Evidence mapped |
+| Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL CANDIDATE | `Network/network_manager.py` | Dedicated Network contract test not identified | Test mapping blocks PASS |
+| Node Manager | `Documentation/Interfaces/NODE-MANAGER-CONTRACT.md` | CANONICAL CANDIDATE | `Node Manager/node_manager.py` | Dedicated Node Manager test not identified | Verification mapping required |
+| Security | `Documentation/Security Model/NODE-CORE-SECURITY-BOUNDARY.md` | CANONICAL CANDIDATE | `Security/SECURITY-CORE-MANIFEST.json` plus enforcement | Dedicated Security test mapping not confirmed | Conformance open |
+| Time | `Documentation/Time/NODE-CORE-TIME-SERVICE-CONTRACT.md` | CANONICAL CANDIDATE | `Time/`, `TIME-CORE-MANIFEST.json`, external references | Dedicated Time conformance test not identified | Test mapping blocks PASS |
+| Engine Runtime | No single canonical contract | CANONICAL REQUIRED | `Engine Runtime/` | lifecycle/health tests exist | Define boundary with Runtime |
+| API | No single consolidated canonical API contract | CANONICAL REQUIRED | `API/`, including `node_core_api.py` | API contract mapping incomplete | Consolidate semantics |
+| CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL CANDIDATE | Explicit implementation path requires mapping | Dedicated CLI test not identified | Mapping blocks PASS |
+| Protocol Interface | Existing protocol installation boundary; exact canonical source requires final audit | CANONICAL CANDIDATE | `Protocol Interface/` | `Tests/Protocol Interface/test_protocol_interface.py` | Test-backed; source authority to confirm |
+| Consensus Infrastructure | No single canonical contract | CANONICAL REQUIRED | `Consensus/` | Explicit state/evidence mapping required | Protocol-neutral scope only |
+| Manifests | `NODE-CORE-MANIFEST.json` plus subsystem manifests | CANONICAL CANDIDATE | `*MANIFEST*` | Audit/verification tooling exists | Hierarchy reconciled in PHASE 2 |
 
-## 4. Supporting artifacts
+## 3. Evidence-mapped canonical candidates
 
-The following classes must remain supporting material unless explicitly promoted by this index:
+These currently have a named normative profile/contract plus mapped implementation and test evidence:
 
-- subsystem READMEs;
-- architecture diagrams;
-- implementation plans;
-- reconciliation reports;
-- implementation-gap inventories;
-- canonicalization maps;
-- migration plans;
-- rendered documentation;
-- completion reports.
+- Identity
+- Cryptography
+- Storage
+- Recovery
 
-Supporting material may explain a contract but may not silently redefine it.
+This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
-## 5. Implementation artifacts
+## 4. Supporting / draft rules
 
-The following are implementation artifacts and are never normative by themselves:
+Supporting material includes subsystem READMEs, architecture catalogs, implementation plans, gap inventories, reconciliation reports, canonicalization maps, migration plans and completion reports.
 
-- Python modules;
-- managers;
-- services;
-- adapters;
-- providers;
-- CLI executables;
-- runtime entry points;
-- verification utilities.
+Specifically:
 
-Implementation behavior that differs from a canonical contract is a conformance failure, not an alternative contract.
+- `Documentation/Architecture/NODE-CORE-SUBSYSTEM-CATALOG.md` = architectural inventory, not implementation proof.
+- `Main Temporal/documentation/architecture/NODE-CORE-CANONICALIZATION-MAP.md` = migration/reconciliation artifact, not contract authority.
+- `Identity/IDENTITY-DESIGN-CONSOLIDATION-DRAFT-v0.1.md` = DRAFT.
 
-## 6. Test artifacts
+## 5. Protocol isolation
 
-Tests and vectors are verification authority for behavior, but they do not independently define protocol semantics.
-
-Test artifacts include:
-
-- unit tests;
-- integration tests;
-- negative-path tests;
-- recovery tests;
-- test vectors;
-- schema validators;
-- installation verification;
-- conformance tests;
-- CI checks.
-
-A test that contradicts a canonical contract must be corrected or explicitly used to expose a contract defect.
-
-## 7. Draft artifacts
-
-Known draft/working material must remain explicitly non-normative.
-
-In particular:
-
-- `IDENTITY-DESIGN-CONSOLIDATION-DRAFT-v0.1.md` is DRAFT unless formally promoted.
-- `NODE-CORE-CANONICALIZATION-MAP.md` is a working migration/canonicalization map, not itself the contract authority.
-- Implementation-gap inventories are audit documents, not normative contracts.
-
-## 8. Protocol isolation
-
-The following are outside generic Node Core contract scope:
+Generic Node Core contracts do not include:
 
 - CPG ledger;
 - CPG table state;
-- CPG-specific consensus rules;
+- CPG-specific consensus;
 - poker/NLHE rules;
 - Table Wallet;
 - settlement;
 - rake;
 - CPG-specific cryptographic semantics.
 
-The Node Core Protocol Interface may expose capabilities required by protocols, but a protocol must not redefine Node Core semantics.
+## 6. PHASE 1 PASS gate
 
-## 9. Existing canonicalization map relationship
+Every Node Core capability must have:
 
-The existing:
+`ONE CANONICAL SOURCE + IMPLEMENTATION MAPPING + TEST MAPPING`
 
-`Main Temporal/documentation/architecture/NODE-CORE-CANONICALIZATION-MAP.md`
+and Runtime/Engine Runtime, API, Consensus Infrastructure and manifest authority must be explicitly resolved.
 
-remains a migration and reconciliation artifact. It must be used as supporting evidence for this index and must not be treated as a replacement for this contract registry.
+## 7. Current status
 
-## 10. PHASE 1 freeze conditions
+**PHASE 1 — RECONCILIATION IN PROGRESS**
 
-PHASE 1 cannot be declared complete until:
+Identity, Cryptography, Storage and Recovery have reached the evidence-mapping stage.
 
-1. every Node Core subsystem has exactly one normative contract source;
-2. duplicate normative-looking documents are classified;
-3. all drafts are explicitly marked non-normative;
-4. implementation paths are mapped;
-5. tests/vectors are mapped;
-6. Runtime vs Engine Runtime boundaries are resolved;
-7. Identity and Cryptography profiles are reconciled with their implementation specifications;
-8. API contracts are consolidated without duplicating subsystem semantics;
-9. Consensus Infrastructure scope is explicitly limited to protocol-neutral infrastructure;
-10. Manifest, README, contract, implementation, and test references are ready for PHASE 2.
+Remaining blockers are missing dedicated verification mappings, unresolved single-source authority, or unresolved subsystem boundaries.
 
-## 11. Current phase status
+**PHASE 2 — MANIFEST ↔ README ↔ CODE must not begin until this gate passes.**
 
-**PHASE 1 — IN PROGRESS**
-
-This index establishes the registry structure. It does not falsely declare all candidates canonical.
-
-The next operation is contract-by-contract reconciliation against the actual repository paths and implementation before the final canonical status is frozen.
-
-## 12. Governing principle
+## 8. Governing principle
 
 > One capability. One normative contract. Supporting documents may explain it. Implementations must conform to it. Tests must verify it.
