@@ -12,7 +12,7 @@ import hashlib
 import hmac
 import json
 import secrets
-from typing import Any
+from typing import Any, Callable
 
 
 _ALLOWED_SCALAR_TYPES = (str, int, bool, type(None))
@@ -68,16 +68,30 @@ def hash_canonical_hex(value: Any) -> str:
     return hash_canonical(value).hex()
 
 
-def generate_nonce(size: int = 32) -> bytes:
-    """Generate cryptographically secure random bytes."""
-    if not isinstance(size, int) or isinstance(size, bool) or size <= 0:
-        raise ValueError("nonce size must be a positive integer")
+class CSPRNGFailure(RuntimeError):
+    """Typed failure at the approved cryptographic randomness boundary."""
+
+
+def _os_csprng(size: int) -> bytes:
     return secrets.token_bytes(size)
 
 
-def random_bytes(size: int) -> bytes:
-    """Provider-neutral CSPRNG boundary."""
-    return generate_nonce(size)
+def random_bytes(size: int = 32, provider: Callable[[int], bytes] = _os_csprng) -> bytes:
+    """Return exactly size bytes from the approved CSPRNG or fail closed."""
+    if not isinstance(size, int) or isinstance(size, bool) or size <= 0:
+        raise ValueError("random byte size must be a positive integer")
+    try:
+        result = provider(size)
+    except Exception as exc:
+        raise CSPRNGFailure("cryptographic randomness provider failed") from exc
+    if not isinstance(result, bytes) or len(result) != size:
+        raise CSPRNGFailure("cryptographic randomness provider returned invalid output")
+    return result
+
+
+def generate_nonce(size: int = 32) -> bytes:
+    """Generate cryptographically secure random bytes."""
+    return random_bytes(size)
 
 
 def constant_time_equal(left: bytes, right: bytes) -> bool:
@@ -93,5 +107,6 @@ __all__ = [
     "hash_canonical_hex",
     "generate_nonce",
     "random_bytes",
+    "CSPRNGFailure",
     "constant_time_equal",
 ]
