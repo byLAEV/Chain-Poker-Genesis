@@ -67,7 +67,7 @@ class NodeManager:
         return self.status
 
     def stop(self) -> NodeStatus:
-        if self.status.state not in {"RUNNING","DEGRADED","RECOVERY"}:
+        if self.status.state not in {"READY","RUNNING","DEGRADED","RECOVERY"}:
             raise RuntimeError("node is not running")
         if self.runtime_manager is not None:
             self.status.state = "SHUTTING_DOWN"
