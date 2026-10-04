@@ -339,3 +339,22 @@ The remote source is not itself an installed protocol. Download transport does n
 The download boundary currently uses HTTP(S) as the transport mechanism. CID remains the content-addressed source identity and may resolve through an approved HTTP(S) gateway or configured equivalent.
 
 The remaining Protocol Interface gap is integration of these components with persistent package verification, protocol registration/installation and engine association.
+
+
+## PHASE 2 — Protocol package verification and persistent installation
+
+**Status:** IMPLEMENTED / INTEGRATION RECONCILED
+
+Implemented:
+- `Protocol Interface/protocol_package.py` — manifest verification, canonical manifest hashing, protocol identity verification and persistent installation.
+- `Protocol Interface/protocol_interface.py` — compatibility gate, registration gate, persistent installation and shared Engine Runtime association.
+- `Tests/Protocol Interface/test_protocol_package_installation.py` — verified installation, identity, integrity failure and engine activation path.
+- `Node Core/node_core.py` — injects the shared Engine Runtime and Node Core protocol storage boundary into Protocol Interface.
+
+Security boundary:
+- ZIP extraction rejects unsafe traversal paths.
+- A downloaded package is not installed until its manifest validates and its declared manifest hash matches the canonical hash.
+- Installed protocol contents are stored under the Node Core protocol installation boundary with an installation record.
+- Protocol Interface never implements CPG semantics.
+
+Current status remains **IMPLEMENTED_PARTIAL** because the complete multi-engine declaration/execution model and rendered administrative UI are not yet closed.
