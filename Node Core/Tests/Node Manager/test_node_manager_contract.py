@@ -8,14 +8,14 @@ sys.path.insert(0,str(BASE/"Bootstrap/Installer"))
 sys.path.insert(0,str(BASE/"Node Manager"))
 sys.path.insert(0,str(BASE/"Protocol Interface"))
 
-from bootstrap_node import bootstrap_node
+from bootstrap_node import install
 from node_manager import NodeManager
 from protocol_interface import ProtocolDescriptor, ProtocolInterface
 
 def main():
     with tempfile.TemporaryDirectory() as tmp:
         root=Path(tmp)/"node"
-        bootstrap_node(root)
+        install(root)
         config=root/"node-storage/configuration/node-config.json"
 
         pi=ProtocolInterface()
