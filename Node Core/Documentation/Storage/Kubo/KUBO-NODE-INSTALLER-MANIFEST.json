@@ -79,7 +79,11 @@
       "stale_pid_recovery",
       "initial_synchronization",
       "coherence_verification",
-      "dual_storage_readiness_gate"
+      "dual_storage_readiness_gate",
+      "failure_detection",
+      "local_fallback",
+      "provider_recovery",
+      "recovery_reconciliation_gate"
     ],
     "not_implemented": [
       "remote_release_metadata_retrieval",
@@ -99,7 +103,10 @@
       "KUBO-INSTALL-0012",
       "KUBO-INSTALL-0013",
       "KUBO-INSTALL-0014",
-      "KUBO-INSTALL-0015"
+      "KUBO-INSTALL-0015",
+      "KUBO-INSTALL-0023",
+      "KUBO-INSTALL-0024",
+      "KUBO-INSTALL-0025"
     ],
     "pending": [
       "KUBO-INSTALL-0004",
