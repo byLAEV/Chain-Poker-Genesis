@@ -21,10 +21,6 @@ import urllib.request
 from pathlib import Path
 
 REPOSITORY = "byLAEV/Chain-Poker-Genesis"
-ARCHIVE_URL = (
-    "https://github.com/byLAEV/Chain-Poker-Genesis/"
-    "archive/refs/heads/main.tar.gz"
-)
 DEFAULT_LINUX_TARGET = Path.home() / ".local" / "share" / "chain-poker-genesis" / "node-core"
 DEFAULT_TERMUX_TARGET = Path.home() / ".chain-poker-genesis" / "node-core"
 
@@ -47,10 +43,14 @@ def default_target(platform_name: str) -> Path:
     return DEFAULT_LINUX_TARGET
 
 
-def download_archive(destination: Path) -> None:
-    print(f"Downloading Node Core package from {REPOSITORY}...")
+def download_archive(destination: Path, source_ref: str) -> None:
+    archive_url = (
+        f"https://github.com/{REPOSITORY}/archive/refs/heads/"
+        f"{source_ref}.tar.gz"
+    )
+    print(f"Downloading Node Core package from {REPOSITORY}@{source_ref}...")
     request = urllib.request.Request(
-        ARCHIVE_URL,
+        archive_url,
         headers={"User-Agent": "Chain-Poker-Genesis-Node-Core-Installer/1.0"},
     )
     try:
@@ -132,7 +132,7 @@ def verify(staging: Path) -> None:
         print(completed.stdout, end="")
 
 
-def install(target: Path) -> None:
+def install(target: Path, source_ref: str = "main") -> None:
     platform_name = detect_platform()
     architecture = platform.machine()
 
@@ -164,7 +164,7 @@ def install(target: Path) -> None:
         extracted.mkdir()
         staging.mkdir()
 
-        download_archive(archive)
+        download_archive(archive, source_ref)
         extract_node_core(archive, extracted, staging)
         bootstrap(staging)
         verify(staging)
@@ -197,12 +197,17 @@ def main() -> int:
         type=Path,
         help="installation directory; defaults to a user-local Linux/Termux location",
     )
+    parser.add_argument(
+        "--ref",
+        default="main",
+        help="Git branch containing the Node Core package (default: main)",
+    )
     args = parser.parse_args()
 
     try:
         platform_name = detect_platform()
         target = args.target or default_target(platform_name)
-        install(target)
+        install(target, args.ref)
     except InstallationError as exc:
         print(f"INSTALLATION FAILED: {exc}", file=sys.stderr)
         return 1
