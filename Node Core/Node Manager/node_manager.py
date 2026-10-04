@@ -84,7 +84,7 @@ class NodeManager:
         if self.recovery is None:
             raise RuntimeError("Recovery service is required")
         result = self.recovery.recover()
-        if result.get("status") not in {"RECOVERY_READY","READY"}:
+        if result.get("status") not in {"RECOVERY_READY","RECOVERED","READY"}:
             raise RuntimeError("recovery did not reach a ready state")
         self.status.state = "READY"
         self._event("NODE_RECOVERED")
