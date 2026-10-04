@@ -37,7 +37,7 @@ jobs:
       - name: Test direct installer from current branch
         run: |
           rm -rf /tmp/cpg-direct-installer-test
-          python Installer/install.py             --ref "${GITHUB_REF_NAME}"             --target /tmp/cpg-direct-installer-test
+          python Installer/install.py             --ref "${GITHUB_SHA}"             --target /tmp/cpg-direct-installer-test
 
       - name: Verify installed Node Core
         run: |
@@ -47,7 +47,7 @@ jobs:
 
       - name: Test existing-installation protection
         run: |
-          if python Installer/install.py             --ref "${GITHUB_REF_NAME}"             --target /tmp/cpg-direct-installer-test
+          if python Installer/install.py             --ref "${GITHUB_SHA}"             --target /tmp/cpg-direct-installer-test
           then
             echo "Installer incorrectly overwrote an existing installation"
             exit 1
