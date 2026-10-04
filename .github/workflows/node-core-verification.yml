@@ -50,5 +50,11 @@ jobs:
       - name: Run Node Core end-to-end test
         run: python "Node Core/Tests/Integration/test_node_installation_e2e.py"
 
+      - name: Run Node Core cross-component lifecycle test
+        run: python "Node Core/Tests/Integration/test_node_core_cross_component_lifecycle.py"
+
+      - name: Run Node Core full lifecycle test
+        run: python "Node Core/Tests/Integration/test_node_core_full_lifecycle.py"
+
       - name: Run Node Core final audit
         run: python "Node Core/Tools/Validation/final_node_core_audit.py"
