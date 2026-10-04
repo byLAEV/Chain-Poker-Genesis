@@ -21,7 +21,7 @@ Private keys are accepted only as operation inputs and are not persisted by this
 
 Authenticated encryption (AEAD) is a required boundary in the formal profile. The normative production profile is `Core/ENCRYPTION-AEAD-PROFILE-v1.0.md`, which fixes AES-256-GCM, nonce/container parameters, HKDF-SHA-256 when explicitly required, and fail-closed authentication behavior. Implementation and independent vectors are VERIFIED by Node Core CI Run #605 on commit `815fa46cb8499a17dd1ea3fce9489628513ae967`.
 
-Merkle construction is intentionally not implemented as a normative primitive. A separate deterministic Merkle specification is required before tree behavior is fixed.
+Merkle construction is implemented as the normative deterministic Merkle profile `Core/MERKLE-PROFILE-v1.0.md`, with domain-separated SHA-256 leaves/parents, odd-node promotion, empty-tree handling and ordered proof verification. Independent conformance vectors are executed by `Tests/Cryptography/test_merkle.py`.
 
 This component does not define CPG consensus, player state, table state, ledger rules, settlement, rake or protocol-specific cryptography.
 
