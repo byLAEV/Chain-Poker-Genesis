@@ -47,13 +47,18 @@ class RecoveryManager:
         }
 
     def observe_provider_failure(self, provider_result):
-        """Record provider degradation without declaring Node Core recovery failed."""
-        return self._finish(
-            "FAILED" if provider_result.get("provider_state") == "DEGRADED" and not provider_result.get("local_fallback") else "RECOVERED",
-            {"provider": provider_result},
-            "storage provider degraded; local fallback remains available"
-            if provider_result.get("local_fallback") else "storage provider healthy",
-        )
+        """Journal provider degradation without declaring Node Core recovery failed."""
+        now = datetime.now(timezone.utc).isoformat()
+        payload = {
+            "status": "PROVIDER_DEGRADED",
+            "state": "DEGRADED",
+            "operation": "STORAGE_PROVIDER_OBSERVATION",
+            "started_at": now,
+            "completed_at": now,
+            "details": {"provider": provider_result},
+        }
+        self._append_journal(payload)
+        return payload
 
     def recover(self):
         self.recovery_dir.mkdir(parents=True, exist_ok=True)
