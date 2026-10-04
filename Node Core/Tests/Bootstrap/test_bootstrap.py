@@ -22,4 +22,37 @@ with TemporaryDirectory() as root:
     try: b.verify(root)
     except BootstrapVerificationError: pass
     else: raise AssertionError("corrupted bootstrap artifact was accepted")
+
+    # Missing required path must fail closed.
+    missing_root=p/"missing-path-check"
+    b.bootstrap(missing_root)
+    (missing_root/"node-storage/recovery").rmdir()
+    try: b.verify(missing_root)
+    except BootstrapVerificationError: pass
+    else: raise AssertionError("missing required bootstrap path was accepted")
+
+    # Malformed required metadata must fail closed.
+    malformed_root=p/"malformed-metadata-check"
+    b.bootstrap(malformed_root)
+    malformed_cfg=malformed_root/"node-storage/configuration/node-config.json"
+    malformed_cfg.write_text("{not-json",encoding="utf-8")
+    try: b.verify(malformed_root)
+    except BootstrapVerificationError: pass
+    else: raise AssertionError("malformed bootstrap metadata was accepted")
+
+    # Protocol-isolation violation must fail closed before readiness can be accepted.
+    isolation_root=p/"protocol-isolation-check"
+    b.bootstrap(isolation_root)
+    isolation_cfg=isolation_root/"node-storage/configuration/node-config.json"
+    isolation_cfg.write_text(
+        isolation_cfg.read_text(encoding="utf-8").replace(
+            '"protocol_associations": []',
+            '"protocol_associations": ["cpg"]'
+        ),
+        encoding="utf-8"
+    )
+    try: b.verify(isolation_root)
+    except BootstrapVerificationError: pass
+    else: raise AssertionError("protocol isolation violation was accepted")
+
 print("Node Core Bootstrap integration tests: PASS")
