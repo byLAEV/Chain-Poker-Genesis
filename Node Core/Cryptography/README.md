@@ -19,10 +19,10 @@ Private keys are accepted only as operation inputs and are not persisted by this
 
 ## Explicitly deferred
 
-Authenticated encryption (AEAD) is a required boundary in the formal profile, but its production algorithm, nonce construction, key derivation and key lifecycle are not yet fixed by a separate encryption profile.
+Authenticated encryption (AEAD) is a required boundary in the formal profile. The normative production profile is `Core/ENCRYPTION-AEAD-PROFILE-v1.0.md`, which fixes AES-256-GCM, nonce/container parameters, HKDF-SHA-256 when explicitly required, and fail-closed authentication behavior. Implementation and independent vectors remain pending.
 
 Merkle construction is intentionally not implemented as a normative primitive. A separate deterministic Merkle specification is required before tree behavior is fixed.
 
 This component does not define CPG consensus, player state, table state, ledger rules, settlement, rake or protocol-specific cryptography.
 
-The implementation remains **PARTIAL** until the AEAD profile and its test vectors are fixed and implemented.
+The implementation remains **PARTIAL** until the AEAD profile is implemented and its independent test vectors pass verification.
