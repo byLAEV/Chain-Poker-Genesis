@@ -25,6 +25,8 @@ class PeerRegistry:
             raise ValueError("invalid peer state")
         if not 1 <= peer.port <= 65535:
             raise ValueError("invalid peer port")
+        if peer.peer_id in self._peers:
+            raise ValueError("peer already registered")
         self._peers[peer.peer_id] = peer
 
     def update_state(self, peer_id: str, state: str) -> Peer:
