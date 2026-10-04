@@ -9,7 +9,7 @@
     {"id":"canonical.escape.001","operation":"canonicalize","inputs":{"text":"quote \" slash \\ newline\n"},"expected":{"text":"{\"text\":\"quote \\\" slash \\\\ newline\\n\"}"},"result":"PASS"},
     {"id":"canonical.integer.001","operation":"canonicalize","inputs":{"n":9007199254740993},"expected":{"text":"{\"n\":9007199254740993}"},"result":"PASS"},
     {"id":"canonical.float.001","operation":"canonicalize","inputs":{"value":1.5},"expected":{"failure":"floating-point values are prohibited"},"result":"REJECT"},
-    {"id":"canonical.nan.001","operation":"canonicalize","inputs":{"value":"NaN"},"expected":{"failure":"non-finite/floating-point values are prohibited"},"result":"REJECT"},
+    {"id":"canonical.nan.001","operation":"canonicalize","inputs":{"value":{"type":"float","value":"NaN"}},"expected":{"failure":"non-finite/floating-point values are prohibited"},"result":"REJECT"},
     {"id":"canonical.unsupported.001","operation":"canonicalize","inputs":{"value":"unsupported runtime object"},"expected":{"failure":"unsupported protocol value"},"result":"REJECT"}
   ]
 }
