@@ -49,9 +49,7 @@ class NodeManager:
         self.configuration = self.configuration_manager.load()
         if self.runtime_manager is None:
             self.runtime_manager = RuntimeManager(self.configuration_manager.path.parents[2])
-        readiness = self.runtime_manager.readiness()
-        if not readiness.is_ready():
-            raise RuntimeError("Node Core readiness requirements are not satisfied")
+        self.runtime_manager.initialize()
         self.status.state = "READY"
         self._event("NODE_READY")
         return self.status
