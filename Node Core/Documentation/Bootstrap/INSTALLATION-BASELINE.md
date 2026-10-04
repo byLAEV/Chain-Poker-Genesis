@@ -2,7 +2,7 @@
 
 **Project:** Chain Poker Genesis by LAEV  
 **Layer:** Node Core  
-**Status:** Active implementation baseline  
+**Status:** SUPPORTING / RECONCILED  
 **Version:** 0.1.0  
 **Protocol installation:** Explicitly excluded
 
