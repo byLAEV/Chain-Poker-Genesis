@@ -1,8 +1,11 @@
 # Protocol API
 
-Defines the controlled interface between Node Core and higher-level protocols.
+**Status:** SUPPORTING / RECONCILED  
+**Canonical authority:** `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md`
 
-## Contract
+Defines the controlled API boundary between Node Core and higher-level protocols.
+
+## Reference operations
 
 - discoverCapabilities
 - requestCapabilities
@@ -13,6 +16,21 @@ Defines the controlled interface between Node Core and higher-level protocols.
 - uninstallProtocol
 - getProtocolState
 
-The API must preserve protocol isolation.
+The API must preserve the Protocol Interface lifecycle and isolation rules.
+
+## Administrative presentation boundary
+
+The Protocols interface may request:
+
+- installed protocol listing;
+- protocol status/details;
+- recognized installer listing;
+- installer verification/install.
+
+These are presentation/control requests. They do not create a second protocol registry.
+
+## Isolation
 
 A protocol may consume Node Core services but cannot redefine Node Core semantics through this API.
+
+CPG consensus, ledger, poker/NLHE rules, table state, Table Wallet, settlement and rake remain outside the Node Core API.
