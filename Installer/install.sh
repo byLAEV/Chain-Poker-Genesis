@@ -2,7 +2,8 @@
 set -eu
 
 REPOSITORY="byLAEV/Chain-Poker-Genesis"
-RAW_INSTALLER="https://raw.githubusercontent.com/byLAEV/Chain-Poker-Genesis/main/Installer/install.py"
+INSTALLER_REF="${CPG_INSTALLER_REF:-main}"
+RAW_INSTALLER="https://raw.githubusercontent.com/byLAEV/Chain-Poker-Genesis/${INSTALLER_REF}/Installer/install.py"
 
 say() {
     printf '%s\n' "$*"
@@ -43,4 +44,4 @@ else
     exit 1
 fi
 
-exec "$PYTHON" "$INSTALLER" "$@"
+exec "$PYTHON" "$INSTALLER" --ref "$INSTALLER_REF" "$@"
