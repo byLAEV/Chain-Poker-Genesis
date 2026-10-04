@@ -15,6 +15,8 @@ from crypto_core import (  # noqa: E402
     generate_nonce,
     hash_canonical_hex,
     sha256_hex,
+    CSPRNGFailure,
+    random_bytes,
 )
 
 
@@ -109,3 +111,41 @@ def test_sha256_empty_vector() -> None:
 
 def test_canonical_hash_empty_object_vector() -> None:
     assert hash_canonical_hex({}) == "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+
+
+def test_csprng_provider_failure_is_typed_and_fail_closed() -> None:
+    def failing_provider(size):
+        raise OSError("provider unavailable")
+
+    try:
+        random_bytes(32, provider=failing_provider)
+    except CSPRNGFailure as exc:
+        assert str(exc) == "cryptographic randomness provider failed"
+        assert "provider unavailable" not in str(exc)
+        return
+    raise AssertionError("provider failure must raise CSPRNGFailure")
+
+
+def test_csprng_invalid_provider_output_is_rejected() -> None:
+    for bad_output in (b"", b"x" * 31, b"x" * 33, "not-bytes"):
+        try:
+            random_bytes(32, provider=lambda size, value=bad_output: value)
+        except CSPRNGFailure:
+            continue
+        raise AssertionError("invalid provider output must raise CSPRNGFailure")
+
+
+def test_csprng_never_uses_fallback_after_provider_failure() -> None:
+    calls = []
+
+    def failing_provider(size):
+        calls.append(size)
+        raise OSError("provider unavailable")
+
+    try:
+        random_bytes(16, provider=failing_provider)
+    except CSPRNGFailure:
+        pass
+    else:
+        raise AssertionError("provider failure must fail closed")
+    assert calls == [16]
