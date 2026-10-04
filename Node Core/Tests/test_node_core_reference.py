@@ -41,7 +41,7 @@ class NodeCoreReferenceTests(unittest.TestCase):
     def test_boot_initialize_activate(self):
         n = self.node()
         self.assertEqual(n.initialize()["state"], "INITIALIZED")
-        self.assertEqual(n.activate(), "ACTIVE")
+        self.assertEqual(n.activate(), "RUNNING")
 
     def test_crypto(self):
         n = self.node()
