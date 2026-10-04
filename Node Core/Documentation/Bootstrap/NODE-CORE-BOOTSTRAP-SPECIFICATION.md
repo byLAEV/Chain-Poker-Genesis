@@ -39,7 +39,7 @@ No CPG package is downloaded or installed.
 
 ### 3.3 Initialize identity
 
-A deterministic test identity is used by the reference implementation. Production identity generation remains a separate cryptographic specification.
+The reference bootstrap initializes identity metadata only. It does not generate production cryptographic keys or claim production identity conformance.
 
 The bootstrap records:
 
@@ -55,7 +55,7 @@ Create exactly the canonical logical namespace defined by the Node Core Installa
 
 Create node lifecycle state with:
 
-`NODE_BOOTSTRAPPED`
+`NODE_CORE_READY`
 
 ### 3.6 Initialize recovery metadata
 
