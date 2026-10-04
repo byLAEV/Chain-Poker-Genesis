@@ -53,3 +53,19 @@ def test_custody_boundary_uses_key_reference_not_private_bytes():
     params = inspect.signature(KeyCustodyProvider.sign_ed25519).parameters
     assert "key_ref" in params
     assert "private_key" not in params
+
+
+def test_credential_verifier_does_not_expose_exception_details():
+    from credential_interface import CredentialReference, Ed25519CredentialVerifier
+
+    sentinel = "PRIVATE-SENTINEL-MUST-NOT-ESCAPE"
+    result = Ed25519CredentialVerifier().verify(
+        b"payload",
+        b"bad-signature",
+        CredentialReference("ed25519", "00" * 32, "key-ref"),
+    )
+    rendered = repr(result) + str(result.reason)
+    assert result.result == "INVALID"
+    assert result.reason == "verification_failed"
+    assert sentinel not in rendered
+    assert "Invalid" not in rendered
