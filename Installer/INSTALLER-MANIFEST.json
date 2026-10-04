@@ -1,0 +1,28 @@
+{
+  "component": "Chain Poker Genesis Node Core Direct Installer",
+  "version": "1.0.0",
+  "status": "IMPLEMENTED_INITIAL",
+  "source_repository": "byLAEV/Chain-Poker-Genesis",
+  "source_ref": "main",
+  "supported_platforms": [
+    "Linux",
+    "Termux"
+  ],
+  "supported_architectures": [
+    "x86_64",
+    "aarch64",
+    "armv7l"
+  ],
+  "installation_model": "DIRECT_REMOTE_DOWNLOAD",
+  "preflight": "NOT_INCLUDED",
+  "protocol_installation": "NOT_PERFORMED",
+  "cpg_protocol": "NOT_INSTALLED",
+  "node_core_bootstrap": "REQUIRED",
+  "node_core_verification": "REQUIRED",
+  "overwrite_existing_installation": false,
+  "dependency_model": {
+    "python": "REQUIRED",
+    "python_packages": "NONE_FOR_INSTALLER",
+    "network": "REQUIRED_FOR_DOWNLOAD"
+  }
+}
