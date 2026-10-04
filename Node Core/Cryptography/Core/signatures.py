@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+from crypto_provider import KeyCustodyProvider
 from crypto_core import canonicalize
 
 try:
@@ -68,4 +69,27 @@ __all__ = [
     "verify",
     "sign_canonical",
     "verify_canonical",
+    "sign_with_custody",
+    "public_key_from_custody",
 ]
+
+
+def sign_with_custody(
+    message: bytes, key_ref: str, custody: KeyCustodyProvider
+) -> bytes:
+    """Sign through external custody without accepting private-key bytes."""
+    if not isinstance(key_ref, str) or not key_ref:
+        raise ValueError("key_ref must be a non-empty string")
+    return custody.sign_ed25519(bytes(message), key_ref)
+
+
+def public_key_from_custody(
+    key_ref: str, custody: KeyCustodyProvider
+) -> bytes:
+    """Resolve public material from external custody by reference."""
+    if not isinstance(key_ref, str) or not key_ref:
+        raise ValueError("key_ref must be a non-empty string")
+    public_key = custody.public_key(key_ref)
+    if not isinstance(public_key, bytes) or len(public_key) != 32:
+        raise ValueError("custody provider returned invalid Ed25519 public key")
+    return public_key
