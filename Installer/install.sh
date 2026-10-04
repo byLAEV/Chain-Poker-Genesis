@@ -19,7 +19,7 @@ if is_termux; then
         exit 1
     fi
     say "Termux detected. Installing native Python dependencies..."
-    pkg install -y python python-cryptography
+    pkg install -y python-cryptography
     PYTHON="python"
 elif command -v python3 >/dev/null 2>&1; then
     PYTHON="python3"
