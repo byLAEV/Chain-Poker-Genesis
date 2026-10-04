@@ -15,12 +15,22 @@
   "source_repository": "byLAEV/Chain-Poker-Genesis",
   "source_ref": "main",
   "source_resolution": "RESOLVE_REF_TO_COMMIT_SHA_BEFORE_ARCHIVE_DOWNLOAD",
-  "supported_platforms": ["Linux", "Termux"],
-  "supported_architectures": ["x86_64", "aarch64", "armv7l"],
+  "supported_platforms": [
+    "Linux",
+    "Termux"
+  ],
+  "supported_architectures": [
+    "x86_64",
+    "aarch64",
+    "armv7l"
+  ],
   "installation_model": "DIRECT_REMOTE_DOWNLOAD_PINNED_TO_COMMIT",
   "interface": "CLI",
   "interactive": true,
-  "menu": ["INSTALL_NODE_CORE", "EXIT"],
+  "menu": [
+    "INSTALL_NODE_CORE",
+    "EXIT"
+  ],
   "gui": false,
   "non_interactive_mode": true,
   "preflight": "NOT_INCLUDED",
@@ -31,9 +41,14 @@
   "overwrite_existing_installation": false,
   "dependency_model": {
     "python": "REQUIRED",
-    "python_packages": "INSTALLED_IN_NODE_CORE_LOCAL_VENV",
-    "dependency_source": "Node Core component requirements files",
-    "network": "REQUIRED_FOR_DOWNLOAD_AND_DEPENDENCY_INSTALL"
+    "python_packages": "LOCAL_NODE_CORE_VENV_ON_LINUX; TERMUX_NATIVE_PACKAGE_WITH_SYSTEM_SITE_PACKAGES_ON_TERMUX",
+    "dependency_source": "Node Core component requirements files plus platform-native dependency packages where required",
+    "network": "REQUIRED_FOR_DOWNLOAD_AND_DEPENDENCY_INSTALL",
+    "termux_native_packages": [
+      "python-cryptography"
+    ],
+    "termux_python_package_policy": "USE_NATIVE_TERMUX_PACKAGE; DO_NOT_BUILD_CRYPTOGRAPHY_FROM_PIP_SOURCE",
+    "termux_cryptography_compatibility": ">=46,<49"
   },
   "installation_environment": "LOCAL_NODE_CORE_VENV",
   "venv_location": ".node-core-python"

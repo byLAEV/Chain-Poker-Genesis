@@ -81,6 +81,42 @@ The shell launcher installs Python through the native Termux package manager whe
 Python is absent. It uses Python's standard library to retrieve the installer,
 so `curl` or `wget` is not required by the launcher.
 
+### Termux cryptography dependency
+
+Node Core Cryptography currently declares `cryptography==46.0.4` for the
+canonical Linux/Python dependency environment. Termux is different: Android
+does not receive the same PyPI binary-wheel set as the supported Linux
+platforms, so installing that pinned package with pip can fall back to a
+local Rust/C build. Current Termux Rust packaging has documented cases where
+Rust-based Python extensions such as `cryptography` cannot be built reliably.
+
+For Termux, the installer therefore uses the native Termux package:
+
+`python-cryptography`
+
+The installer:
+
+1. installs `python-cryptography` through `pkg`;
+2. creates the Node Core virtual environment with
+   `--system-site-packages`;
+3. verifies that the native `cryptography` installation is visible;
+4. verifies that its version is compatible with the current Node Core
+   cryptography API boundary (`>=46,<49`);
+5. verifies the Ed25519 and AES-GCM primitives required by the Node Core
+   implementation;
+6. does **not** attempt to compile `cryptography` from PyPI source on
+   Termux.
+
+This deliberately avoids making Rust, clang, OpenSSL headers, libffi, or
+pkg-config a mandatory Termux build chain for the Node Core installer.
+Those tools are relevant when compiling `cryptography` from source, but the
+installer's Termux path uses the native packaged cryptography implementation
+instead.
+
+If the native Termux package is unavailable or outside the compatibility
+range, installation fails explicitly rather than silently substituting an
+unverified cryptographic implementation.
+
 Default installation targets:
 
 - Linux: `~/.local/share/chain-poker-genesis/node-core`

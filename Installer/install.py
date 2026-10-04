@@ -123,6 +123,50 @@ def extract_node_core(archive: Path, extraction_root: Path, staging: Path) -> No
     shutil.copytree(extraction_root, staging, dirs_exist_ok=True)
 
 
+def _termux_install_native_cryptography() -> None:
+    """Install the Termux-native cryptography package instead of compiling it with pip."""
+    pkg = shutil.which("pkg")
+    if pkg is None:
+        raise InstallationError("Termux package manager 'pkg' is required for the native cryptography dependency")
+
+    completed = subprocess.run(
+        [pkg, "install", "-y", "python-cryptography"],
+        text=True, capture_output=True,
+    )
+    if completed.returncode != 0:
+        if completed.stdout:
+            print(completed.stdout, file=sys.stderr, end="")
+        if completed.stderr:
+            print(completed.stderr, file=sys.stderr, end="")
+        raise InstallationError(
+            "Unable to install the Termux-native python-cryptography package"
+        )
+
+
+def _verify_termux_cryptography(python_executable: Path) -> None:
+    """Verify the native Termux package is visible and importable in the local venv."""
+    probe = (
+        "import importlib.metadata as m; "
+        "v=m.version('cryptography'); "
+        "parts=tuple(int(x) for x in v.split('.')[:2]); "
+        "assert (46, 0) <= parts < (49, 0), "
+        "f'unsupported cryptography version: {v}'; "
+        "from cryptography.hazmat.primitives.ciphers.aead import AESGCM; "
+        "from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey; "
+        "print(v)"
+    )
+    completed = subprocess.run(
+        [str(python_executable), "-c", probe],
+        text=True, capture_output=True,
+    )
+    if completed.returncode != 0:
+        if completed.stderr:
+            print(completed.stderr, file=sys.stderr, end="")
+        raise InstallationError(
+            "Termux cryptography dependency is unavailable, incompatible, or not importable"
+        )
+
+
 def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
     requirements = staging / "Cryptography" / "requirements.txt"
     if not requirements.is_file():
@@ -130,16 +174,31 @@ def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
 
     environment = temp_root / ".node-core-python"
     print("[2/5] Preparing Node Core environment...", flush=True)
-    completed = subprocess.run(
-        [sys.executable, "-m", "venv", str(environment)],
-        text=True, capture_output=True,
-    )
+
+    if detect_platform() == "TERMUX":
+        _termux_install_native_cryptography()
+        completed = subprocess.run(
+            [sys.executable, "-m", "venv", "--system-site-packages", str(environment)],
+            text=True, capture_output=True,
+        )
+    else:
+        completed = subprocess.run(
+            [sys.executable, "-m", "venv", str(environment)],
+            text=True, capture_output=True,
+        )
+
     if completed.returncode != 0:
+        if completed.stderr:
+            print(completed.stderr, file=sys.stderr, end="")
         raise InstallationError("Unable to create the Node Core Python environment")
 
     python_executable = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
     if not python_executable.is_file():
         raise InstallationError("Created Python environment is missing its interpreter")
+
+    if detect_platform() == "TERMUX":
+        _verify_termux_cryptography(python_executable)
+        return python_executable
 
     completed = subprocess.run(
         [str(python_executable), "-m", "pip", "install", "--disable-pip-version-check", "-r", str(requirements)],
