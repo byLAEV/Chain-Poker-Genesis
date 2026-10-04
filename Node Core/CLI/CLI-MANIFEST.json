@@ -1,1 +1,18 @@
-{"component":"Node Core CLI","version":"1.0.0","status":"IMPLEMENTED_PARTIAL","scope":"Protocol-neutral operational command boundary","commands":["status","version"]}
+{
+  "component": "Node Core CLI",
+  "version": "1.1.0",
+  "status": "IMPLEMENTED",
+  "scope": "Protocol-neutral operational command boundary and operator menu entry point",
+  "entry_point": "node_core_menu.py",
+  "commands": [
+    "menu",
+    "node status",
+    "node readiness",
+    "node start",
+    "node stop",
+    "node recover",
+    "storage status",
+    "storage mode get",
+    "storage mode set"
+  ]
+}
