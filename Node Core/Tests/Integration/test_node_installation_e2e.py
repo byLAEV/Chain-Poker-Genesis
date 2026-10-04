@@ -67,8 +67,10 @@ def main() -> int:
 
         runtime.transition(RuntimeState.RUNNING, readiness)
         runtime.transition(RuntimeState.DEGRADED)
-        RecoveryManager(root).recover(runtime)
-        assert runtime.state == RuntimeState.NODE_CORE_READY
+        recovery = RecoveryManager(root).recover()
+        assert recovery["status"] == "RECOVERY_READY"
+        runtime.transition(RuntimeState.RECOVERY)
+        runtime.transition(RuntimeState.NODE_CORE_READY, evaluate_readiness(root))
         runtime.transition(RuntimeState.SHUTTING_DOWN)
         runtime.transition(RuntimeState.STOPPED)
         assert runtime.state == RuntimeState.STOPPED
