@@ -7,11 +7,12 @@
 ## Current Verification Evidence
 
 - GitHub Actions workflow: **Node Core Verification**
-- Run: **#37**
-- Run ID: `37086100258`
-- Verified commit: `ab81b793c328778c870bde6fcb5192d7fad318b7`
+- Run: **#561**
+- Run ID: `37180213168`
+- Verified commit: `794aa43f2561a252efbb851fbf51ff7ea2e94296`
 - Final audit result: `audit_status = PASS`
 - Completion gate: `NODE_CORE_IMPLEMENTATION_BASELINE`
+- Verification sequence: structural audit, Python compilation, verification tests, installation manifest, end-to-end test, and final audit — all PASS
 
 The complete current workflow passed its structural audit, compilation, verification tests, installation manifest test, end-to-end test, and final Node Core audit.
 
