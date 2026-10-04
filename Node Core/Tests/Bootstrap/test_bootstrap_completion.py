@@ -89,6 +89,8 @@ def main():
         manifest = base / "node-installation-manifest.json"
         manifest.write_text("{not-json", encoding="utf-8")
         run(RECOVERY, base, expect=1)
+        # Recovery must preserve the corrupt artifact rather than silently overwrite it.
+        assert manifest.read_text(encoding="utf-8") == "{not-json"
         shutil.rmtree(base)
         run(INSTALLER, base)
 
