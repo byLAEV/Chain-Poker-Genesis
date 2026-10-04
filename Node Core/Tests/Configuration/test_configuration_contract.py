@@ -2,6 +2,9 @@
 import json, tempfile
 from pathlib import Path
 SCHEMA=Path(__file__).resolve().parents[2]/"Configuration/Schemas/node-configuration.schema.json"
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/"Configuration"))
+from configuration_manager import ConfigurationError, validate_configuration
 
 def validate(c):
     required={"node_core_version","decentralized_storage","protocol_associations","cpg_protocol"}
@@ -18,8 +21,10 @@ def validate(c):
 def main():
     schema=json.loads(SCHEMA.read_text())
     assert schema["additionalProperties"] is False
+    assert schema["$id"].endswith("/1.0.0")
     valid={"node_core_version":"1.0.0","decentralized_storage":{"status":"NOT_PROVISIONED"},"protocol_associations":[],"cpg_protocol":"NOT_INSTALLED"}
     assert validate(valid)
+    assert validate_configuration(valid)["cpg_protocol"] == "NOT_INSTALLED"
 
     for bad in [
         {**valid,"unknown":True},
@@ -30,6 +35,10 @@ def main():
         try: validate(bad)
         except ValueError: pass
         else: raise AssertionError("invalid configuration accepted")
+
+    try: validate_configuration({**valid,"cpg_protocol":"ACTIVE"})
+    except ConfigurationError: pass
+    else: raise AssertionError("ConfigurationManager accepted fresh-node CPG activation")
 
     # Deterministic default baseline.
     a=json.dumps(valid,sort_keys=True,separators=(",",":"))
