@@ -30,6 +30,16 @@ class RollbackTests(unittest.TestCase):
             self.assertTrue(marker.exists())
             self.assertEqual(marker.read_text(), "incomplete")
 
+    def test_failure_after_target_creation_removes_target(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "node-core"
+
+            with patch("Installer.install.prepare_python_environment", side_effect=InstallationError("environment failed")):
+                with self.assertRaises(InstallationError):
+                    install(target, "main")
+
+            self.assertFalse(target.exists())
+
     def test_target_is_not_created_when_source_download_fails(self):
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "node-core"
