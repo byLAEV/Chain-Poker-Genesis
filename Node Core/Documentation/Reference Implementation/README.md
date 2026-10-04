@@ -4,7 +4,7 @@
 **Layer:** Node Core  
 **Version:** 0.1.0
 
-This directory contains the first executable reference implementation for bootstrapping a **protocol-neutral Node Core**.
+The executable reference implementation is now maintained in `Node Core/Bootstrap/` and validated by the Node Core test and audit suites. This documentation page preserves the installation boundary and expected behavior. for bootstrapping a **protocol-neutral Node Core**.
 
 It does **not** install Chain Poker Genesis.
 
@@ -13,7 +13,7 @@ It does **not** install Chain Poker Genesis.
 From the repository root:
 
 ```bash
-python3 reference-implementation/node-installation/bootstrap_node.py ./node-runtime
+python3 "Node Core/Bootstrap/Installer/bootstrap_node.py" ./node-runtime
 ```
 
 The command creates the canonical Node Core storage namespace and writes a node installation manifest.
@@ -21,7 +21,7 @@ The command creates the canonical Node Core storage namespace and writes a node 
 ## Verification
 
 ```bash
-python3 reference-implementation/node-installation/verify_node_installation.py ./node-runtime
+python3 "Node Core/Tools/Validation/verify_node_installation.py" ./node-runtime
 ```
 
 Expected result:
@@ -45,7 +45,7 @@ The reference implementation:
 
 ## Scope
 
-This is an implementation baseline for installation/bootstrap verification. It is not yet a production cryptographic installer or distributed node implementation.
+This is the Node Core installation baseline for installation/bootstrap verification. The canonical implementation lives under `Node Core/Bootstrap/`; validation utilities live under `Node Core/Tools/Validation/`. It is not yet a production cryptographic installer or distributed node implementation.
 
 
 ## Installation Boundary
@@ -63,6 +63,14 @@ The reference verifier rejects:
 - a storage manifest with a different canonical path set.
 
 The CI workflow includes both a positive readiness test and a negative protocol-isolation test.
+
+## Canonical Implementation Boundary
+
+- Installer: `Node Core/Bootstrap/Installer/bootstrap_node.py`
+- Initialization: `Node Core/Bootstrap/Initialization/node_initializer.py`
+- Verification: `Node Core/Bootstrap/Verification/bootstrap_verifier.py`
+- Recovery: `Node Core/Bootstrap/Recovery/bootstrap_recovery_impl.py`
+- Manifest schema: `Node Core/Configuration/Schemas/node-core-installation-manifest.schema.json`
 
 ## Current Scope
 
