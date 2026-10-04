@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install cryptography dependency
+        run: python -m pip install --disable-pip-version-check -r "Node Core/Cryptography/requirements.txt"
+
       - name: Run Node Core structural audit
         run: python scripts/node_core_audit.py
 
