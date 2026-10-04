@@ -8,8 +8,9 @@ class SecurityDecision:
 class SecurityService:
     RESERVED_PREFIXES=("CPG/","Protocol/")
     def validate_path(self,path:str)->SecurityDecision:
+        if not isinstance(path,str) or not path: return SecurityDecision(False,"invalid path")
         p=path.replace("\\","/")
-        if p.startswith("/") or ".." in p.split("/"): return SecurityDecision(False,"unsafe path")
+        if p.startswith("/") or p.startswith("\\") or ".." in p.split("/"): return SecurityDecision(False,"unsafe path")
         if any(p.startswith(x) for x in self.RESERVED_PREFIXES): return SecurityDecision(False,"protocol-reserved path")
         return SecurityDecision(True,"accepted")
     def require(self,condition:bool,reason:str)->None:
