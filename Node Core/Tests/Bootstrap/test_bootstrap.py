@@ -2,8 +2,13 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import sys
-BASE=Path(__file__).resolve().parents[2]/"Bootstrap"; sys.path.insert(0,str(BASE))
+import json
+
+BASE=Path(__file__).resolve().parents[2]/"Bootstrap"
+sys.path.insert(0,str(BASE))
+sys.path.insert(0,str(BASE/"Installer"))
 from bootstrap import Bootstrap
+from Installer.bootstrap_node import BootstrapInstallationError, install
 from Verification.bootstrap_verifier import BootstrapVerificationError
 
 with TemporaryDirectory() as root:
@@ -23,7 +28,6 @@ with TemporaryDirectory() as root:
     except BootstrapVerificationError: pass
     else: raise AssertionError("corrupted bootstrap artifact was accepted")
 
-    # Missing required path must fail closed.
     missing_root=p/"missing-path-check"
     b.bootstrap(missing_root)
     (missing_root/"node-storage/recovery").rmdir()
@@ -31,7 +35,6 @@ with TemporaryDirectory() as root:
     except BootstrapVerificationError: pass
     else: raise AssertionError("missing required bootstrap path was accepted")
 
-    # Malformed required metadata must fail closed.
     malformed_root=p/"malformed-metadata-check"
     b.bootstrap(malformed_root)
     malformed_cfg=malformed_root/"node-storage/configuration/node-config.json"
@@ -40,7 +43,6 @@ with TemporaryDirectory() as root:
     except BootstrapVerificationError: pass
     else: raise AssertionError("malformed bootstrap metadata was accepted")
 
-    # Protocol-isolation violation must fail closed before readiness can be accepted.
     isolation_root=p/"protocol-isolation-check"
     b.bootstrap(isolation_root)
     isolation_cfg=isolation_root/"node-storage/configuration/node-config.json"
@@ -55,4 +57,31 @@ with TemporaryDirectory() as root:
     except BootstrapVerificationError: pass
     else: raise AssertionError("protocol isolation violation was accepted")
 
-print("Node Core Bootstrap integration tests: PASS")
+with TemporaryDirectory() as root:
+    target=Path(root)/"installer"
+    result=install(target)
+    assert result["status"]=="VERIFIED"
+    assert result["environment"]["status"]=="VALIDATED"
+    assert result["existing_installation"]["status"]=="NO_EXISTING_INSTALLATION"
+    assert result["node_status"]=="NODE_CORE_READY"
+    assert result["cpg_protocol"]=="NOT_INSTALLED"
+    assert result["protocol_associations"]==[]
+
+    repeat=install(target)
+    assert repeat["status"]=="VERIFIED"
+    assert repeat["existing_installation"]["status"]=="VALID_EXISTING_INSTALLATION"
+
+    conflict=Path(root)/"conflict"
+    conflict.mkdir()
+    (conflict/"node-installation-manifest.json").write_text(json.dumps({
+        "node":{"status":"BROKEN"},
+        "readiness":{"state":"FAILED"},
+        "protocol_associations":["example.protocol"],
+        "cpg_protocol":{"status":"NOT_INSTALLED"}
+    }),encoding="utf-8")
+    try:
+        install(conflict)
+    except BootstrapInstallationError: pass
+    else: raise AssertionError("conflicting installation was overwritten")
+
+print("Node Core Bootstrap integration and installer contract tests: PASS")
