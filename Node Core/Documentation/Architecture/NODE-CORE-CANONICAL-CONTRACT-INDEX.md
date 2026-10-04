@@ -36,7 +36,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Security | `Documentation/Security Model/NODE-CORE-SECURITY-BOUNDARY.md` | CANONICAL CANDIDATE | `Security/SECURITY-CORE-MANIFEST.json` plus enforcement | Dedicated Security test mapping not confirmed | Conformance open |
 | Time | `Documentation/Time/NODE-CORE-TIME-SERVICE-CONTRACT.md` | CANONICAL CANDIDATE | `Time/`, `TIME-CORE-MANIFEST.json`, external references | Dedicated Time conformance test not identified | Test mapping blocks PASS |
 | Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
-| API | No single consolidated canonical API contract | CANONICAL REQUIRED | `API/`, including `node_core_api.py` | API contract mapping incomplete | Consolidate semantics |
+| API | `Documentation/Interfaces/NODE-CORE-API-CONTRACT.md` | CANONICAL | `API/node_core_api.py` (partial facade) | `Tests/API/test_node_core_api_contract.py` | Contract authority established; implementation remains explicitly PARTIAL |
 | CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL CANDIDATE | Explicit implementation path requires mapping | Dedicated CLI test not identified | Mapping blocks PASS |
 | Protocol Interface | Existing protocol installation boundary; exact canonical source requires final audit | CANONICAL CANDIDATE | `Protocol Interface/` | `Tests/Protocol Interface/test_protocol_interface.py` | Test-backed; source authority to confirm |
 | Consensus Infrastructure | No single canonical contract | CANONICAL REQUIRED | `Consensus/` | Explicit state/evidence mapping required | Protocol-neutral scope only |
@@ -52,6 +52,7 @@ These currently have a named normative profile/contract plus mapped implementati
 - Recovery
 - Runtime
 - Engine Runtime
+- API
 
 This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
@@ -84,7 +85,7 @@ Every Node Core capability must have:
 
 `ONE CANONICAL SOURCE + IMPLEMENTATION MAPPING + TEST MAPPING`
 
-and API, Consensus Infrastructure and manifest authority must be explicitly resolved.
+and Consensus Infrastructure and manifest authority must be explicitly resolved.
 
 ## 7. Current status
 
