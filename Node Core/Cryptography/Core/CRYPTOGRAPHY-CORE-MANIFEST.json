@@ -1,11 +1,31 @@
 {
-  "component":"Node Core Cryptography Core",
-  "version":"1.1.0",
-  "status":"IMPLEMENTED",
-  "scope":"Protocol-neutral cryptographic primitives and execution service",
-  "implemented":{"canonicalization":true,"sha256":true,"canonical_hashing":true,"secure_randomness":true,"constant_time_comparison":true,"ed25519_key_generation":true,"ed25519_signing":true,"ed25519_verification":true},
-  "key_custody":"EXTERNAL",
-  "external_references":"ADAPTERS_IMPLEMENTED","zero_knowledge":"IMPLEMENTED",
-  "protocol_isolation":{"cpg_ledger":false,"cpg_consensus":false,"cpg_table_state":false,"settlement":false,"rake":false},
-  "verification":{"integration_test":"Node Core/Tests/Cryptography/test_crypto_implementation.py","production_security_audit":false}
+  "component": "Node Core Cryptography Core",
+  "version": "1.1.1",
+  "status": "IMPLEMENTED",
+  "scope": "Protocol-neutral cryptographic primitives and execution service",
+  "implemented": {
+    "canonicalization": true,
+    "sha256": true,
+    "canonical_hashing": true,
+    "secure_randomness": true,
+    "constant_time_comparison": true,
+    "ed25519_key_generation": true,
+    "ed25519_signing": true,
+    "ed25519_verification": true
+  },
+  "key_custody": "EXTERNAL",
+  "external_references": "ADAPTERS_IMPLEMENTED",
+  "zero_knowledge": "IMPLEMENTED",
+  "protocol_isolation": {
+    "cpg_ledger": false,
+    "cpg_consensus": false,
+    "cpg_table_state": false,
+    "settlement": false,
+    "rake": false
+  },
+  "verification": {
+    "integration_test": "Node Core/Tests/Cryptography/test_crypto_implementation.py",
+    "production_security_audit": false,
+    "csprng_failure_contract_test": "Node Core/Tests/Cryptography/test_crypto_core.py"
+  }
 }
