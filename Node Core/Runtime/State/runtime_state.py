@@ -63,7 +63,7 @@ class Readiness:
 
     def is_ready(self) -> bool:
         return all((
-            self.environment_ready or True,
+            self.environment_ready,
             self.identity_ready,
             self.storage_ready,
             self.configuration_ready,
