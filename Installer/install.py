@@ -93,11 +93,50 @@ def extract_node_core(archive: Path, extraction_root: Path, staging: Path) -> No
     shutil.copytree(extraction_root, staging, dirs_exist_ok=True)
 
 
-def bootstrap(staging: Path) -> None:
+
+def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
+    requirements = staging / "Cryptography" / "requirements.txt"
+    if not requirements.is_file():
+        return Path(sys.executable)
+
+    environment = temp_root / "python-environment"
+    print("Preparing Node Core Python environment...")
+    completed = subprocess.run(
+        [sys.executable, "-m", "venv", str(environment)],
+        text=True,
+        capture_output=True,
+    )
+    if completed.returncode != 0:
+        if completed.stdout:
+            print(completed.stdout, end="")
+        if completed.stderr:
+            print(completed.stderr, file=sys.stderr, end="")
+        raise InstallationError("Unable to create the Node Core Python environment")
+
+    python_executable = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    if not python_executable.is_file():
+        raise InstallationError("Created Python environment is missing its interpreter")
+
+    completed = subprocess.run(
+        [str(python_executable), "-m", "pip", "install", "--disable-pip-version-check", "-r", str(requirements)],
+        text=True,
+        capture_output=True,
+    )
+    if completed.returncode != 0:
+        if completed.stdout:
+            print(completed.stdout, end="")
+        if completed.stderr:
+            print(completed.stderr, file=sys.stderr, end="")
+        raise InstallationError("Unable to install Node Core Python dependencies")
+
+    return python_executable
+
+
+def bootstrap(staging: Path, python_executable: Path) -> None:
     installer = staging / "Bootstrap" / "Installer" / "bootstrap_node.py"
     print("Bootstrapping Node Core...")
     completed = subprocess.run(
-        [sys.executable, str(installer), str(staging)],
+        [str(python_executable), str(installer), str(staging)],
         text=True,
         capture_output=True,
     )
@@ -112,11 +151,11 @@ def bootstrap(staging: Path) -> None:
         print(completed.stdout, end="")
 
 
-def verify(staging: Path) -> None:
+def verify(staging: Path, python_executable: Path) -> None:
     verifier = staging / "Bootstrap" / "Verification" / "bootstrap_verifier.py"
     print("Verifying Node Core...")
     completed = subprocess.run(
-        [sys.executable, str(verifier), str(staging)],
+        [str(python_executable), str(verifier), str(staging)],
         text=True,
         capture_output=True,
     )
@@ -165,8 +204,9 @@ def install(target: Path, source_ref: str = "main") -> None:
 
         download_archive(archive, source_ref)
         extract_node_core(archive, extracted, staging)
-        bootstrap(staging)
-        verify(staging)
+        python_executable = prepare_python_environment(staging, temp_root)
+        bootstrap(staging, python_executable)
+        verify(staging, python_executable)
 
         target.mkdir(parents=True, exist_ok=False)
         try:
