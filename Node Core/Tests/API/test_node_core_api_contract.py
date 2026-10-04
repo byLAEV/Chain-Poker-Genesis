@@ -19,6 +19,14 @@ def main():
     api = NodeCoreAPI(manager=Manager(), storage=Storage())
 
     assert api.health()["status"] == "READY"
+
+    unknown = NodeCoreAPI()
+    assert unknown.health()["status"] == "UNKNOWN"
+    try:
+        api.read("")
+        raise AssertionError("empty object_id accepted")
+    except ValueError:
+        pass
     assert api.node_status()["state"] == "READY"
     assert api.read("test-object")["object_id"] == "test-object"
 
