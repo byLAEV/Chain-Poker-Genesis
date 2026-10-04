@@ -57,6 +57,7 @@ These currently have a named normative profile/contract plus mapped implementati
 - Network
 - Protocol Interface
 - Security
+- Time
 
 This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
