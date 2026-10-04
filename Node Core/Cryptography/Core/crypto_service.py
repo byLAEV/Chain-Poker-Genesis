@@ -12,6 +12,7 @@ from crypto_core import (
     constant_time_equal,
 )
 from signatures import generate_keypair, sign, verify, sign_canonical, verify_canonical
+from aead import decrypt_aead, encrypt_aead, NonceReuseGuard
 
 
 class CryptoService:
@@ -37,6 +38,15 @@ class CryptoService:
 
     def constant_time_equal(self, left, right):
         return constant_time_equal(left, right)
+
+    def encrypt_aead(self, key, nonce, plaintext, associated_data=b"", guard=None):
+        return encrypt_aead(key, nonce, plaintext, associated_data, guard)
+
+    def decrypt_aead(self, key, container, associated_data=b""):
+        return decrypt_aead(key, container, associated_data)
+
+    def nonce_reuse_guard(self):
+        return NonceReuseGuard()
 
     def generate_ed25519_keypair(self):
         return generate_keypair()
