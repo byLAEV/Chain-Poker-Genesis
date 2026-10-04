@@ -196,6 +196,7 @@ def install(target: Path, source_ref: str = "main") -> None:
     if staging.exists():
         raise InstallationError(f"Installation staging path already exists: {staging}")
 
+    target_created = False
     try:
         with tempfile.TemporaryDirectory(prefix="cpg-node-core-") as temp:
             temp_root = Path(temp)
@@ -207,12 +208,13 @@ def install(target: Path, source_ref: str = "main") -> None:
             extract_node_core(archive, extracted, staging)
 
         staging.rename(target)
+        target_created = True
 
         python_executable = prepare_python_environment(target, target)
         bootstrap(target, python_executable)
         verify(target, python_executable)
     except Exception:
-        if target.exists() and not (target / "node-installation-manifest.json").exists():
+        if target_created and target.exists():
             shutil.rmtree(target, ignore_errors=True)
         if staging.exists():
             shutil.rmtree(staging, ignore_errors=True)
