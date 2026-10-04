@@ -213,7 +213,9 @@ def install(target: Path, source_ref: str = "main") -> None:
         bootstrap(target, python_executable)
         verify(target, python_executable)
         print("[5/5] Finalizing installation...", flush=True)
-    except Exception:
+    except BaseException:
+        # Installation is transactional: failures and user interruptions remove
+        # any incomplete Node Core installation.
         if target_created and target.exists():
             shutil.rmtree(target, ignore_errors=True)
         if staging.exists():

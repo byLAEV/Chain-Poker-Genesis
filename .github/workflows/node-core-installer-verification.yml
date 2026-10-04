@@ -34,6 +34,9 @@ jobs:
       - name: Test installer archive safety
         run: python -m unittest Installer/tests/test_archive_safety.py
 
+      - name: Test installer rollback behavior
+        run: python -m unittest Installer/tests/test_rollback.py
+
       - name: Test non-interactive direct installer from current branch
         run: |
           rm -rf /tmp/cpg-direct-installer-test
