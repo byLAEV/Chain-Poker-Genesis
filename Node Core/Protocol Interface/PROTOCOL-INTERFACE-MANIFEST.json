@@ -13,10 +13,13 @@
     "suspension": true,
     "removal": true,
     "administrative_ui_contract": true,
-    "installer_directory_semantics": "CONTRACT_DEFINED"
+    "remote_protocol_catalog": true,
+    "catalog_sources": ["CID", "GitHub"],
+    "download_destination": "Node Core/Protocols/",
+    "installer_directory_semantics": "REPLACED_BY_LOCAL_PROTOCOL_PACKAGE_BOUNDARY"
   },
   "engine_versioning": "INDEPENDENT",
   "node_core_updates_protocol_engines": false,
   "cpg_logic": "NOT_INCLUDED",
-  "implementation_note": "Lifecycle reference implementation exists; installer verification, persistent protocol directories, engine-association execution and rendered UI remain implementation work."
+  "implementation_note": "Lifecycle reference implementation exists; remote catalog/download handling, installer verification, persistent protocol directories, engine-association execution and rendered UI remain implementation work."
 }
