@@ -187,7 +187,10 @@ def install(target: Path, source_ref: str = "main") -> None:
         if manifest.exists():
             raise InstallationError("An existing Node Core installation was detected; it will not be overwritten.")
         if any(target.iterdir()):
-            raise InstallationError(f"Installation target is not empty: {target}")
+            raise InstallationError(
+                "An existing or incomplete installation target was detected; "
+                "it will not be overwritten. Remove it manually or choose another target."
+            )
 
     target.parent.mkdir(parents=True, exist_ok=True)
     staging = target.parent / f".{target.name}.staging-{os.getpid()}"
