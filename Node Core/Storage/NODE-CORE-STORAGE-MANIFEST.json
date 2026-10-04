@@ -39,7 +39,9 @@
     "kubo_managed_install": true,
     "kubo_absolute_repository_path": true,
     "dual_storage_preference": true,
-    "initial_full_local_to_kubo_sync": true
+    "initial_full_local_to_kubo_sync": true,
+    "coherence_verification": true,
+    "dual_storage_readiness_gate": true
   },
   "security_boundary": {
     "key_custody": "external",
