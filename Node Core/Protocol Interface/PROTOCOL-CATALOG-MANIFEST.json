@@ -1,0 +1,10 @@
+{
+  "component": "Node Core Protocol Catalog",
+  "version": "1.0.0",
+  "status": "IMPLEMENTED",
+  "sources": ["CID", "GitHub"],
+  "purpose": "Remote discovery of downloadable protocol packages",
+  "download_destination": "Node Core/Protocols/",
+  "installed_destination": "Node Core/Protocols/Installed/",
+  "source_is_not_installation": true
+}
