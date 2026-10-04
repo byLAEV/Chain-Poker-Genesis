@@ -2,8 +2,8 @@
 
 **Project:** Chain Poker Genesis by LAEV  
 **Scope:** Node Core only  
-**Baseline:** Implementation baseline verified by GitHub Actions Run #37  
-**Verified commit:** `ab81b793c328778c870bde6fcb5192d7fad318b7`
+**Baseline:** Implementation baseline verified by GitHub Actions Run #608  
+**Verified commit:** `15abfd530579daaf983994468f822587f78901d8`
 
 ## Status model
 
@@ -20,7 +20,7 @@
 | Bootstrap / Installer | executable bootstrap + structural audit + compilation + verification + installation manifest + E2E + final audit | IMPLEMENTED + VERIFIED | expand negative cases |
 | Configuration | canonical contract + schema + Configuration Manager + readiness integration + tests + CI | IMPLEMENTED / PARTIAL | complete broader policy/negative-path coverage |
 | Identity | executable Identity Core + canonical profile + lifecycle/tamper tests + CI; production trust/registration remains open | IMPLEMENTED / PARTIAL | complete credential adapters, registration, persistence, propagation and recovery |
-| Cryptography Core | executable core primitives/service + canonical profile + crypto tests + CI; production security audit remains open | IMPLEMENTED / PARTIAL | close production profile coverage, AEAD/Merkle boundaries and external security audit |
+| Cryptography Core | executable core primitives/service + canonical profile + crypto tests + CI; AEAD boundary and vectors are IMPLEMENTED_VERIFIED; Merkle and production security remain open | IMPLEMENTED / PARTIAL | complete Merkle specification/vectors and production security review |
 | Storage | executable local storage, registry, locator, synchronization/recovery boundaries + storage tests + CI; live Kubo operation remains environment-dependent | IMPLEMENTED / PARTIAL | expand failure/fallback matrix and live-provider evidence |
 | Runtime | canonical lifecycle + readiness implementation + runtime tests + E2E + final audit | IMPLEMENTED + VERIFIED | expand transition-negative coverage |
 | Health / Readiness | executable evaluator + installation/E2E verification + final audit | IMPLEMENTED + VERIFIED | expand failure-state coverage |
@@ -54,15 +54,13 @@ The Node Core bootstrap does not install or activate CPG.
 
 ### 1. Cryptography
 
-The repository does not yet contain a normative cryptographic profile sufficient for production implementation.
+The repository now contains a reconciled formal cryptographic profile and normative AEAD profile. AEAD implementation and independent vectors are verified by GitHub Actions Run #605 and the subsequent documentation reconciliation gate Run #608.
 
-Before implementing normative cryptographic primitives, define:
+Remaining cryptographic closure work is explicitly limited to:
 
-1. Formal Cryptographic Profile.
-2. Canonical Serialization Specification.
-3. Merkle Tree Specification.
-4. Cryptographic Test Vector Suite.
-5. Key-management and verification boundaries.
+1. Deterministic Merkle Tree Specification and test vectors.
+2. Remaining production cryptographic-security requirements and external security review.
+3. Broader cross-component and negative-path coverage.
 
 ### 2. Identity
 
@@ -94,9 +92,9 @@ Those remain separate from the Node Core readiness gate.
 5. Define CLI contract.
 6. Define Security boundary.
 7. Define Time service contract.
-8. Resolve the Formal Cryptographic Profile.
-9. Resolve the formal Identity profile.
-10. Implement cryptographic and identity components against those normative specifications.
+8. Complete the deterministic Merkle specification and test vectors without altering the verified AEAD boundary.
+9. Resolve remaining formal Identity production integration contracts.
+10. Complete production cryptographic-security requirements/review.
 11. Implement live network synchronization only after its boundary is formally defined.
 12. Re-run the complete Node Core verification gate after each architectural milestone.
 
