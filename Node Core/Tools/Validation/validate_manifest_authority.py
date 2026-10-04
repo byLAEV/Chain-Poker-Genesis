@@ -18,6 +18,7 @@ def main():
 
     assert component["component"]=="Node Core"
     assert component["scope"]=="Protocol-neutral base node infrastructure"
+    assert component["components"]["protocol_interface"]=="IMPLEMENTED_PARTIAL"
     assert canonical["title"]=="Node Core Installation Manifest"
 
     # Legacy schema is detected as non-authoritative when it diverges.
@@ -30,6 +31,7 @@ def main():
     assert "protocol_associations" in canonical["required"]
     assert canonical["properties"]["protocol_associations"]["maxItems"] == 0
     assert canonical["properties"]["cpg_protocol"]["properties"]["status"]["const"] == "NOT_INSTALLED"
+    assert canonical["properties"]["protocol_associations"]["maxItems"] == 0
 
     print("component_manifest = CANONICAL")
     print("installation_schema = CANONICAL")
