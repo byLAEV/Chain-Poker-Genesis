@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 for subdir in ("Storage Policy", "Object Registry", "Integrity", "Disaster Recovery", "Synchronization"):
@@ -26,7 +27,7 @@ class StorageManager:
         self.synchronization = SynchronizationManager()
         self.recovery = StorageRecovery(self.engine, self.registry, self.integrity)
 
-    def put(self, object_class, object_id, data, *, mirror=True, encrypted=False):
+    def create(self, object_class, object_id, data, *, mirror=True, encrypted=False):
         policy = self.policy.validate_write(object_class, mirror=mirror, encrypted=encrypted)
         metadata = self.engine.put_local(object_class, object_id, data)
         if encrypted:
@@ -51,6 +52,20 @@ class StorageManager:
 
         metadata.update(policy)
         return self.registry.upsert(metadata)
+
+    put = create
+    write = create
+
+    def put_json(self, object_class, object_id, value, *, mirror=True, encrypted=False):
+        data = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        return self.create(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
+
+    def exists(self, object_class, object_id):
+        try:
+            entry = self.registry.get(object_id)
+            return entry.get("object_class") == object_class and self.engine.exists_local(object_class, object_id)
+        except Exception:
+            return False
 
     def get(self, object_class, object_id):
         entry = self.registry.get(object_id)
