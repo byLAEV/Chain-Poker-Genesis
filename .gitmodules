@@ -1,0 +1,19 @@
+[submodule "Node Core/Cryptography/Core References/bitcoin--bitcoin"]
+	path = Node Core/Cryptography/Core References/bitcoin--bitcoin
+	url = https://github.com/bitcoin/bitcoin.git
+
+[submodule "Node Core/Cryptography/Core References/bitcoin-core--secp256k1"]
+	path = Node Core/Cryptography/Core References/bitcoin-core--secp256k1
+	url = https://github.com/bitcoin-core/secp256k1.git
+
+[submodule "Node Core/Cryptography/Core References/jedisct1--libsodium"]
+	path = Node Core/Cryptography/Core References/jedisct1--libsodium
+	url = https://github.com/jedisct1/libsodium.git
+
+[submodule "Node Core/Cryptography/Core References/lightning--bolts"]
+	path = Node Core/Cryptography/Core References/lightning--bolts
+	url = https://github.com/lightning/bolts.git
+
+[submodule "Node Core/Cryptography/Core References/lightningnetwork--lnd"]
+	path = Node Core/Cryptography/Core References/lightningnetwork--lnd
+	url = https://github.com/lightningnetwork/lnd.git
