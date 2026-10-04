@@ -61,8 +61,8 @@ def test_invalid_transition_matrix() -> None:
     invalid = (
         (RuntimeState.UNINITIALIZED, RuntimeState.RUNNING),
         (RuntimeState.UNINITIALIZED, RuntimeState.STOPPED),
-        (RuntimeState.NODE_CORE_READY, RuntimeState.READY if hasattr(RuntimeState, "READY") else RuntimeState.UNINITIALIZED),
-        (RuntimeState.RUNNING, RuntimeState.READY if hasattr(RuntimeState, "READY") else RuntimeState.UNINITIALIZED),
+        (RuntimeState.NODE_CORE_READY, RuntimeState.UNINITIALIZED),
+        (RuntimeState.RUNNING, RuntimeState.UNINITIALIZED),
         (RuntimeState.STOPPED, RuntimeState.RUNNING),
         (RuntimeState.STOPPED, RuntimeState.NODE_CORE_READY),
     )
