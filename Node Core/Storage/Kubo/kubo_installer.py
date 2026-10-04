@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install a previously verified Kubo package without initializing its repository."""
+"""Install a previously verified Kubo distribution without starting it."""
 from __future__ import annotations
 
 import hashlib
@@ -9,6 +9,7 @@ import shutil
 import stat
 import tarfile
 import tempfile
+import zipfile
 from pathlib import Path
 
 
@@ -16,61 +17,79 @@ class KuboInstallationError(RuntimeError):
     pass
 
 
-class KuboInstaller:
-    def __init__(self, *, path_manager):
-        self.path_manager = path_manager
+class KuboPackageInstaller:
+    """Safe extractor/installer for verified Kubo packages."""
 
-    def install(self, package: str | Path, *, version: str, expected_sha512: str) -> dict:
+    def install(
+        self,
+        package: str | Path,
+        *,
+        paths,
+        version: str,
+        expected_sha512: str,
+        platform: str = "linux",
+        architecture: str = "amd64",
+    ) -> Path:
         package = Path(package).resolve()
         if not package.is_file():
             raise KuboInstallationError("verified package does not exist")
-        digest = self._sha512(package)
-        if digest.lower() != expected_sha512.lower():
-            raise KuboInstallationError("verified package integrity mismatch")
+        observed = self._sha512(package)
+        if observed != expected_sha512.lower():
+            raise KuboInstallationError("package integrity changed after verification")
 
-        paths = self.path_manager.paths(version)
-        self.path_manager.validate(paths)
-        if paths.release_root.exists():
-            raise KuboInstallationError("release directory already exists")
+        if platform != "linux":
+            raise KuboInstallationError("Linux installer is the current implementation target")
+        if architecture not in {"amd64", "arm64"}:
+            raise KuboInstallationError("unsupported Linux architecture")
 
-        staging = paths.release_root.parent / f".{version}.installing"
-        if staging.exists():
-            shutil.rmtree(staging)
-        staging.mkdir(parents=True)
+        destination = paths.release_root
+        paths.release_root.parent.mkdir(parents=True, exist_ok=True)
+        if destination.exists():
+            raise KuboInstallationError("versioned installation directory already exists")
 
+        staging = Path(tempfile.mkdtemp(prefix=".kubo-install-", dir=destination.parent))
         try:
-            self._extract_safe(package, staging)
-            executable = self._find_executable(staging)
-            reported_version = self._read_version(executable)
-            if reported_version != version:
-                raise KuboInstallationError(
-                    f"executable version mismatch: expected {version}, got {reported_version}"
-                )
+            extracted = staging / "payload"
+            extracted.mkdir()
+            self._extract_safe(package, extracted)
 
-            # Kubo archives commonly contain a single top-level kubo/ directory.
-            source_root = self._normalize_archive_root(staging)
-            source_root.rename(paths.release_root)
-            installation = {
-                "manifest_type": "KUBO-INSTALLATION-MANIFEST",
+            root = self._locate_distribution_root(extracted, version)
+            self._validate_executable(root)
+            shutil.move(str(root), str(destination))
+
+            executable = destination / "kubo" / "ipfs"
+            if not executable.is_file():
+                executable = destination / "ipfs"
+            if not executable.is_file():
+                raise KuboInstallationError("installed Kubo executable not found")
+
+            manifest = {
+                "manifest_type": "KUBO-ACTIVE-INSTALLATION-MANIFEST",
                 "manifest_version": "1.0.0",
+                "installation_id": hashlib.sha256(
+                    f"{version}:{expected_sha512}".encode()
+                ).hexdigest()[:32],
                 "provider": "Kubo",
                 "version": version,
-                "package_sha512": digest,
-                "installation_root": str(paths.release_root),
-                "executable_path": str(paths.release_root / self._relative_executable(source_root, executable)),
+                "platform": platform,
+                "architecture": architecture,
+                "package_sha512": expected_sha512.lower(),
+                "installation_root": str(destination),
+                "executable_path": str(executable),
                 "repository_path": str(paths.repository),
                 "ipfs_path": str(paths.ipfs_path),
-                "status": "INSTALLED",
+                "repository_initialized": False,
+                "process_started": False,
             }
-            manifest_path = paths.release_root / "installation-manifest.json"
-            manifest_path.write_text(json.dumps(installation, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-            return installation
+            manifest_path = destination / "INSTALLATION-MANIFEST.json"
+            manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+            return destination
         except Exception:
-            if staging.exists():
-                shutil.rmtree(staging)
-            if paths.release_root.exists():
-                shutil.rmtree(paths.release_root)
+            if destination.exists():
+                shutil.rmtree(destination, ignore_errors=True)
             raise
+        finally:
+            shutil.rmtree(staging, ignore_errors=True)
 
     @staticmethod
     def _sha512(path: Path) -> str:
@@ -82,54 +101,50 @@ class KuboInstaller:
 
     @staticmethod
     def _extract_safe(package: Path, destination: Path) -> None:
-        if package.suffixes[-2:] != [".tar", ".gz"]:
-            raise KuboInstallationError("Linux installer requires a .tar.gz Kubo package")
-        root = destination.resolve()
-        with tarfile.open(package, "r:gz") as archive:
-            for member in archive.getmembers():
-                target = (root / member.name).resolve()
-                try:
-                    target.relative_to(root)
-                except ValueError as exc:
-                    raise KuboInstallationError("archive path traversal detected") from exc
-                if member.issym() or member.islnk():
-                    link_target = (target.parent / member.linkname).resolve()
+        name = package.name.lower()
+        if name.endswith((".tar.gz", ".tgz", ".tar")):
+            with tarfile.open(package, "r:*") as archive:
+                base = destination.resolve()
+                for member in archive.getmembers():
+                    target = (destination / member.name).resolve()
                     try:
-                        link_target.relative_to(root)
+                        target.relative_to(base)
                     except ValueError as exc:
-                        raise KuboInstallationError("unsafe archive link detected") from exc
-            archive.extractall(root)
+                        raise KuboInstallationError("archive path traversal detected") from exc
+                    if member.issym() or member.islnk():
+                        raise KuboInstallationError("archive links are not permitted")
+                archive.extractall(destination)
+        elif name.endswith(".zip"):
+            with zipfile.ZipFile(package) as archive:
+                base = destination.resolve()
+                for member in archive.infolist():
+                    target = (destination / member.filename).resolve()
+                    try:
+                        target.relative_to(base)
+                    except ValueError as exc:
+                        raise KuboInstallationError("archive path traversal detected") from exc
+                archive.extractall(destination)
+        else:
+            raise KuboInstallationError("unsupported Kubo package format")
 
     @staticmethod
-    def _normalize_archive_root(staging: Path) -> Path:
-        entries = list(staging.iterdir())
-        if len(entries) == 1 and entries[0].is_dir():
-            return entries[0]
-        return staging
+    def _locate_distribution_root(extracted: Path, version: str) -> Path:
+        expected = extracted / f"kubo"
+        if expected.is_dir():
+            return expected
+        candidates = [p for p in extracted.iterdir() if p.is_dir()]
+        for candidate in candidates:
+            if (candidate / "ipfs").is_file() or (candidate / "bin" / "ipfs").is_file():
+                return candidate
+        raise KuboInstallationError(f"no Kubo distribution root found for {version}")
 
     @staticmethod
-    def _find_executable(root: Path) -> Path:
-        candidates = [p for p in root.rglob("ipfs") if p.is_file()]
-        if len(candidates) != 1:
-            raise KuboInstallationError("Kubo archive must contain exactly one ipfs executable")
-        return candidates[0]
-
-    @staticmethod
-    def _read_version(executable: Path) -> str:
-        import subprocess
-        try:
-            result = subprocess.run(
-                [str(executable), "version", "--number"],
-                check=True, capture_output=True, text=True, timeout=10,
-                env={**os.environ, "IPFS_PATH": str(executable.parent / ".installation-check")},
-            )
-        except (OSError, subprocess.SubprocessError) as exc:
-            raise KuboInstallationError("unable to verify Kubo executable version") from exc
-        value = result.stdout.strip()
-        if not value.startswith("v"):
-            value = "v" + value
-        return value
-
-    @staticmethod
-    def _relative_executable(root: Path, executable: Path) -> Path:
-        return executable.relative_to(root)
+    def _validate_executable(root: Path) -> None:
+        executable = root / "ipfs"
+        if not executable.is_file():
+            executable = root / "bin" / "ipfs"
+        if not executable.is_file():
+            raise KuboInstallationError("Kubo executable missing")
+        mode = executable.stat().st_mode
+        if not mode & stat.S_IXUSR:
+            raise KuboInstallationError("Kubo executable is not executable")
