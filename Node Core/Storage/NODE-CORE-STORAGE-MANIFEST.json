@@ -1,6 +1,6 @@
 {
   "component": "Node Core Storage",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "IMPLEMENTED",
   "scope": "Protocol-neutral local persistence, decentralized mirroring, synchronization, integrity verification, fallback, and recovery",
   "architecture": {
@@ -9,13 +9,19 @@
     "object_registry": "IMPLEMENTED",
     "providers": "IMPLEMENTED",
     "local": "IMPLEMENTED",
-    "kubo_ipfs": "IMPLEMENTED_REFERENCE_ADAPTER",
+    "kubo_ipfs": "IMPLEMENTED_ADAPTER_MANAGED_INSTALL_SPEC",
     "synchronization": "IMPLEMENTED",
     "integrity": "IMPLEMENTED",
     "disaster_recovery": "IMPLEMENTED",
     "api": "IMPLEMENTED"
   },
-  "storage_classes": ["temporary", "public", "private", "restricted", "personal"],
+  "storage_classes": [
+    "temporary",
+    "public",
+    "private",
+    "restricted",
+    "personal"
+  ],
   "features": {
     "canonical_layout": true,
     "atomic_local_write": true,
@@ -29,7 +35,11 @@
     "disaster_recovery": true,
     "private_restricted_encryption_boundary": true,
     "protocol_reserved_write_protection": true,
-    "path_traversal_protection": true
+    "path_traversal_protection": true,
+    "kubo_managed_install": true,
+    "kubo_absolute_repository_path": true,
+    "dual_storage_preference": true,
+    "initial_full_local_to_kubo_sync": true
   },
   "security_boundary": {
     "key_custody": "external",
@@ -39,7 +49,8 @@
   "verification": {
     "integration_test": "Node Core/Tests/Storage/test_storage_complete.py",
     "live_kubo_network_verification": "environment-dependent",
-    "runtime_execution_in_chat_environment": "not_available"
+    "runtime_execution_in_chat_environment": "not_available",
+    "kubo_installation": "specified; live installation remains environment-dependent"
   },
   "protocol_isolation": {
     "cpg_ledger": false,
