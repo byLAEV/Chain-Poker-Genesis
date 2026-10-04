@@ -28,6 +28,7 @@ REQUIRED_PATHS = [
     "node-storage/records",
     "node-storage/recovery",
     "node-storage/protocol",
+    "node-storage/network",
 ]
 
 
