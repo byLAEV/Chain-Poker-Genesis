@@ -1,0 +1,51 @@
+{
+  "component": "Node Core Monetary References",
+  "version": "0.1.0",
+  "status": "IMPLEMENTED_PARTIAL",
+  "scope": "Protocol-neutral external monetary and financial reference registry",
+  "settlement_execution": false,
+  "custody": false,
+  "references": [
+    {
+      "id": "bitcoin",
+      "name": "Bitcoin",
+      "category": "blockchain_monetary_system",
+      "reference_repository": "bitcoin/bitcoin",
+      "reference_type": "upstream_repository",
+      "reference_status": "REFERENCE_ONLY",
+      "purpose": "Provide a canonical Bitcoin reference for compatible protocol settlement implementations.",
+      "update_policy": "controlled_reference_update",
+      "protocol_execution": false
+    },
+    {
+      "id": "ethereum",
+      "name": "Ethereum",
+      "category": "blockchain_monetary_system",
+      "reference_repository": "ethereum/go-ethereum",
+      "reference_type": "upstream_repository",
+      "reference_status": "REFERENCE_ONLY",
+      "purpose": "Provide a canonical Ethereum reference for compatible protocol settlement implementations.",
+      "update_policy": "controlled_reference_update",
+      "protocol_execution": false
+    },
+    {
+      "id": "traditional-banking",
+      "name": "Traditional Banking",
+      "category": "financial_provider_interface",
+      "reference_repository": null,
+      "reference_type": "provider_interface",
+      "reference_status": "REFERENCE_ONLY",
+      "purpose": "Provide a protocol-neutral reference category for compatible banking providers and settlement adapters.",
+      "update_policy": "provider_specific_controlled_update",
+      "protocol_execution": false
+    }
+  ],
+  "invariants": [
+    "Node Core does not execute monetary settlement.",
+    "Node Core does not authorize monetary settlement.",
+    "Node Core does not custody protocol funds.",
+    "Settlement engines consume references; they do not own external-system versioning.",
+    "External reference updates must preserve provenance.",
+    "Protocol compatibility must be explicit."
+  ]
+}
