@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 REQUIRED_DIRECTORIES=(
     "node-storage","node-storage/identity","node-storage/cryptography",
     "node-storage/configuration","node-storage/state","node-storage/records",
-    "node-storage/recovery","node-storage/protocol"
+    "node-storage/recovery","node-storage/protocol","node-storage/network"
 )
 ARTIFACTS=(
     "node-storage/identity/node-identity.json",
@@ -16,16 +16,19 @@ ARTIFACTS=(
     "node-storage/state/node-state.json",
     "node-storage/recovery/recovery.json",
     "node-storage/state/storage-manifest.json",
+    "node-storage/network/network-state.json",
     "node-installation-manifest.json",
 )
 STORAGE_PATHS=list(REQUIRED_DIRECTORIES)
 
-class InitializationError(Exception): pass
+class InitializationError(Exception):
+    pass
 
 def sha256_file(path: Path)->str:
     h=hashlib.sha256()
     with path.open("rb") as f:
-        for chunk in iter(lambda:f.read(1024*1024),b""): h.update(chunk)
+        for chunk in iter(lambda:f.read(1024*1024),b""):
+            h.update(chunk)
     return h.hexdigest()
 
 def atomic_write_json(path: Path,payload: dict)->None:
@@ -50,15 +53,18 @@ def write_integrity_manifest(target: Path)->dict:
     return manifest
 
 def initialize(target: Path,node_core_version: str="1.0.0"):
-    target=Path(target).resolve(); target.mkdir(parents=True,exist_ok=True)
-    for relative in REQUIRED_DIRECTORIES: (target/relative).mkdir(parents=True,exist_ok=True)
+    target=Path(target).resolve()
+    target.mkdir(parents=True,exist_ok=True)
+    for relative in REQUIRED_DIRECTORIES:
+        (target/relative).mkdir(parents=True,exist_ok=True)
 
     identity=target/"node-storage/identity/node-identity.json"
     config=target/"node-storage/configuration/node-config.json"
     state=target/"node-storage/state/node-state.json"
     recovery=target/"node-storage/recovery/recovery.json"
     storage=target/"node-storage/state/storage-manifest.json"
-    installation=target/"node-installation-manifest.json"\n    network_state=target/"node-storage/network/network-state.json"
+    network_state=target/"node-storage/network/network-state.json"
+    installation=target/"node-installation-manifest.json"
 
     if not identity.exists():
         atomic_write_json(identity,{"identity_status":"INITIALIZED","key_material":"EXTERNAL_OR_SEPARATE_CRYPTOGRAPHY"})
@@ -67,7 +73,8 @@ def initialize(target: Path,node_core_version: str="1.0.0"):
             "node_core_version":node_core_version,
             "decentralized_storage":{"status":"NOT_PROVISIONED"},
             "protocol_associations":[],
-            "cpg_protocol":"NOT_INSTALLED"
+            "cpg_protocol":"NOT_INSTALLED",
+            "network":{"minimum_protocol_nodes":5}
         })
     if not state.exists():
         atomic_write_json(state,{"state":"NODE_CORE_READY","initialized_at":datetime.now(timezone.utc).isoformat()})
@@ -79,12 +86,20 @@ def initialize(target: Path,node_core_version: str="1.0.0"):
             "storage_structure_version":"1.0.0",
             "required_paths":STORAGE_PATHS
         })
-    if not network_state.exists():\n        atomic_write_json(network_state,{\n            "connection_status":"SEARCHING_FOR_CONNECTIONS",\n            "connected_nodes":0,\n            "minimum_protocol_nodes":5,\n            "protocol_readiness":"NOT_READY"\n        })\n    if not installation.exists():
+    if not network_state.exists():
+        atomic_write_json(network_state,{
+            "connection_status":"SEARCHING_FOR_CONNECTIONS",
+            "connected_nodes":0,
+            "minimum_protocol_nodes":5,
+            "protocol_readiness":"NOT_READY"
+        })
+    if not installation.exists():
         atomic_write_json(installation,{
-            "manifest_version":"1.0.0",
+            "manifest_version":"1.1.0",
             "node":{"node_core_version":node_core_version,"status":"READY"},
             "storage":{"storage_structure_version":"1.0.0","required_paths":STORAGE_PATHS,"storage_manifest_version":"1.0.0"},
-            "readiness":{"state":"NODE_CORE_READY"},\n            "network":{"connection_status":"SEARCHING_FOR_CONNECTIONS","connected_nodes":0,"minimum_protocol_nodes":5,"protocol_readiness":"NOT_READY"},
+            "readiness":{"state":"NODE_CORE_READY"},
+            "network":{"connection_status":"SEARCHING_FOR_CONNECTIONS","connected_nodes":0,"minimum_protocol_nodes":5,"protocol_readiness":"NOT_READY"},
             "provider":{"type":"LOCAL","status":"READY"},
             "coherence":{"status":"COHERENT"},
             "synchronization":{"state":"NOT_EVALUATED"},
