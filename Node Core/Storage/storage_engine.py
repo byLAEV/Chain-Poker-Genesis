@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib import request, parse
 
@@ -92,20 +93,29 @@ class LocalStore:
     def exists(self, object_class, object_id):
         return self._path(object_class, object_id).is_file()
 
-    def metadata(self, object_class, object_id, data=None):
+    def metadata(self, object_class, object_id, data=None, *, created_at=None, updated_at=None):
         if data is None:
             data = self._path(object_class, object_id).read_bytes()
         path = self._path(object_class, object_id)
+        now = datetime.now(timezone.utc).isoformat()
+        created = created_at or now
+        updated = updated_at or now
         return {
             "object_id": object_id,
             "object_class": object_class,
+            "storage_class": object_class,
             "relative_path": path.relative_to(self.node_root).as_posix(),
+            "location": path.relative_to(self.node_root).as_posix(),
             "content_hash": sha256(data),
             "size": len(data),
             "storage_version": STORAGE_VERSION,
+            "version": STORAGE_VERSION,
             "provider_type": "LOCAL",
             "location_state": "LOCAL_ONLY",
             "object_state": "PRESENT",
+            "state": "PRESENT",
+            "created_at": created,
+            "updated_at": updated,
             "synchronization_state": "NOT_SYNCHRONIZED",
             "encryption_state": "PLAINTEXT",
         }
@@ -184,6 +194,22 @@ class StorageEngine:
         self.local = LocalStore(node_root)
         self.kubo = kubo
         self.version = STORAGE_VERSION
+
+    def put(self, object_class, object_id, data, *, mirror=False, encrypted=False):
+        metadata = self.put_local(object_class, object_id, data)
+        if mirror:
+            if self.kubo is None:
+                raise StorageError("Kubo provider is not configured")
+            metadata.update({"cid": self.mirror(data), "provider_type": "DECENTRALIZED", "location_state": "LOCAL_AND_DISTRIBUTED", "synchronization_state": "SYNCHRONIZED"})
+        if encrypted:
+            metadata["encryption_state"] = "ENCRYPTED"
+        return metadata
+
+    def get(self, object_class, object_id):
+        return self.get_local(object_class, object_id)
+
+    def verify(self, object_class, object_id, expected_hash):
+        return self.local.verify(object_class, object_id, expected_hash)
 
     def put_local(self, object_class, object_id, data):
         return self.local.put(object_class, object_id, data)
