@@ -1,6 +1,6 @@
 {
   "component": "Node Core Network",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "status": "IMPLEMENTED_PARTIAL",
   "scope": "Protocol-neutral peer registration, transport, messaging and propagation boundary",
   "implemented": [
@@ -11,7 +11,8 @@
     "node_core_hello_handshake",
     "message_envelope",
     "propagation",
-    "network_state_observation"
+    "network_state_observation",
+    "synchronization_state_representation"
   ],
   "verification": {
     "local_reference_tests": true,
