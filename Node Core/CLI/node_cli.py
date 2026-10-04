@@ -85,7 +85,9 @@ class NodeCLI:
                 if args.command == "status":
                     result = self.node.snapshot()
                 elif args.command == "readiness":
-                    result = {"ready": self.node.manager.readiness(), "protocol_readiness": self.node.protocol_readiness()}
+                    result = {"ready": self.node.manager.readiness()}
+                    if hasattr(self.node, "protocol_readiness"):
+                        result["protocol_readiness"] = self.node.protocol_readiness()
                 elif args.command == "start":
                     result = {"state": self.node.manager.start().state}
                 elif args.command == "stop":
