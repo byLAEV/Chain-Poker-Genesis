@@ -1,0 +1,162 @@
+{
+  "profile": "Node Core Authenticated Encryption Profile v1.0",
+  "algorithm": "AES-256-GCM",
+  "source_basis": "NIST SP 800-38D deterministic AES-GCM examples plus independently recomputed mutations",
+  "vectors": [
+    {
+      "id": "aead-256-gcm-empty",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "encrypt",
+      "inputs": {
+        "key": "0000000000000000000000000000000000000000000000000000000000000000",
+        "nonce": "000000000000000000000000",
+        "plaintext": "",
+        "aad": ""
+      },
+      "expected": {
+        "ciphertext": "",
+        "tag": "58e2fccefa7e3061367f1d57a4e7455a"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "aead-256-gcm-zero-block",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "encrypt",
+      "inputs": {
+        "key": "0000000000000000000000000000000000000000000000000000000000000000",
+        "nonce": "000000000000000000000000",
+        "plaintext": "00000000000000000000000000000000",
+        "aad": ""
+      },
+      "expected": {
+        "ciphertext": "cea7403d4d606b6e074ec5d3baf39d18",
+        "tag": "d0d1c8a799996bf0265b98b5d48ab919"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "aead-256-gcm-zero-block-aad",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "encrypt",
+      "inputs": {
+        "key": "0000000000000000000000000000000000000000000000000000000000000000",
+        "nonce": "000000000000000000000000",
+        "plaintext": "00000000000000000000000000000000",
+        "aad": "00000000000000000000000000000000"
+      },
+      "expected": {
+        "ciphertext": "cea7403d4d606b6e074ec5d3baf39d18",
+        "tag": "d24e503a1bb037071c71b35d987b8657"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "aead-256-gcm-modified-ciphertext",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "decrypt",
+      "inputs": {
+        "key": "0000000000000000000000000000000000000000000000000000000000000000",
+        "nonce": "000000000000000000000000",
+        "ciphertext": "cfa7403d4d606b6e074ec5d3baf39d18",
+        "tag": "d0d1c8a799996bf0265b98b5d48ab919",
+        "aad": ""
+      },
+      "expected": {
+        "failure": "authentication_failed",
+        "plaintext_exposed": false
+      },
+      "result": "REJECT",
+      "negative_case": true
+    },
+    {
+      "id": "aead-256-gcm-modified-tag",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "decrypt",
+      "inputs": {
+        "key": "0000000000000000000000000000000000000000000000000000000000000000",
+        "nonce": "000000000000000000000000",
+        "ciphertext": "cea7403d4d606b6e074ec5d3baf39d18",
+        "tag": "d1d1c8a799996bf0265b98b5d48ab919",
+        "aad": ""
+      },
+      "expected": {
+        "failure": "authentication_failed",
+        "plaintext_exposed": false
+      },
+      "result": "REJECT",
+      "negative_case": true
+    },
+    {
+      "id": "aead-256-gcm-modified-aad",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "decrypt",
+      "inputs": {
+        "key": "0000000000000000000000000000000000000000000000000000000000000000",
+        "nonce": "000000000000000000000000",
+        "ciphertext": "cea7403d4d606b6e074ec5d3baf39d18",
+        "tag": "d24e503a1bb037071c71b35d987b8657",
+        "aad": "01000000000000000000000000000000"
+      },
+      "expected": {
+        "failure": "authentication_failed",
+        "plaintext_exposed": false
+      },
+      "result": "REJECT",
+      "negative_case": true
+    },
+    {
+      "id": "aead-256-gcm-wrong-key",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "decrypt",
+      "inputs": {
+        "key": "0100000000000000000000000000000000000000000000000000000000000000",
+        "nonce": "000000000000000000000000",
+        "ciphertext": "cea7403d4d606b6e074ec5d3baf39d18",
+        "tag": "d0d1c8a799996bf0265b98b5d48ab919",
+        "aad": ""
+      },
+      "expected": {
+        "failure": "authentication_failed",
+        "plaintext_exposed": false
+      },
+      "result": "REJECT",
+      "negative_case": true
+    },
+    {
+      "id": "aead-256-gcm-malformed-container",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "decrypt",
+      "inputs": {
+        "version": 1,
+        "algorithm": "AES-256-GCM",
+        "nonce": "00000000000000000000",
+        "ciphertext": "",
+        "tag": "58e2fccefa7e3061367f1d57a4e7455a",
+        "aad": ""
+      },
+      "expected": {
+        "failure": "malformed_container",
+        "plaintext_exposed": false
+      },
+      "result": "REJECT",
+      "negative_case": true
+    },
+    {
+      "id": "aead-256-gcm-nonce-reuse-boundary",
+      "profile": "ENCRYPTION-AEAD-PROFILE-v1.0",
+      "operation": "encrypt",
+      "inputs": {
+        "key_ref": "test-key-ref",
+        "nonce": "000000000000000000000000",
+        "first_operation": "accepted",
+        "second_operation": "same-key-same-nonce"
+      },
+      "expected": {
+        "second_operation_failure": "nonce_reuse"
+      },
+      "result": "REJECT",
+      "negative_case": true
+    }
+  ]
+}
