@@ -7,9 +7,24 @@ ROOT=Path(__file__).resolve().parent
 CRYPTO_CORE_ROOT=ROOT/"Cryptography"/"Core"
 PROTOCOL_INTERFACE_ROOT=ROOT/"Protocol Interface"
 
-for path in (CRYPTO_CORE_ROOT, PROTOCOL_INTERFACE_ROOT):
+MODULE_ROOTS = (
+    CRYPTO_CORE_ROOT,
+    ROOT / "Cryptography" / "Providers",
+    PROTOCOL_INTERFACE_ROOT,
+    ROOT / "Identity",
+    ROOT / "Node Manager",
+    ROOT / "Storage" / "API",
+    ROOT / "Storage",
+    ROOT / "Storage" / "Kubo",
+    ROOT / "Recovery",
+    ROOT / "Engine Runtime",
+    ROOT / "Time",
+    ROOT / "Security",
+)
+
+for path in MODULE_ROOTS:
     if str(path) not in sys.path:
-        sys.path.insert(0,str(path))
+        sys.path.insert(0, str(path))
 
 def _load(name,path):
     spec=importlib.util.spec_from_file_location(name,ROOT/path)
