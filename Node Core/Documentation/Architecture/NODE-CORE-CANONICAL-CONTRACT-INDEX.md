@@ -24,7 +24,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 
 | Capability | Canonical source | Status | Implementation mapped | Test mapped | Decision |
 |---|---|---|---|---|---|
-| Bootstrap / Installation | Existing Bootstrap contract/specification; exact authoritative path requires final audit | CANONICAL CANDIDATE | `Node Core/Bootstrap/` | `Tests/Bootstrap/test_bootstrap.py` | Confirm exact normative source |
+| Bootstrap / Installation | `Documentation/Interfaces/NODE-CORE-BOOTSTRAP-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Bootstrap/bootstrap.py`, `Installer/bootstrap_node.py`, `Initialization/node_initializer.py`, `Verification/bootstrap_verifier.py`, `Recovery/bootstrap_recovery_impl.py` | `Tests/Bootstrap/test_bootstrap.py`, `Tests/Integration/test_node_installation_e2e.py`, `test_installation_manifest.py` | Clean bootstrap, isolation, integrity, failure and idempotent recovery mapped; broader production identity remains separate |
 | Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Configuration/Schemas/node-configuration.schema.json`, Bootstrap, Runtime readiness | `Tests/Configuration/test_configuration_contract.py`, installation E2E | Schema/default/integrity/runtime boundary mapped; centralized manager and full negative matrix remain |
 | Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL | `Identity/identity_core.py`, schema, binding, manager, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Evidence mapped; semantic reconciliation remains |
 | Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL | `crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Evidence mapped; AEAD/Merkle remain profile-dependent |
@@ -60,6 +60,7 @@ These currently have a named normative profile/contract plus mapped implementati
 - Time
 - CLI
 - Configuration
+- Bootstrap
 
 This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
