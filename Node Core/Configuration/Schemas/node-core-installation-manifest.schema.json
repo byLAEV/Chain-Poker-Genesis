@@ -7,6 +7,7 @@
     "node",
     "storage",
     "readiness",
+    "network",
     "provider",
     "coherence",
     "synchronization",
@@ -143,6 +144,30 @@
       "properties": {
         "status": {
           "const": "NOT_INSTALLED"
+        }
+      },
+      "additionalProperties": false
+    },
+    "network": {
+      "type": "object",
+      "required": [
+        "connection_status",
+        "connected_nodes",
+        "minimum_protocol_nodes",
+        "protocol_readiness"
+      ],
+      "properties": {
+        "connection_status": {
+          "type": "string"
+        },
+        "connected_nodes": {
+          "type": "integer"
+        },
+        "minimum_protocol_nodes": {
+          "const": 5
+        },
+        "protocol_readiness": {
+          "type": "string"
         }
       },
       "additionalProperties": false
