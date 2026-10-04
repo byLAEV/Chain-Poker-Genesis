@@ -1,0 +1,11 @@
+{
+  "vector_id": "NODE-MANIFEST-AUTHORITY-0001",
+  "description": "Canonical Node Core manifest authority baseline",
+  "expected": {
+    "component_manifest": "NODE-CORE-MANIFEST.json",
+    "installation_schema": "Configuration/Schemas/node-core-installation-manifest.schema.json",
+    "protocol_associations_max_items": 0,
+    "cpg_protocol_status": "NOT_INSTALLED",
+    "legacy_schema_classification": "LEGACY_CONFLICT_DETECTED"
+  }
+}
