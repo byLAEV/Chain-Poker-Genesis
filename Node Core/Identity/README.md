@@ -1,18 +1,32 @@
 # Node Core Identity
 
-**Status:** IMPLEMENTED
-**Version:** 1.1.0
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+**Version:** 1.2.0
 
 Node Core Identity provides the protocol-neutral cryptographic identity boundary for a node.
 
-Implemented: Ed25519 node identity generation; deterministic Node ID derivation; Node Life lifecycle and hash-linked events; identity validation and reconstruction; external credential verification; Ed25519 signature verification; offline snapshot; Identity API.
+## Canonical identity lifecycle
 
-Private keys are not persisted by the identity registry or snapshot. Production signing should use an external secure key provider.
+`UNINITIALIZED → GENERATED_OR_IMPORTED → VALIDATED → REGISTERED → ACTIVE`
 
-Lifecycle:
-UNINITIALIZED → CREATED → INITIALIZED → ACTIVE
-ACTIVE → SUSPENDED / TERMINATED
-SUSPENDED → ACTIVE / TERMINATED
-TERMINATED → RECOVERED → ACTIVE / TERMINATED
+Identity activation requires Node Core readiness. Failure or revocation must prevent activation.
 
-This module does not define CPG player identity, table membership, CPG ledger, CPG consensus, or poker state.
+Node Identity lifecycle is distinct from the **Node Life** lifecycle. Node Life records the operational life of a node and its hash-linked lifecycle events; it does not replace the canonical Identity lifecycle.
+
+## Implemented boundary
+
+- Ed25519 Node Identity generation;
+- deterministic Node ID derivation from canonical public identity material;
+- identity validation and canonical record validation;
+- explicit registration state;
+- explicit activation gate requiring Node Core readiness;
+- external credential verification;
+- hash-linked Node Life events and reconstruction;
+- identity binding and verification-result models;
+- recovery continuity decision boundary.
+
+Private keys are returned to the caller/provider and are not persisted in the Node Identity record or snapshot. Production signing should use an external secure key provider.
+
+This module does not define CPG player identity, table membership, CPG ledger, CPG consensus, poker state, Table Wallet, settlement or rake.
+
+The implementation remains **PARTIAL** because full registration/trust authority, revocation authority, durable secure identity storage and complete Node Core lifecycle integration are not yet closed.
