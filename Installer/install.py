@@ -51,6 +51,17 @@ def download_archive(destination: Path, source_ref: str) -> None:
         raise InstallationError(f"Unable to download Node Core package: {exc}") from exc
 
 
+def _safe_archive_member(member: tarfile.TarInfo, node_core_prefix: Path) -> Path:
+    """Validate a remote tar member before extraction."""
+    if member.issym() or member.islnk() or member.isdev() or member.isfifo():
+        raise InstallationError(f"Unsupported archive member type: {member.name}")
+    relative = Path(member.name).relative_to(node_core_prefix)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise InstallationError(f"Unsafe archive path: {member.name}")
+    return relative
+
+
+
 def extract_node_core(archive: Path, extraction_root: Path, staging: Path) -> None:
     try:
         with tarfile.open(archive, "r:gz") as package:
@@ -68,7 +79,7 @@ def extract_node_core(archive: Path, extraction_root: Path, staging: Path) -> No
             prefix = str(node_core_prefix).rstrip("/") + "/"
             for member in members:
                 if member.name == str(node_core_prefix) or member.name.startswith(prefix):
-                    relative = Path(member.name).relative_to(node_core_prefix)
+                    relative = _safe_archive_member(member, node_core_prefix)
                     member.name = str(relative)
                     selected.append(member)
             package.extractall(extraction_root, members=selected)
