@@ -8,6 +8,7 @@ CRYPTO_CORE_ROOT=ROOT/"Cryptography"/"Core"
 PROTOCOL_INTERFACE_ROOT=ROOT/"Protocol Interface"
 
 MODULE_ROOTS = (
+    ROOT / "Bootstrap" / "Installer",
     CRYPTO_CORE_ROOT,
     ROOT / "Cryptography" / "Providers",
     PROTOCOL_INTERFACE_ROOT,
@@ -34,6 +35,7 @@ def _load(name,path):
     spec.loader.exec_module(mod)
     return mod
 
+bootstrap=_load("node_core_bootstrap","Bootstrap/Installer/bootstrap_node.py")
 crypto=_load("node_core_crypto","Cryptography/Core/crypto_service.py")
 identity=_load("node_core_identity","Identity/identity_core.py")
 manager=_load("node_core_manager","Node Manager/node_manager.py")
@@ -77,6 +79,7 @@ class NodeCore:
         return self.manager.configuration_manager
 
     def initialize(self):
+        bootstrap.install(self.root)
         self.manager.initialize()
         return self.manager.snapshot()
 

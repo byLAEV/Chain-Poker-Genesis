@@ -1,0 +1,14 @@
+{
+  "required_paths": [
+    "node-storage",
+    "node-storage/identity",
+    "node-storage/cryptography",
+    "node-storage/configuration",
+    "node-storage/state",
+    "node-storage/records",
+    "node-storage/recovery",
+    "node-storage/protocol"
+  ],
+  "root": "node-storage",
+  "storage_structure_version": "1.0.0"
+}

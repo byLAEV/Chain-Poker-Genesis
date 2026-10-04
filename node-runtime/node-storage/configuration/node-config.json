@@ -1,0 +1,8 @@
+{
+  "cpg_protocol": "NOT_INSTALLED",
+  "decentralized_storage": {
+    "status": "NOT_PROVISIONED"
+  },
+  "node_core_version": "1.0.0",
+  "protocol_associations": []
+}

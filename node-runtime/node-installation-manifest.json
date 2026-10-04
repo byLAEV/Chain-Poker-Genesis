@@ -1,0 +1,44 @@
+{
+  "coherence": {
+    "status": "COHERENT"
+  },
+  "cpg_protocol": {
+    "status": "NOT_INSTALLED"
+  },
+  "integrity": {
+    "status": "VERIFIED"
+  },
+  "manifest_version": "1.0.0",
+  "node": {
+    "node_core_version": "1.0.0",
+    "status": "READY"
+  },
+  "protocol_associations": [],
+  "provider": {
+    "status": "READY",
+    "type": "LOCAL"
+  },
+  "readiness": {
+    "state": "NODE_CORE_READY"
+  },
+  "recovery": {
+    "status": "READY"
+  },
+  "storage": {
+    "required_paths": [
+      "node-storage",
+      "node-storage/identity",
+      "node-storage/cryptography",
+      "node-storage/configuration",
+      "node-storage/state",
+      "node-storage/records",
+      "node-storage/recovery",
+      "node-storage/protocol"
+    ],
+    "storage_manifest_version": "1.0.0",
+    "storage_structure_version": "1.0.0"
+  },
+  "synchronization": {
+    "state": "NOT_EVALUATED"
+  }
+}

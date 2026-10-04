@@ -1,0 +1,11 @@
+{
+  "algorithm": "SHA-256",
+  "artifacts": {
+    "node-installation-manifest.json": "058db7a19dc0f336f10798e10f3bead9b0bdf528abd05408f64663b612a3de93",
+    "node-storage/configuration/node-config.json": "7c03887e5d2018aa48b526fbfea21167faedc3760b342342913d66b40946869e",
+    "node-storage/identity/node-identity.json": "fc338a94a37aa7551a439766bef3b3e781233fb82a7fed4bd474918d54d231bd",
+    "node-storage/recovery/recovery.json": "462c3d227ca77c3f68e60774f0bd03966130ba157bacea6cffa9d670d883bbd3",
+    "node-storage/state/node-state.json": "72c33a5e6ead732cc8c1324123e4b0c94781283fee369a5dd7d2022d6f77b3fc",
+    "node-storage/state/storage-manifest.json": "5c6ee6c994ceaf083467cd7205a5bb0e4c77acfcf44e85ce0c19f5b90303f6e8"
+  }
+}

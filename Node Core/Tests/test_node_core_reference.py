@@ -43,6 +43,12 @@ class NodeCoreReferenceTests(unittest.TestCase):
         self.assertEqual(n.initialize()["state"], "READY")
         self.assertEqual(n.activate(), "RUNNING")
 
+    def test_initialize_bootstraps_fresh_root(self):
+        with tempfile.TemporaryDirectory() as root:
+            n = mod.NodeCore(root)
+            self.assertEqual(n.initialize()["state"], "READY")
+            self.assertTrue((Path(root) / "node-installation-manifest.json").is_file())
+
     def test_crypto(self):
         n = self.node()
         self.assertEqual(len(n.crypto.sha256_hex(b"test")), 64)
