@@ -30,7 +30,7 @@ class NodeCLI:
                     result = {"state": self.node.manager.recover().state}
                 else:
                     raise RuntimeError("unsupported command")
-            print(json.dumps(result, sort_keys=True, separators=(",", ":")))
+            print(json.dumps(result, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
             return 0
         except (RuntimeError, ValueError, KeyError) as exc:
             print(json.dumps({"error": str(exc)}, sort_keys=True, separators=(",", ":")), file=sys.stderr)
