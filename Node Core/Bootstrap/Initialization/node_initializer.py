@@ -58,7 +58,7 @@ def initialize(target: Path,node_core_version: str="1.0.0"):
     state=target/"node-storage/state/node-state.json"
     recovery=target/"node-storage/recovery/recovery.json"
     storage=target/"node-storage/state/storage-manifest.json"
-    installation=target/"node-installation-manifest.json"
+    installation=target/"node-installation-manifest.json"\n    network_state=target/"node-storage/network/network-state.json"
 
     if not identity.exists():
         atomic_write_json(identity,{"identity_status":"INITIALIZED","key_material":"EXTERNAL_OR_SEPARATE_CRYPTOGRAPHY"})
@@ -79,12 +79,12 @@ def initialize(target: Path,node_core_version: str="1.0.0"):
             "storage_structure_version":"1.0.0",
             "required_paths":STORAGE_PATHS
         })
-    if not installation.exists():
+    if not network_state.exists():\n        atomic_write_json(network_state,{\n            "connection_status":"SEARCHING_FOR_CONNECTIONS",\n            "connected_nodes":0,\n            "minimum_protocol_nodes":5,\n            "protocol_readiness":"NOT_READY"\n        })\n    if not installation.exists():
         atomic_write_json(installation,{
             "manifest_version":"1.0.0",
             "node":{"node_core_version":node_core_version,"status":"READY"},
             "storage":{"storage_structure_version":"1.0.0","required_paths":STORAGE_PATHS,"storage_manifest_version":"1.0.0"},
-            "readiness":{"state":"NODE_CORE_READY"},
+            "readiness":{"state":"NODE_CORE_READY"},\n            "network":{"connection_status":"SEARCHING_FOR_CONNECTIONS","connected_nodes":0,"minimum_protocol_nodes":5,"protocol_readiness":"NOT_READY"},
             "provider":{"type":"LOCAL","status":"READY"},
             "coherence":{"status":"COHERENT"},
             "synchronization":{"state":"NOT_EVALUATED"},
