@@ -1,10 +1,22 @@
 {
-  "component":"Node Core Protocol Interface",
-  "version":"1.1.0",
-  "status":"IMPLEMENTED",
-  "scope":"Protocol discovery, compatibility, registration, installation and lifecycle boundary",
-  "implemented":{"discovery":true,"manifest_validation":true,"capability_negotiation":true,"registration":true,"installation_state":true,"activation":true,"suspension":true,"removal":true},
-  "engine_versioning":"INDEPENDENT",
-  "node_core_updates_protocol_engines":"false",
-  "cpg_logic":"NOT_INCLUDED"
+  "component": "Node Core Protocol Interface",
+  "version": "1.1.0",
+  "status": "IMPLEMENTED_PARTIAL",
+  "scope": "Protocol discovery, verification, compatibility, registration, installation and lifecycle boundary",
+  "implemented": {
+    "discovery": true,
+    "manifest_validation": true,
+    "capability_negotiation": true,
+    "registration": true,
+    "installation_state": true,
+    "activation": true,
+    "suspension": true,
+    "removal": true,
+    "administrative_ui_contract": true,
+    "installer_directory_semantics": "CONTRACT_DEFINED"
+  },
+  "engine_versioning": "INDEPENDENT",
+  "node_core_updates_protocol_engines": false,
+  "cpg_logic": "NOT_INCLUDED",
+  "implementation_note": "Lifecycle reference implementation exists; installer verification, persistent protocol directories, engine-association execution and rendered UI remain implementation work."
 }
