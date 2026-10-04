@@ -1,6 +1,6 @@
 {
   "component": "Chain Poker Genesis Node Core CLI Installer",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "status": "IMPLEMENTED_AND_CI_VERIFIED",
   "verification_scope": {
     "ci": "VERIFIED",
@@ -11,6 +11,7 @@
     "existing_installation": "VERIFIED_BY_CI",
     "interrupted_installation": "VERIFIED_BY_CI",
     "node_core_verification": "VERIFIED_BY_CI",
+    "linux_binary_dependency_policy": "IMPLEMENTED; REAL_ENVIRONMENT_NOT_VERIFIED",
     "termux_native_dependency_path": "IMPLEMENTED; REAL_DEVICE_NOT_VERIFIED"
   },
   "source_repository": "byLAEV/Chain-Poker-Genesis",
@@ -41,9 +42,11 @@
   "node_core_verification": "REQUIRED",
   "overwrite_existing_installation": false,
   "dependency_model": {
-    "python": "REQUIRED",
-    "python_packages": "LOCAL_NODE_CORE_VENV_ON_LINUX; TERMUX_NATIVE_PACKAGE_WITH_SYSTEM_SITE_PACKAGES_ON_TERMUX",
-    "dependency_source": "Node Core component requirements files plus platform-native dependency packages where required",
+    "python": "REQUIRED >=3.9",
+    "linux_python_packages": "LOCAL_NODE_CORE_VENV",
+    "linux_dependency_policy": "INSTALL_REQUIREMENTS_USING_COMPATIBLE_BINARY_WHEELS_ONLY",
+    "termux_python_packages": "TERMUX_NATIVE_PACKAGES_WITH_SYSTEM_SITE_PACKAGES",
+    "dependency_source": "Node Core component requirements plus platform-native dependency packages where required",
     "network": "REQUIRED_FOR_DOWNLOAD_AND_DEPENDENCY_INSTALL",
     "termux_native_packages": [
       "python",
