@@ -16,7 +16,7 @@ elif command -v python >/dev/null 2>&1; then
 else
     if command -v pkg >/dev/null 2>&1; then
         say "Python is not installed. Installing Python through Termux pkg..."
-        pkg install -y python
+        pkg install -y python python-cryptography
         PYTHON="python"
     else
         say "ERROR: Python 3 is required to install Node Core."
