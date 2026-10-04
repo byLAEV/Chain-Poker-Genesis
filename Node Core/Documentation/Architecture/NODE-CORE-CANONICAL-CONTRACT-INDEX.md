@@ -137,3 +137,30 @@ Resolved authority conflicts:
 No second configuration authority is permitted.
 
 **Next PHASE 2 component:** Runtime.
+
+
+## PHASE 2 — Runtime reconciliation
+
+**Component:** Runtime  
+**Status:** PASS
+
+Reconciled chain:
+
+`Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md`
+→ `Runtime/State/runtime_state.py`
+→ `Runtime/node_runtime.py`
+→ `Runtime/runtime_manager.py`
+→ Runtime tests / installation E2E.
+
+Resolved:
+- RuntimeManager previously implemented a reduced readiness model separate from the canonical evaluator; it now delegates to `node_runtime.evaluate_readiness()`.
+- Runtime readiness now uses the canonical Configuration Manager and storage coherence/provider checks.
+- Runtime README and readiness model are explicitly supporting documentation and cannot define a second lifecycle.
+- Readiness model version aligned to 1.0.0.
+- Stale lifecycle tests using `INITIALIZING`, `VERIFYING` and `READY` were replaced with the canonical Node Core states.
+- Engine Runtime remains subordinate to Node Core Runtime and cannot redefine Node Core lifecycle.
+
+Boundary:
+`Node Core Runtime → Engine Runtime → protocol/application engines`.
+
+**Next PHASE 2 component:** Engine Runtime.
