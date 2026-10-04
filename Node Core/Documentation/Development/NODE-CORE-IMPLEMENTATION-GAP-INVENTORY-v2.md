@@ -20,7 +20,7 @@
 | Bootstrap / Installer | executable bootstrap + structural audit + compilation + verification + installation manifest + E2E + final audit | IMPLEMENTED + VERIFIED | expand negative cases |
 | Configuration | canonical contract + schema + Configuration Manager + readiness integration + tests + CI | IMPLEMENTED / PARTIAL | complete broader policy/negative-path coverage |
 | Identity | executable Identity Core + canonical profile + lifecycle/tamper tests + CI; production trust/registration remains open | IMPLEMENTED / PARTIAL | complete credential adapters, registration, persistence, propagation and recovery |
-| Cryptography Core | executable core primitives/service + canonical profile + crypto tests + CI; AEAD boundary and vectors are IMPLEMENTED_VERIFIED; Merkle and production security remain open | IMPLEMENTED / PARTIAL | complete Merkle specification/vectors and production security review |
+| Cryptography Core | executable core primitives/service + canonical profile + crypto tests + CI; AEAD and deterministic Merkle boundaries/vectors are implemented and gated by CI; production cryptographic security review remains open | IMPLEMENTED / PARTIAL | complete production cryptographic-security requirements/review |
 | Storage | executable local storage, registry, locator, synchronization/recovery boundaries + provider-failure fallback test + CI; live Kubo operation remains environment-dependent | IMPLEMENTED / PARTIAL | live-provider evidence and broader reconciliation/failure matrix |
 | Runtime | canonical lifecycle + readiness implementation + cross-component lifecycle + full Node lifecycle + invalid-transition matrix + final audit; GitHub Actions Runs #631/#634 | IMPLEMENTED + VERIFIED | broaden mutation/environmental coverage where justified |
 | Health / Readiness | executable evaluator + installation/E2E verification + final audit | IMPLEMENTED + VERIFIED | expand failure-state coverage |
@@ -85,9 +85,9 @@ The repository now contains a reconciled formal cryptographic profile and normat
 
 Remaining cryptographic closure work is explicitly limited to:
 
-1. Deterministic Merkle Tree Specification and test vectors.
-2. Remaining production cryptographic-security requirements and external security review.
-3. Broader cross-component and negative-path coverage.
+1. Production cryptographic-security requirements and external security review.
+2. Broader cross-component and negative-path coverage.
+3. Live production identity/network/provider integration only after their explicit trust and transport contracts are closed.
 
 ### 2. Identity
 
