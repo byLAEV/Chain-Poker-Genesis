@@ -26,7 +26,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 |---|---|---|---|---|---|
 | Bootstrap / Installation | `Documentation/Interfaces/NODE-CORE-BOOTSTRAP-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Bootstrap/bootstrap.py`, `Installer/bootstrap_node.py`, `Initialization/node_initializer.py`, `Verification/bootstrap_verifier.py`, `Recovery/bootstrap_recovery_impl.py` | `Tests/Bootstrap/test_bootstrap.py`, `Tests/Integration/test_node_installation_e2e.py`, `test_installation_manifest.py` | Clean bootstrap, isolation, integrity, failure and idempotent recovery mapped; broader production identity remains separate |
 | Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Configuration/Schemas/node-configuration.schema.json`, Bootstrap, Runtime readiness | `Tests/Configuration/test_configuration_contract.py`, installation E2E | Schema/default/integrity/runtime boundary mapped; centralized manager and full negative matrix remain |
-| Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL | `Identity/identity_core.py`, schema, binding, manager, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Evidence mapped; semantic reconciliation remains |
+| Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Identity/identity_core.py`, `identity_api.py`, schema, binding, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Canonical identity lifecycle and activation boundary reconciled; trust/registration authority, revocation and durable secure identity storage remain partial |
 | Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL | `crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Evidence mapped; AEAD/Merkle remain profile-dependent |
 | Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL | `Storage/storage_engine.py`, `storage_api.py`, `Storage Manager/storage_manager.py`, `storage_locator.py` | `Tests/Storage/test_storage_locator.py`, `test_storage_complete.py` | Evidence mapped |
 | Runtime | `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md` | CANONICAL | `Runtime/State/runtime_state.py`, `Runtime/runtime_manager.py`, `Runtime/node_runtime.py` | Existing runtime tests plus lifecycle tests; dedicated contract coverage remains to be expanded | Lifecycle source and implementation state machine reconciled; readiness bug corrected |
@@ -433,3 +433,37 @@ Resolved:
 Network-time consensus remains intentionally unimplemented.
 
 **PHASE 2 Time reconciliation: SATISFIED.**
+
+
+## PHASE 2 — Identity reconciliation
+
+**Component:** Identity  
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+
+Reconciled chain:
+
+`FORMAL-IDENTITY-PROFILE-v1.0.md`
+→ `Identity/identity_core.py`
+→ `Identity/identity_api.py`
+→ identity schema / binding / verification / recovery boundaries
+→ Identity tests.
+
+Resolved:
+- The canonical Node Identity lifecycle is now explicit: `UNINITIALIZED → GENERATED_OR_IMPORTED → VALIDATED → REGISTERED → ACTIVE`.
+- The previous implementation lifecycle `CREATED → INITIALIZED → ACTIVE` is no longer presented as the Identity lifecycle.
+- Node Life remains a separate operational lifecycle with hash-linked events; it does not replace Identity state.
+- Identity activation now requires an explicit `node_core_ready=True` readiness assertion.
+- Identity records remain free of private-key material.
+- Deterministic Node ID derivation and canonical identity validation remain enforced.
+- The Identity API now imports the actual canonical Identity Manager implementation and exposes validate/register boundaries.
+- CPG player identity, wallet ownership, table membership, CPG consensus and protocol-specific authorization remain outside Node Core Identity.
+
+Remaining partial scope:
+- authoritative registration/trust mechanism;
+- explicit revocation authority;
+- durable secure identity storage;
+- full integration of identity activation with the Node Core Runtime/Node Manager lifecycle.
+
+**PHASE 2 Identity reconciliation: SATISFIED.**
+
+**Next PHASE 2 component:** Cryptography.
