@@ -27,6 +27,9 @@ def main():
     assert b.sequence == 1
     assert b.previous_hash == a.record_hash
     assert b.record_hash != a.record_hash
+    assert t.verify_record(a, None)
+    assert t.verify_record(b, a.record_hash)
+    assert not t.verify_record(b, "tampered")
 
     # Same canonical inputs produce the same digest.
     t2=TimeService()
