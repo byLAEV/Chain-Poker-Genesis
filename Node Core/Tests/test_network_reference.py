@@ -6,6 +6,7 @@ from __future__ import annotations
 import importlib.util
 import pathlib
 import socket
+import sys
 import threading
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -13,8 +14,9 @@ NETWORK = ROOT / "Network"
 
 def load(name: str, path: pathlib.Path):
     spec = importlib.util.spec_from_file_location(name, path)
+    assert spec and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
+    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 

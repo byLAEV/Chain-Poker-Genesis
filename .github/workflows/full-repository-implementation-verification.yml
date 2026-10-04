@@ -1,0 +1,99 @@
+name: Full Repository Implementation Verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - implementation/node-core-monetary-references
+  pull_request:
+
+jobs:
+  full-repository-verification:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Node Core cryptography dependency
+        run: python -m pip install cryptography
+
+      - name: Compile all repository Python sources
+        run: |
+          python - <<'PY'
+          import compileall
+          import sys
+          ok = True
+          for root in ("Node Core", "Main Temporal"):
+              if not compileall.compile_dir(root, quiet=1):
+                  ok = False
+          if not ok:
+              sys.exit(1)
+          print("[PASS] Python compilation: Node Core + Main Temporal")
+          PY
+
+      - name: Validate repository JSON documents
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          files = list(Path(".").rglob("*.json"))
+          failures = []
+          for path in files:
+              try:
+                  json.loads(path.read_text(encoding="utf-8"))
+              except Exception as exc:
+                  failures.append((str(path), str(exc)))
+          if failures:
+              for path, error in failures:
+                  print(f"[FAIL] {path}: {error}")
+              raise SystemExit(1)
+          print(f"[PASS] JSON validation: {len(files)} files")
+          PY
+
+      - name: Run complete Node Core test suite
+        run: |
+          python -m unittest discover -s "Node Core/Tests" -p "test_*.py" -v
+
+      - name: Bootstrap clean Node Core
+        run: |
+          rm -rf /tmp/cpg-full-node-test
+          python "Node Core/Bootstrap/Installer/bootstrap_node.py" /tmp/cpg-full-node-test
+
+      - name: Verify clean Node Core installation
+        run: |
+          python "Node Core/Bootstrap/Verification/bootstrap_verifier.py" /tmp/cpg-full-node-test
+
+      - name: Run Node Core end-to-end lifecycle
+        run: |
+          python "Node Core/Tests/Integration/test_node_installation_e2e.py"
+          python "Node Core/Tests/Integration/test_node_core_cross_component_lifecycle.py"
+          python "Node Core/Tests/Integration/test_node_core_full_lifecycle.py"
+
+      - name: Verify protocol execution reference vector
+        run: |
+          python "Main Temporal/reference-implementation/execution/verify_vector.py"             "Main Temporal/docs/protocol/test-vectors/CPG-EXEC-0001.json"
+
+      - name: Verify CPG protocol remains outside Node Core installation
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("/tmp/cpg-full-node-test/node-installation-manifest.json")
+          data = json.loads(p.read_text(encoding="utf-8"))
+          assert data.get("cpg_protocol", {}).get("status") == "NOT_INSTALLED", data
+          assert data.get("protocol_associations", []) == [], data
+          print("[PASS] CPG protocol remains NOT_INSTALLED in clean Node Core")
+          PY
+
+      - name: Final repository implementation gate
+        run: |
+          echo "FULL_REPOSITORY_IMPLEMENTATION_VERIFICATION=PASS"
+          echo "NODE_CORE=VERIFIED"
+          echo "CPG_PROTOCOL_REFERENCE_VECTOR=VERIFIED"
+          echo "NODE_CORE_PROTOCOL_ISOLATION=VERIFIED"
