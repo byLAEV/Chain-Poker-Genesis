@@ -30,7 +30,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Cryptography/Core/crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Canonical serialization, SHA-256, CSPRNG and Ed25519 boundary reconciled; AEAD profile remains open and Merkle is explicitly deferred to a separate specification |
 | Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL / IMPLEMENTED | `Storage/storage_engine.py`, `Storage/API/storage_api.py`, `Storage/Storage Manager/storage_manager.py`, `Storage/Object Registry/object_registry.py`, `Storage/Providers/storage_provider.py`, `Storage/storage_locator.py`, `Storage/Synchronization/synchronization_manager.py`, `Storage/Disaster Recovery/storage_recovery.py` | `Tests/Storage/test_storage_engine.py`, `test_storage_api.py`, `test_storage_locator.py`, `test_object_registry.py`, `test_storage_complete.py` | Required create/read/write/update/delete/exists/locate/verify/synchronize/recover boundary reconciled; canonical metadata now enforced |
 | Runtime | `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md` | CANONICAL | `Runtime/State/runtime_state.py`, `Runtime/runtime_manager.py`, `Runtime/node_runtime.py` | Existing runtime tests plus lifecycle tests; dedicated contract coverage remains to be expanded | Lifecycle source and implementation state machine reconciled; readiness bug corrected |
-| Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL | `Recovery/recovery_manager.py` | `Tests/Recovery/test_recovery_implementation.py`, `Tests/Engine Runtime/test_health_recovery.py` | Evidence mapped |
+| Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Recovery/recovery_manager.py`, `recovery_state.py` | `Tests/Recovery/test_recovery_implementation.py`, `test_recovery_manager_canonical.py` | Canonical recovery state machine, traceability journal and non-overwrite behavior reconciled; broader restoration/reconciliation sources remain outside generic Recovery |
 | Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL | `Network/network_manager.py`, `peer_registry.py`, `transport.py`, `Synchronization/synchronization_state.py` | `Tests/Network/test_network_contract.py`, `test_synchronization_state.py` | Contract, implementation, synchronization boundary and protocol isolation mapped |
 | Node Manager | `Documentation/Interfaces/NODE-MANAGER-CONTRACT.md` | CANONICAL | `Node Manager/node_manager.py` | `Tests/Node Manager/test_node_manager_contract.py` | Contract/implementation aligned; protocol installation routed through Protocol Interface |
 | Security | `Documentation/Interfaces/NODE-CORE-SECURITY-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Security/security_service.py` | `Tests/Security/test_security_contract.py` | Path, fail-closed authorization and protocol-isolation baseline reconciled; audit log and secure-configuration enforcement remain partial |
@@ -501,7 +501,7 @@ Remaining partial scope:
 
 **PHASE 2 Cryptography reconciliation: SATISFIED.**
 
-**Next PHASE 2 component:** Recovery.
+**Next PHASE 2 component:** CLI / Configuration residual.
 
 
 ## PHASE 2 — Storage reconciliation
@@ -540,3 +540,38 @@ Resolved:
 **PHASE 2 Storage reconciliation: SATISFIED.**
 
 **Next PHASE 2 component:** Recovery.
+
+
+## PHASE 2 — Recovery reconciliation
+
+**Component:** Recovery  
+**Status:** IMPLEMENTED_PARTIAL / RECONCILED
+
+Reconciled chain:
+
+`Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md`
+→ `Recovery/recovery_manager.py`
+→ `Recovery/recovery_state.py`
+→ Recovery tests
+→ Node Manager recovery boundary.
+
+Resolved:
+- Generic Recovery now has the canonical lifecycle: `NORMAL → FAILURE_DETECTED → RECOVERY_PENDING → RECOVERING → VERIFYING → RECOVERED / FAILED`.
+- Recovery attempts are traceable through a persistent journal.
+- A previously verified recovered state is not silently overwritten on a repeated recovery call.
+- Post-recovery verification is explicit.
+- Node Manager accepts the canonical recovered completion state while retaining its own Node Manager lifecycle.
+- Generic Recovery does not invent protocol-specific restoration semantics.
+- Storage object restoration remains owned by Storage Recovery.
+- Private-key recovery remains external to Node Core.
+- CPG ledger/table/consensus recovery remains outside Node Core.
+
+Remaining partial scope:
+- full failure-source detection integration;
+- generalized checkpoint/journal reconciliation;
+- broader component restoration orchestration;
+- cryptographic identity continuity recovery integration.
+
+**PHASE 2 Recovery reconciliation: SATISFIED.**
+
+**Next PHASE 2 component:** CLI / Configuration residual.
