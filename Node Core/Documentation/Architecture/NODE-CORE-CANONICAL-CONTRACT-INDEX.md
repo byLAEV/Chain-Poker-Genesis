@@ -773,3 +773,19 @@ Not yet implemented:
 - Dual Storage activation.
 
 The acquisition layer cannot execute the downloaded Kubo binary.
+
+
+## PHASE 4 — Kubo verified package installation
+
+**Status:** IMPLEMENTED_PARTIAL / INSTALLATION PASS
+
+Implemented:
+- verified-package-only installation boundary;
+- Linux tar.gz safe extraction with traversal/link checks;
+- immutable versioned installation directory;
+- executable discovery and version verification;
+- Kubo installation manifest generation;
+- installation manifest JSON schema;
+- installer safety tests.
+
+The installer does not initialize the Kubo repository, configure the daemon, start Kubo, or activate Dual Storage.
