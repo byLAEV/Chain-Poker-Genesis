@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-from pathlib import Path
+from pathlib import Path\nimport hashlib
 import sys
 BASE=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(BASE/"Cryptography/Core"))
 from merkle import leaf,parent,root,build_proof,verify_proof,MerkleProof
 
-assert root([]).hex()=="c78009fdf07fc56a81f5c9d6f5f8d4f4a4a9f1c5b0d2b1b2e7e6f0c6e0d9b6d3" if False else True
+assert root([])==hashlib.sha256(b"\\x02").digest()
 # Independent construction vectors derived directly from the normative byte rules.
 leaves=[leaf(b"a"),leaf(b"b"),leaf(b"c")]
 expected=parent(parent(leaves[0],leaves[1]),leaves[2])
