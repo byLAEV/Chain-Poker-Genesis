@@ -151,6 +151,11 @@ def _verify_termux_cryptography(python_executable: Path) -> None:
         "import platform, ssl; "
         "from cryptography.hazmat.primitives.ciphers.aead import AESGCM; "
         "from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey; "
+        "key=AESGCM.generate_key(bit_length=128); "
+        "nonce=b'\\x00'*12; "
+        "cipher=AESGCM(key); "
+        "cipher.decrypt(nonce, cipher.encrypt(nonce, b'node-core-cryptography-check', None), None); "
+        "Ed25519PrivateKey.generate(); "
         "print(f'{v}|{platform.machine()}|{ssl.OPENSSL_VERSION}')"
     )
     completed = subprocess.run(
