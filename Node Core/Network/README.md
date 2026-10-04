@@ -1,6 +1,7 @@
 # Node Core Network
 
-**Status:** IMPLEMENTED / PARTIAL
+**Status:** SUPPORTING / RECONCILED
+**Implementation:** IMPLEMENTED_PARTIAL
 **Scope:** Protocol-neutral Node Core network boundary
 
 The Network subsystem provides an executable provider-neutral boundary for peer registration, peer discovery, connection lifecycle, framed message exchange, propagation requests, and network state observation.
@@ -13,7 +14,7 @@ The Network subsystem provides an executable provider-neutral boundary for peer 
 - connect/disconnect lifecycle;
 - send/receive message operations;
 - propagation to registered peers;
-- network state reporting;
+- network state reporting without claiming Node Core readiness;
 - synchronization-state integration without claiming global synchronization.
 
 ## Security boundary
@@ -33,3 +34,10 @@ Network communication is not synchronization. Synchronization is represented sep
 ## Current status
 
 IMPLEMENTED / PARTIAL means executable network behavior exists and is covered by deterministic local tests, while production-grade authenticated provider integration and live decentralized discovery remain pending.
+
+
+## Authority
+
+The canonical contract is `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md`. The manifest is authoritative for implementation availability. This README is supporting documentation.
+
+Network state such as `CONNECTED` is not Node Core `READY` or `RUNNING`.
