@@ -48,7 +48,7 @@
       "python-cryptography"
     ],
     "termux_python_package_policy": "USE_NATIVE_TERMUX_PACKAGE; DO_NOT_BUILD_CRYPTOGRAPHY_FROM_PIP_SOURCE",
-    "termux_cryptography_compatibility": ">=46,<49"
+    "termux_cryptography_compatibility": "RUNTIME_VERIFIED_BY_NATIVE_PACKAGE_AND_REQUIRED_CRYPTOGRAPHIC_PRIMITIVE_IMPORTS"
   },
   "installation_environment": "LOCAL_NODE_CORE_VENV",
   "venv_location": ".node-core-python"

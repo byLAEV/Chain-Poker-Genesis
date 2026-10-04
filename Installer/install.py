@@ -148,12 +148,10 @@ def _verify_termux_cryptography(python_executable: Path) -> None:
     probe = (
         "import importlib.metadata as m; "
         "v=m.version('cryptography'); "
-        "parts=tuple(int(x) for x in v.split('.')[:2]); "
-        "assert (46, 0) <= parts < (49, 0), "
-        "f'unsupported cryptography version: {v}'; "
+        "import platform, ssl; "
         "from cryptography.hazmat.primitives.ciphers.aead import AESGCM; "
         "from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey; "
-        "print(v)"
+        "print(f'{v}|{platform.machine()}|{ssl.OPENSSL_VERSION}')"
     )
     completed = subprocess.run(
         [str(python_executable), "-c", probe],
