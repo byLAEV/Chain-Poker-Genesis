@@ -110,3 +110,30 @@ Resolved conflicts:
 **Authority remains:** canonical contract → manifest/schema → implementation → tests.
 
 **Next PHASE 2 component:** Configuration.
+
+
+## PHASE 2 — Configuration reconciliation
+
+**Component:** Configuration  
+**Status:** PASS
+
+Reconciled chain:
+
+`NODE-CORE-CONFIGURATION-CONTRACT.md`
+→ `Configuration/Schemas/node-configuration.schema.json`
+→ Bootstrap-generated `node-config.json`
+→ `Configuration/configuration_manager.py`
+→ Runtime readiness
+→ Node Manager loading boundary
+→ Configuration tests.
+
+Resolved authority conflicts:
+- schema identifier `0.1.0` versus canonical contract `1.0.0`;
+- Runtime previously checked field presence without invoking the canonical configuration validator;
+- Node Manager contract required configuration loading but implementation did not load configuration;
+- Configuration API documentation did not identify the canonical contract/manager;
+- duplicate configuration semantics were centralized in the Configuration Manager.
+
+No second configuration authority is permitted.
+
+**Next PHASE 2 component:** Runtime.
