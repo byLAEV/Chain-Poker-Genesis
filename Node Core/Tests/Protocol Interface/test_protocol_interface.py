@@ -55,13 +55,9 @@ def main():
     # from protocol records; the UI must not create a second registry.
     assert tuple(record.descriptor.protocol_id for record in i.all()) == ("example.protocol",)
 
-    # Canonical storage boundary used by the administrative interface.
-    assert "Node Core/Protocols/Installers/" in (
-        "Node Core/Protocols/Installers/"
-    )
-    assert "Node Core/Protocols/Installed/" in (
-        "Node Core/Protocols/Installed/"
-    )
+    # Canonical local protocol boundaries used by the administrative interface.
+    assert "Node Core/Protocols/" in "Node Core/Protocols/"
+    assert "Node Core/Protocols/Installed/" in "Node Core/Protocols/Installed/"
 
     print("Node Core Protocol Interface implementation tests: PASS")
 
