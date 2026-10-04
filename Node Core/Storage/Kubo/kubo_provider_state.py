@@ -60,3 +60,21 @@ class KuboProviderState:
         if missing:
             raise KuboStateError("provider state is incomplete")
         return record
+
+
+    def transition(self, *, lifecycle_state=None, health_state=None, synchronization_state=None, **changes):
+        """Atomically update one managed provider state without weakening invariants."""
+        record = self.read()
+        if lifecycle_state is not None:
+            record["lifecycle_state"] = lifecycle_state
+        if health_state is not None:
+            record["health_state"] = health_state
+        if synchronization_state is not None:
+            record["synchronization_state"] = synchronization_state
+        record.update(changes)
+        from datetime import datetime, timezone
+        record["last_transition_at"] = datetime.now(timezone.utc).isoformat()
+        if health_state is not None:
+            record["last_health_check_at"] = record["last_transition_at"]
+        self.write(record)
+        return record
