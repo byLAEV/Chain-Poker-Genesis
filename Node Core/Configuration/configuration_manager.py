@@ -13,7 +13,7 @@ from pathlib import Path
 
 REQUIRED=("node_core_version","decentralized_storage","protocol_associations","cpg_protocol")
 CPG_STATES={"NOT_INSTALLED","INSTALLED","ACTIVE"}
-STORAGE_STATES={"NOT_PROVISIONED","READY","FAILED"}
+STORAGE_STATES={"NOT_PROVISIONED","READY","FAILED","DUAL_STORAGE_READY"}
 
 class ConfigurationError(ValueError):
     pass
