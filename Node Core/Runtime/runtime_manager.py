@@ -41,13 +41,12 @@ class RuntimeManager:
 
     def start(self):
         readiness = self.readiness()
-        self.runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED, readiness)
-        self.runtime.transition(RuntimeState.IDENTITY_INITIALIZED, readiness)
-        self.runtime.transition(RuntimeState.STORAGE_INITIALIZED, readiness)
-        self.runtime.transition(RuntimeState.STORAGE_STRUCTURE_VERIFIED, readiness)
-        self.runtime.transition(RuntimeState.INTEGRITY_VERIFIED, readiness)
-        self.runtime.transition(RuntimeState.RECOVERY_READY, readiness)
-        self.runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
+        if self.runtime.state == RuntimeState.UNINITIALIZED:
+            self.initialize()
+        if self.runtime.state != RuntimeState.NODE_CORE_READY:
+            raise RuntimeError(
+                f"cannot start RuntimeManager from state {self.runtime.state.value}"
+            )
         self.runtime.transition(RuntimeState.RUNNING, readiness)
         return self.runtime.snapshot()
 
