@@ -76,12 +76,14 @@
       "kubo_peerid_verification",
       "process_manager",
       "health_manager",
-      "stale_pid_recovery"
+      "stale_pid_recovery",
+      "initial_synchronization",
+      "coherence_verification",
+      "dual_storage_readiness_gate"
     ],
     "not_implemented": [
       "remote_release_metadata_retrieval",
-      "initial_synchronization",
-      "dual_storage_activation"
+      "dual_storage_persistent_configuration_ui"
     ]
   },
   "test_vectors": {
@@ -95,14 +97,14 @@
       "KUBO-INSTALL-0010",
       "KUBO-INSTALL-0011",
       "KUBO-INSTALL-0012",
-      "KUBO-INSTALL-0013"
+      "KUBO-INSTALL-0013",
+      "KUBO-INSTALL-0014",
+      "KUBO-INSTALL-0015"
     ],
     "pending": [
       "KUBO-INSTALL-0004",
       "KUBO-INSTALL-0006",
       "KUBO-INSTALL-0007",
-      "KUBO-INSTALL-0014",
-      "KUBO-INSTALL-0015",
       "KUBO-INSTALL-0016",
       "KUBO-INSTALL-0017",
       "KUBO-INSTALL-0018",
