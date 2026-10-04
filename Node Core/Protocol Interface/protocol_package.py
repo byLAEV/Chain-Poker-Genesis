@@ -28,7 +28,9 @@ class ProtocolPackageVerifier:
 
     @classmethod
     def manifest_hash(cls, manifest):
-        return hashlib.sha256(cls.canonical_manifest_bytes(manifest)).hexdigest()
+        payload = dict(manifest)
+        payload.pop("manifest_hash", None)
+        return hashlib.sha256(cls.canonical_manifest_bytes(payload)).hexdigest()
 
     def _read_manifest(self, package_path):
         path = Path(package_path)
