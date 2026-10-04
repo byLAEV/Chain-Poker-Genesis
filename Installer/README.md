@@ -27,7 +27,7 @@ minimal menu. CI and automation use `--non-interactive`.
 ## Platform requirements
 
 - Linux: Python 3.9 or newer, with the distribution's `venv` support available.
-- Termux: Python and `python-cryptography` are installed through `pkg`.
+- Termux: `python-cryptography` is installed through `pkg`; Python is already required to run the installer.
 - Network access is required to resolve the source ref, download Node Core, and
   install Linux Python dependencies.
 
@@ -79,7 +79,7 @@ source build.
 
 Termux uses the native packages:
 
-`python` and `python-cryptography`.
+`python-cryptography`.
 
 The Node Core environment is created with `--system-site-packages`, so the
 native cryptography implementation is reused instead of compiling
