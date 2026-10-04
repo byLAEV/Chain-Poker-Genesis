@@ -75,4 +75,4 @@ class NetworkManager:
     def get_network_state(self) -> NetworkState:
         peers = self.registry.all()
         connected = sum(p.state == "CONNECTED" for p in peers)
-        return NetworkState("READY" if peers and connected else "IDLE", len(peers), connected)
+        return NetworkState("CONNECTED" if connected else ("REGISTERED" if peers else "IDLE"), len(peers), connected)
