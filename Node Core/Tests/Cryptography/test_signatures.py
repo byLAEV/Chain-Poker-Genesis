@@ -62,3 +62,27 @@ def test_ed25519_rfc8032_test1_vector() -> None:
     private = seed
     assert sign(b"", private) == expected_signature
     assert verify(b"", expected_signature, expected_public)
+
+
+def test_ed25519_custody_signing_does_not_require_private_key_bytes():
+    from crypto_provider import KeyCustodyProvider
+    from signatures import sign_with_custody, public_key_from_custody
+
+    class TestCustody(KeyCustodyProvider):
+        name = "test-custody"
+        version = "1.0"
+
+        def capabilities(self):
+            return ("sign_ed25519", "public_key")
+
+        def sign_ed25519(self, message, key_ref):
+            assert key_ref == "wallet://test-key"
+            return b"s" * 64
+
+        def public_key(self, key_ref):
+            assert key_ref == "wallet://test-key"
+            return b"p" * 32
+
+    custody = TestCustody()
+    assert sign_with_custody(b"message", "wallet://test-key", custody) == b"s" * 64
+    assert public_key_from_custody("wallet://test-key", custody) == b"p" * 32
