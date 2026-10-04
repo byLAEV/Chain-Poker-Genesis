@@ -19,6 +19,8 @@ class StorageAPI:
     def create(self, object_class, object_id, data, *, mirror=True, encrypted=False):
         return self.manager.put(object_class, object_id, data, mirror=mirror, encrypted=encrypted)
 
+    write = create
+
     def read(self, object_class, object_id):
         return self.manager.get(object_class, object_id)
 
@@ -27,6 +29,9 @@ class StorageAPI:
 
     def delete(self, object_class, object_id):
         return self.manager.delete(object_class, object_id)
+
+    def exists(self, object_class, object_id):
+        return self.manager.exists(object_class, object_id)
 
     def locate(self, object_id):
         return self.manager.locate(object_id)
