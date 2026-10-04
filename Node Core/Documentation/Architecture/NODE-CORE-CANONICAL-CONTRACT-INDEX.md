@@ -1,7 +1,7 @@
 # Node Core — Canonical Contract Index
 
 **Status:** PHASE 1 — CANONICAL CONTRACTS / RECONCILIATION PASS
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Scope:** Protocol-neutral Node Core
 **Project:** Chain Poker Genesis by LAEV
 
@@ -38,7 +38,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
 | API | `Documentation/Interfaces/NODE-CORE-API-CONTRACT.md` | CANONICAL | `API/node_core_api.py` (partial facade) | `Tests/API/test_node_core_api_contract.py` | Contract authority established; implementation remains explicitly PARTIAL |
 | CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL / PARTIAL | `CLI/node_cli.py` | `Tests/CLI/test_cli_contract.py` | Lifecycle subset mapped; deterministic JSON/error/exit boundary established |
-| Protocol Interface | `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` | CANONICAL | `Protocol Interface/protocol_interface.py`, protocol installation boundary | `Tests/Protocol Interface/test_protocol_interface.py` | Single installation/activation boundary established; invalid transitions tested |
+| Protocol Interface | `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Protocol Interface/protocol_interface.py`, protocol installation boundary | `Tests/Protocol Interface/test_protocol_interface.py` | Administrative interface, installer boundary and isolation are canonically specified; lifecycle implementation is mapped; persistent installer/installed storage, installer verification execution, engine association execution and rendered UI remain partial |
 | Consensus Infrastructure | N/A for PHASE 1 Node Core scope | OUT OF SCOPE | `Consensus/` | Protocol-specific verification belongs to CPG Protocol | Node Core provides Engine Runtime/Protocol Interface boundaries; CPG consensus is excluded from generic Node Core authority |
 | Manifest Authority | `Documentation/Interfaces/NODE-CORE-MANIFEST-AUTHORITY-CONTRACT.md` | CANONICAL | `NODE-CORE-MANIFEST.json`, `Configuration/Schemas/node-core-installation-manifest.schema.json`, installation-manifest generation/validation | `Tools/Validation/validate_manifest_authority.py`, `Tests/Test Vectors/NODE-MANIFEST-AUTHORITY-0001.json`, installation manifest tests | Component manifest vs instance installation manifest separated; legacy duplicate schema explicitly classified; conflict rules established |
 
@@ -279,3 +279,33 @@ Resolved:
 The absence of `message_envelope.py` is not treated as a missing authority: envelope construction is currently implemented in `network_manager.py`; the contract does not require a separate file/module.
 
 **Next PHASE 2 component:** Protocol Interface.
+
+
+## PHASE 2 — Protocol Interface reconciliation
+
+**Component:** Protocol Interface  
+**Status:** IMPLEMENTED_PARTIAL / CONTRACT RECONCILED
+
+Reconciled chain:
+
+`NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md`
+→ `PROTOCOL-INTERFACE-MANIFEST.json`
+→ `Protocol Interface/README.md`
+→ `Protocol Interface/protocol_interface.py`
+→ `API/Protocol API/README.md`
+→ `Tests/Protocol Interface/test_protocol_interface.py`.
+
+Resolved:
+- Protocol Interface is explicitly the boundary between protocol-neutral Node Core and independently installed protocols.
+- The administrative interface is now specified as a minimal Protocols layer with Installed Protocols and Install Protocol sections.
+- Visual baseline is fixed at white / black / dark gray / light gray, with hierarchy driven by information importance.
+- The canonical installer boundary is `Node Core/Protocols/Installers/`.
+- The canonical installed-protocol boundary is `Node Core/Protocols/Installed/`.
+- The distinction `AVAILABLE INSTALLER ≠ INSTALLED ≠ ACTIVE ≠ RUNNING` is normative.
+- Protocol identity remains manifest/descriptor authority.
+- Required engine association is delegated to Engine Runtime; Protocol Interface cannot create a second engine lifecycle.
+- CPG-specific consensus, ledger, poker rules, table state, Table Wallet, settlement and rake remain outside Node Core.
+
+Implementation remains partial because the repository does not yet implement the complete persistent installer/installed directory workflow, installer verification execution, engine-association execution and a rendered administrative UI.
+
+**Next PHASE 2 action:** implement the protocol installation filesystem boundary and installer verification against the canonical contract before declaring Protocol Interface PASS.
