@@ -50,6 +50,14 @@ class RuntimeManager:
         return {"runtime_state": self.runtime.state.value, "provider_state": "HEALTHY",
                 "local_fallback": False, "health": result}
 
+    def complete_recovery_to_ready(self, readiness):
+        """Complete canonical recovery and stop at NODE_CORE_READY."""
+        if self.runtime.state == RuntimeState.DEGRADED:
+            self.runtime.transition(RuntimeState.RECOVERY)
+        if self.runtime.state == RuntimeState.RECOVERY:
+            self.runtime.transition(RuntimeState.NODE_CORE_READY, readiness)
+        return self.runtime.snapshot()
+
     def complete_storage_provider_recovery(self, readiness):
         """Return from provider recovery only after canonical Node Core readiness passes."""
         if self.runtime.state == RuntimeState.RUNNING:
