@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kubo Installation Manifest",
+  "type": "object",
+  "required": ["manifest_type","manifest_version","provider","version","package_sha512","installation_root","executable_path","repository_path","ipfs_path","status"],
+  "properties": {
+    "manifest_type": {"const": "KUBO-INSTALLATION-MANIFEST"},
+    "manifest_version": {"const": "1.0.0"},
+    "provider": {"const": "Kubo"},
+    "version": {"type": "string", "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "package_sha512": {"type": "string", "pattern": "^[0-9a-fA-F]{128}$"},
+    "installation_root": {"type": "string", "minLength": 1},
+    "executable_path": {"type": "string", "minLength": 1},
+    "repository_path": {"type": "string", "minLength": 1},
+    "ipfs_path": {"type": "string", "minLength": 1},
+    "status": {"const": "INSTALLED"}
+  },
+  "additionalProperties": false
+}
