@@ -31,6 +31,9 @@ jobs:
           python -m py_compile Installer/install.py
           python -m compileall -q "Node Core"
 
+      - name: Test installer archive safety
+        run: python -m unittest Installer/tests/test_archive_safety.py
+
       - name: Test non-interactive direct installer from current branch
         run: |
           rm -rf /tmp/cpg-direct-installer-test
