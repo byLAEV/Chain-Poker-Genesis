@@ -15,7 +15,7 @@
       },
       "expected": {
         "ciphertext": "",
-        "tag": "58e2fccefa7e3061367f1d57a4e7455a"
+        "tag": "530f8afbc74536b9a963b4f1c4cb738b"
       },
       "result": "PASS"
     },
@@ -47,7 +47,7 @@
       },
       "expected": {
         "ciphertext": "cea7403d4d606b6e074ec5d3baf39d18",
-        "tag": "d24e503a1bb037071c71b35d987b8657"
+        "tag": "ae9b1771dba9cf62b39be017940330b4"
       },
       "result": "PASS"
     },
