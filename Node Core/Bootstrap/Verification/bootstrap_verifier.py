@@ -11,7 +11,7 @@ class BootstrapVerificationError(Exception):
 REQUIRED = (
     "node-storage","node-storage/identity","node-storage/cryptography",
     "node-storage/configuration","node-storage/state","node-storage/records",
-    "node-storage/recovery","node-storage/protocol",
+    "node-storage/recovery","node-storage/protocol","node-storage/network",
 )
 ARTIFACTS = (
     "node-storage/identity/node-identity.json",
@@ -19,6 +19,7 @@ ARTIFACTS = (
     "node-storage/state/node-state.json",
     "node-storage/recovery/recovery.json",
     "node-storage/state/storage-manifest.json",
+    "node-storage/network/network-state.json",
     "node-installation-manifest.json",
 )
 SCHEMA_PATH = Path(__file__).resolve().parents[2] / "Configuration/Schemas/node-core-installation-manifest.schema.json"
@@ -78,7 +79,8 @@ def verify(target: Path):
     state = _load_json(target / ARTIFACTS[2], "node state")
     recovery = _load_json(target / ARTIFACTS[3], "recovery metadata")
     storage = _load_json(target / ARTIFACTS[4], "storage manifest")
-    installation = _load_json(target / ARTIFACTS[5], "installation manifest")
+    network_state = _load_json(target / ARTIFACTS[5], "network state")
+    installation = _load_json(target / ARTIFACTS[6], "installation manifest")
     integrity = _load_json(target / "node-storage/state/bootstrap-integrity.json", "integrity manifest")
     schema = _load_json(SCHEMA_PATH, "canonical installation schema")
 
@@ -95,6 +97,10 @@ def verify(target: Path):
     if storage.get("root") != "node-storage" or storage.get("required_paths") != list(REQUIRED):
         raise BootstrapVerificationError("storage structure mismatch")
 
+    if network_state.get("minimum_protocol_nodes") != 5 or network_state.get("connected_nodes") != 0 or network_state.get("protocol_readiness") != "NOT_READY":
+        raise BootstrapVerificationError("network readiness baseline mismatch")
+    if installation["network"] != network_state:
+        raise BootstrapVerificationError("installation/network manifest mismatch")
     if installation["storage"]["required_paths"] != storage["required_paths"]:
         raise BootstrapVerificationError("installation/storage manifest mismatch")
     if installation["storage"]["storage_structure_version"] != storage["storage_structure_version"]:
