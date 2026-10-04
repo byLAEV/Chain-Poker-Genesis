@@ -122,3 +122,15 @@ def verify(target: Path):
             raise BootstrapVerificationError(f"bootstrap artifact integrity failure: {relative}")
 
     return {"status": "VERIFIED", "state": state["state"], "integrity": "VERIFIED"}
+
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) != 2:
+        raise SystemExit("usage: bootstrap_verifier.py <target-directory>")
+    try:
+        result = verify(Path(sys.argv[1]))
+    except BootstrapVerificationError as exc:
+        print(f"BOOTSTRAP VERIFICATION FAILED: {exc}", file=sys.stderr)
+        raise SystemExit(1)
+    print(json.dumps(result, sort_keys=True))
