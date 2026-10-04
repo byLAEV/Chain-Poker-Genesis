@@ -1,6 +1,6 @@
 {
   "component": "Chain Poker Genesis Node Core CLI Installer",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "status": "IMPLEMENTED_AND_CI_VERIFIED",
   "verification_scope": {
     "ci": "VERIFIED",
@@ -10,7 +10,8 @@
     "fresh_installation": "VERIFIED_BY_CI",
     "existing_installation": "VERIFIED_BY_CI",
     "interrupted_installation": "VERIFIED_BY_CI",
-    "node_core_verification": "VERIFIED_BY_CI"
+    "node_core_verification": "VERIFIED_BY_CI",
+    "termux_native_dependency_path": "IMPLEMENTED; REAL_DEVICE_NOT_VERIFIED"
   },
   "source_repository": "byLAEV/Chain-Poker-Genesis",
   "source_ref": "main",
@@ -45,10 +46,11 @@
     "dependency_source": "Node Core component requirements files plus platform-native dependency packages where required",
     "network": "REQUIRED_FOR_DOWNLOAD_AND_DEPENDENCY_INSTALL",
     "termux_native_packages": [
+      "python",
       "python-cryptography"
     ],
-    "termux_python_package_policy": "USE_NATIVE_TERMUX_PACKAGE; DO_NOT_BUILD_CRYPTOGRAPHY_FROM_PIP_SOURCE",
-    "termux_cryptography_compatibility": "RUNTIME_VERIFIED_BY_NATIVE_PACKAGE_AND_REQUIRED_CRYPTOGRAPHIC_PRIMITIVE_IMPORTS"
+    "termux_python_package_policy": "USE_NATIVE_TERMUX_PACKAGES; DO_NOT_BUILD_CRYPTOGRAPHY_FROM_PYPI_SOURCE",
+    "termux_cryptography_compatibility": "RUNTIME_VERIFIED; REQUIRED RANGE >=46,<49"
   },
   "installation_environment": "LOCAL_NODE_CORE_VENV",
   "venv_location": ".node-core-python",
