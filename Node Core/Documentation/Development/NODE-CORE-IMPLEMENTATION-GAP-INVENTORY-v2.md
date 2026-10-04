@@ -15,30 +15,27 @@
 
 ## Current inventory
 
-| Subsystem | Evidence at baseline | State | Next action |
+| Subsystem | Evidence at current baseline | State | Next action |
 |---|---|---|---|
-| Bootstrap / Installer | executable bootstrap + CI/E2E verification | IMPLEMENTED + VERIFIED | preserve baseline; expand negative cases |
-| Configuration | schemas + generated node configuration + readiness validation | IMPLEMENTED / PARTIAL | connect full configuration policy to runtime |
-| Identity | executable offline Identity Core + canonical schema + lifecycle/tamper tests; production integration remains open | IMPLEMENTED / PARTIAL | integrate credential adapters, binding, persistence, propagation and recovery |
-| Cryptography Core | core specification; implementation directories remain placeholders | BLOCKED BY SPECIFICATION | freeze cryptographic profile before normative implementation |
-| Storage Manager | executable manager + tests + coherence validation | IMPLEMENTED / PARTIAL | expand failure and fallback coverage |
-| Object Registry | executable registry + tests | IMPLEMENTED / PARTIAL | expand integrity/schema edge cases |
-| Storage Provider | local provider + tests; external provider not provisioned | IMPLEMENTED / PARTIAL | define distributed-provider contract and test fallback |
-| Storage Locator | executable locator + tests | IMPLEMENTED / PARTIAL | complete all location-state cases |
-| Runtime | executable lifecycle + readiness state model + E2E | IMPLEMENTED + VERIFIED | add transition-negative coverage |
-| Health / Readiness | executable health evaluator + E2E verification | IMPLEMENTED + VERIFIED | expand failure-state coverage |
-| Recovery | executable recovery manager + E2E verification | IMPLEMENTED / PARTIAL | add interruption/corruption scenarios |
-| Network / Synchronization | executable peer registry, TCP reference transport, message framing, hello handshake, propagation boundary, synchronization state + tests | IMPLEMENTED / PARTIAL | integrate authenticated production provider, decentralized discovery, and live synchronization verification |
-| Protocol Interface | protocol installation boundary + schema + E2E isolation | IMPLEMENTED + VERIFIED | expand rejection/compatibility cases |
-| Node Manager | structural directories/documentation | STRUCTURAL ONLY | define manager contract and implement |
-| API | structural API directories | STRUCTURAL ONLY | define Node Core API contract |
-| CLI | structural CLI directories | STRUCTURAL ONLY | define operational command contract |
-| Security | structural security directories/specification | STRUCTURAL ONLY | define executable security boundary |
-| Time | structural time directories/specification | STRUCTURAL ONLY | define executable Node Core time service contract |
-| Consensus | structural consensus directories | STRUCTURAL ONLY | keep protocol/table consensus outside Node Core baseline unless infrastructure contract requires otherwise |
-| Engine Runtime | structural runtime directories + related tests/specifications | IMPLEMENTED / PARTIAL | reconcile engine lifecycle boundary with canonical runtime |
-| Release / Integrity | release-integrity implementation + validation | IMPLEMENTED / PARTIAL | integrate release verification into CI |
-| Tests / Test Vectors | automated tests + test-vector inventory | IMPLEMENTED / PARTIAL | increase negative, mutation, and cross-component coverage |
+| Bootstrap / Installer | executable bootstrap + structural audit + compilation + verification + installation manifest + E2E + final audit | IMPLEMENTED + VERIFIED | expand negative cases |
+| Configuration | canonical contract + schema + Configuration Manager + readiness integration + tests + CI | IMPLEMENTED / PARTIAL | complete broader policy/negative-path coverage |
+| Identity | executable Identity Core + canonical profile + lifecycle/tamper tests + CI; production trust/registration remains open | IMPLEMENTED / PARTIAL | complete credential adapters, registration, persistence, propagation and recovery |
+| Cryptography Core | executable core primitives/service + canonical profile + crypto tests + CI; production security audit remains open | IMPLEMENTED / PARTIAL | close production profile coverage, AEAD/Merkle boundaries and external security audit |
+| Storage | executable local storage, registry, locator, synchronization/recovery boundaries + storage tests + CI; live Kubo operation remains environment-dependent | IMPLEMENTED / PARTIAL | expand failure/fallback matrix and live-provider evidence |
+| Runtime | canonical lifecycle + readiness implementation + runtime tests + E2E + final audit | IMPLEMENTED + VERIFIED | expand transition-negative coverage |
+| Health / Readiness | executable evaluator + installation/E2E verification + final audit | IMPLEMENTED + VERIFIED | expand failure-state coverage |
+| Recovery | executable recovery manager + recovery tests + E2E + final audit | IMPLEMENTED / PARTIAL | expand interruption/corruption/reconciliation scenarios |
+| Network / Synchronization | executable peer registry, reference transport, framing, handshake, envelopes, propagation and synchronization state + tests + CI | IMPLEMENTED / PARTIAL | authenticated production transport, decentralized discovery and live synchronization |
+| Protocol Interface | executable catalog/download/package verification/installation boundary + protocol tests + E2E isolation + CI | IMPLEMENTED / PARTIAL | complete persistent administrative/install lifecycle and broader compatibility cases |
+| Node Manager | canonical contract + executable manager + management events + contract tests + CI | IMPLEMENTED / PARTIAL | complete recovery integration and broader management surface |
+| API | canonical API contract + executable facade + API tests + CI | IMPLEMENTED / PARTIAL | expand service/command surface |
+| CLI | canonical CLI contract + executable command subset + CLI tests + CI | IMPLEMENTED / PARTIAL | expand operational command catalog |
+| Security | canonical security contract + executable security service + contract tests + CI | IMPLEMENTED / PARTIAL | audit logging and secure-configuration enforcement |
+| Time | canonical time contract + executable service + contract tests + CI | IMPLEMENTED / PARTIAL | expand synchronization/reference-status coverage |
+| Consensus Infrastructure | protocol-neutral boundary only; CPG consensus remains protocol-specific and excluded from generic Node Core authority | OUT OF SCOPE | keep CPG consensus in CPG Protocol Core |
+| Engine Runtime | canonical contract + executable shared runtime + contract tests + CI | IMPLEMENTED / PARTIAL | complete sandbox/resource controls |
+| Release / Integrity | executable validation and manifest authority + CI final audit | IMPLEMENTED / PARTIAL | expand release verification evidence |
+| Tests / Test Vectors | automated verification, integration, E2E and final audit all PASS in Run #561 | IMPLEMENTED / PARTIAL | increase negative, mutation, cross-component and environmental coverage |
 
 ## Verified baseline boundary
 
