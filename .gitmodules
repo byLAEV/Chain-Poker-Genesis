@@ -17,3 +17,19 @@
 [submodule "Node Core/Cryptography/Core References/lightningnetwork--lnd"]
 	path = Node Core/Cryptography/Core References/lightningnetwork--lnd
 	url = https://github.com/lightningnetwork/lnd.git
+
+[submodule "Node Core/Cryptography/External References/gpg--gpgme"]
+	path = Node Core/Cryptography/External References/gpg--gpgme
+	url = https://github.com/gpg/gpgme.git
+
+[submodule "Node Core/Cryptography/External References/gpg--poldi"]
+	path = Node Core/Cryptography/External References/gpg--poldi
+	url = https://github.com/gpg/poldi.git
+
+[submodule "Node Core/Cryptography/External References/openpgpjs--openpgpjs"]
+	path = Node Core/Cryptography/External References/openpgpjs--openpgpjs
+	url = https://github.com/openpgpjs/openpgpjs.git
+
+[submodule "Node Core/Cryptography/External References/pgpainless--pgpainless"]
+	path = Node Core/Cryptography/External References/pgpainless--pgpainless
+	url = https://github.com/pgpainless/pgpainless.git
