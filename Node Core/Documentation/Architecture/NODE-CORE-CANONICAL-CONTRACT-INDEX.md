@@ -702,3 +702,21 @@ The Installer / Manager design freezes:
 - `KUBO READY ≠ DUAL STORAGE READY`.
 
 No installer implementation is authorized yet. The next gate is to freeze the release-source/architecture matrix, provider-state schema and installation test vectors.
+
+
+## PHASE 4 — Kubo release/platform/state/test gate
+
+**Status:** DESIGN GATE SATISFIED
+
+Frozen artifacts:
+- KUBO-RELEASE-AND-PLATFORM-MATRIX-v1.0.md
+- KUBO-PROVIDER-STATE-SCHEMA-v1.0.md
+- KUBO-NODE-INSTALLER-TEST-VECTORS-v1.0.md
+
+The release resolver now has a normative source boundary, Linux-first architecture matrix, explicit Windows future boundary and deferred iOS contract.
+
+Provider state separates lifecycle, health and synchronization state. READY is stronger than HEALTHY.
+
+The test vectors establish fail-closed behavior for package integrity, paths, executable/version mismatch, initialization, process failure, synchronization, coherence, Dual Storage gating, restart and upgrade.
+
+Implementation may now begin for Linux only, subject to the canonical contracts.
