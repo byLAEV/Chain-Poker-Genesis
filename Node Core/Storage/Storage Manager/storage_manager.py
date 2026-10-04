@@ -159,6 +159,10 @@ class StorageManager:
     def recover(self, object_id):
         return self.recovery.recover(object_id)
 
+    def reconcile(self, health_manager):
+        from kubo_reconciliation_manager import KuboReconciliationManager
+        return KuboReconciliationManager(self, health_manager).reconcile()
+
     def status(self):
         return {
             "storage_version": self.engine.version,
