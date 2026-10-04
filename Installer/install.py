@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 import os
-import platform
 import shutil
 import subprocess
 import sys
@@ -18,8 +17,10 @@ import urllib.request
 from pathlib import Path
 
 REPOSITORY = "byLAEV/Chain-Poker-Genesis"
+INSTALLER_VERSION = "1.4.0"
 DEFAULT_LINUX_TARGET = Path.home() / ".local" / "share" / "chain-poker-genesis" / "node-core"
 DEFAULT_TERMUX_TARGET = Path.home() / ".chain-poker-genesis" / "node-core"
+MIN_PYTHON = (3, 9)
 
 
 class InstallationError(RuntimeError):
@@ -32,6 +33,25 @@ def detect_platform() -> str:
     if sys.platform.startswith("linux"):
         return "LINUX"
     raise InstallationError(f"Unsupported operating system: {sys.platform}")
+
+
+def validate_python_runtime() -> None:
+    if sys.version_info < MIN_PYTHON:
+        required = ".".join(map(str, MIN_PYTHON))
+        current = platform_python_version()
+        raise InstallationError(
+            f"Python {required} or newer is required; detected Python {current}"
+        )
+
+
+def platform_python_version() -> str:
+    return ".".join(
+        (
+            str(sys.version_info.major),
+            str(sys.version_info.minor),
+            str(sys.version_info.micro),
+        )
+    )
 
 
 def default_target(platform_name: str) -> Path:
@@ -48,7 +68,7 @@ def resolve_commit_sha(source_ref: str) -> str:
         api_url,
         headers={
             "Accept": "application/vnd.github+json",
-            "User-Agent": "Chain-Poker-Genesis-Node-Core-Installer/1.0",
+            "User-Agent": f"Chain-Poker-Genesis-Node-Core-Installer/{INSTALLER_VERSION}",
         },
     )
     try:
@@ -69,7 +89,9 @@ def download_archive(destination: Path, source_ref: str) -> str:
     archive_url = f"https://github.com/{REPOSITORY}/archive/{resolved_sha}.tar.gz"
     request = urllib.request.Request(
         archive_url,
-        headers={"User-Agent": "Chain-Poker-Genesis-Node-Core-Installer/1.0"},
+        headers={
+            "User-Agent": f"Chain-Poker-Genesis-Node-Core-Installer/{INSTALLER_VERSION}",
+        },
     )
     try:
         with urllib.request.urlopen(request, timeout=60) as response, destination.open("wb") as output:
@@ -90,7 +112,6 @@ def _safe_archive_member(member: tarfile.TarInfo, node_core_prefix: Path) -> Pat
     if relative.is_absolute() or ".." in relative.parts:
         raise InstallationError(f"Unsafe archive path: {member.name}")
     return relative
-
 
 
 def extract_node_core(archive: Path, extraction_root: Path, staging: Path) -> None:
@@ -127,11 +148,14 @@ def _termux_install_native_cryptography() -> None:
     """Install the Termux-native cryptography package instead of compiling it with pip."""
     pkg = shutil.which("pkg")
     if pkg is None:
-        raise InstallationError("Termux package manager 'pkg' is required for the native cryptography dependency")
+        raise InstallationError(
+            "Termux package manager 'pkg' is required for the native cryptography dependency"
+        )
 
     completed = subprocess.run(
         [pkg, "install", "-y", "python", "python-cryptography"],
-        text=True, capture_output=True,
+        text=True,
+        capture_output=True,
     )
     if completed.returncode != 0:
         if completed.stdout:
@@ -144,7 +168,7 @@ def _termux_install_native_cryptography() -> None:
 
 
 def _verify_termux_cryptography(python_executable: Path) -> None:
-    """Verify the native Termux package is visible and importable in the local venv."""
+    """Verify the native Termux package is visible and usable in the local venv."""
     probe = (
         "import importlib.metadata as m; "
         "v=m.version('cryptography'); "
@@ -162,7 +186,8 @@ def _verify_termux_cryptography(python_executable: Path) -> None:
     )
     completed = subprocess.run(
         [str(python_executable), "-c", probe],
-        text=True, capture_output=True,
+        text=True,
+        capture_output=True,
     )
     if completed.returncode != 0:
         if completed.stderr:
@@ -172,47 +197,73 @@ def _verify_termux_cryptography(python_executable: Path) -> None:
         )
 
 
+def _create_venv(environment: Path, termux: bool) -> Path:
+    command = [sys.executable, "-m", "venv"]
+    if termux:
+        command.append("--system-site-packages")
+    command.append(str(environment))
+
+    completed = subprocess.run(command, text=True, capture_output=True)
+    if completed.returncode != 0:
+        if completed.stderr:
+            print(completed.stderr, file=sys.stderr, end="")
+        if termux:
+            raise InstallationError(
+                "Unable to create the Termux Python environment. "
+                "Verify that the Termux Python package provides the venv module."
+            )
+        raise InstallationError(
+            "Unable to create the Linux Python environment. "
+            "Install the Python venv package for your distribution and retry."
+        )
+
+    python_executable = environment / "bin/python"
+    if not python_executable.is_file():
+        raise InstallationError("Created Python environment is missing its interpreter")
+    return python_executable
+
+
 def prepare_python_environment(staging: Path, temp_root: Path) -> Path:
+    validate_python_runtime()
     requirements = staging / "Cryptography" / "requirements.txt"
     if not requirements.is_file():
         return Path(sys.executable)
 
+    platform_name = detect_platform()
     environment = temp_root / ".node-core-python"
     print("[2/5] Preparing Node Core environment...", flush=True)
 
-    if detect_platform() == "TERMUX":
+    if platform_name == "TERMUX":
         _termux_install_native_cryptography()
-        completed = subprocess.run(
-            [sys.executable, "-m", "venv", "--system-site-packages", str(environment)],
-            text=True, capture_output=True,
-        )
-    else:
-        completed = subprocess.run(
-            [sys.executable, "-m", "venv", str(environment)],
-            text=True, capture_output=True,
-        )
-
-    if completed.returncode != 0:
-        if completed.stderr:
-            print(completed.stderr, file=sys.stderr, end="")
-        raise InstallationError("Unable to create the Node Core Python environment")
-
-    python_executable = environment / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-    if not python_executable.is_file():
-        raise InstallationError("Created Python environment is missing its interpreter")
-
-    if detect_platform() == "TERMUX":
+        python_executable = _create_venv(environment, termux=True)
         _verify_termux_cryptography(python_executable)
         return python_executable
 
+    python_executable = _create_venv(environment, termux=False)
+
+    # Linux uses the canonical Node Core requirements. Binary wheels are
+    # preferred so the installer does not silently introduce a compiler/Rust
+    # build chain for cryptography.
     completed = subprocess.run(
-        [str(python_executable), "-m", "pip", "install", "--disable-pip-version-check", "-r", str(requirements)],
-        text=True, capture_output=True,
+        [
+            str(python_executable),
+            "-m",
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "--only-binary=:all:",
+            "-r",
+            str(requirements),
+        ],
+        text=True,
+        capture_output=True,
     )
     if completed.returncode != 0:
         if completed.stderr:
             print(completed.stderr, file=sys.stderr, end="")
-        raise InstallationError("Unable to install Node Core Python dependencies")
+        raise InstallationError(
+            "Unable to install Node Core Linux Python dependencies from compatible binary packages"
+        )
     return python_executable
 
 
@@ -221,7 +272,8 @@ def bootstrap(staging: Path, python_executable: Path) -> None:
     installer = staging / "Bootstrap" / "Installer" / "bootstrap_node.py"
     completed = subprocess.run(
         [str(python_executable), str(installer), str(staging)],
-        text=True, capture_output=True,
+        text=True,
+        capture_output=True,
     )
     if completed.returncode != 0:
         if completed.stderr:
@@ -234,7 +286,8 @@ def verify(staging: Path, python_executable: Path) -> None:
     verifier = staging / "Bootstrap" / "Verification" / "bootstrap_verifier.py"
     completed = subprocess.run(
         [str(python_executable), str(verifier), str(staging)],
-        text=True, capture_output=True,
+        text=True,
+        capture_output=True,
     )
     if completed.returncode != 0:
         if completed.stderr:
@@ -244,12 +297,15 @@ def verify(staging: Path, python_executable: Path) -> None:
 
 def install(target: Path, source_ref: str = "main") -> None:
     platform_name = detect_platform()
+    validate_python_runtime()
     target = target.expanduser().resolve()
 
     if target.exists():
         manifest = target / "node-installation-manifest.json"
         if manifest.exists():
-            raise InstallationError("An existing Node Core installation was detected; it will not be overwritten.")
+            raise InstallationError(
+                "An existing Node Core installation was detected; it will not be overwritten."
+            )
         if any(target.iterdir()):
             raise InstallationError(
                 "An existing or incomplete installation target was detected; "
@@ -269,6 +325,8 @@ def install(target: Path, source_ref: str = "main") -> None:
             extracted = temp_root / "node-core"
             extracted.mkdir()
 
+            print(f"Platform: {platform_name}", flush=True)
+            print(f"Python: {platform_python_version()}", flush=True)
             print("[1/5] Downloading Node Core...", flush=True)
             resolved_sha = download_archive(archive, source_ref)
             print(f"Source commit: {resolved_sha}", flush=True)
@@ -281,8 +339,6 @@ def install(target: Path, source_ref: str = "main") -> None:
         verify(target, python_executable)
         print("[5/5] Finalizing installation...", flush=True)
     except BaseException:
-        # Installation is transactional: failures and user interruptions remove
-        # any incomplete Node Core installation.
         if target_created and target.exists():
             shutil.rmtree(target, ignore_errors=True)
         if staging.exists():
@@ -387,6 +443,7 @@ def main() -> int:
 
     try:
         platform_name = detect_platform()
+        validate_python_runtime()
         target = args.target or default_target(platform_name)
         if not args.non_interactive and sys.stdin.isatty() and sys.stdout.isatty():
             return interactive(args.ref, target)
