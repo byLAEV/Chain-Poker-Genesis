@@ -29,7 +29,9 @@ class KuboArtifactAcquirer:
 
     def acquire(self, artifact: KuboArtifact, destination: str | Path, expected_sha512: str | None = None) -> Path:
 
-        if expected_sha512 is None:\n            expected_sha512 = self.fetch_expected_sha512(artifact)\n        if not re.fullmatch(r"[0-9a-fA-F]{128}", expected_sha512):
+        if expected_sha512 is None:
+            expected_sha512 = self.fetch_expected_sha512(artifact)
+        if not re.fullmatch(r"[0-9a-fA-F]{128}", expected_sha512):
             raise KuboDownloadError("expected SHA-512 must be 128 hex characters")
         dest = Path(destination).resolve()
         dest.mkdir(parents=True, exist_ok=True)
