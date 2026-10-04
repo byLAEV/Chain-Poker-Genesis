@@ -11,9 +11,10 @@ import tempfile
 from pathlib import Path
 
 BASE=Path(__file__).resolve().parents[2]
+CRYPTO=BASE/"Cryptography"/"Core"
 for p in (
     BASE, BASE/"Bootstrap/Installer", BASE/"Runtime", BASE/"Identity",
-    BASE/"Recovery", BASE/"Network", BASE/"Protocol Interface",
+    BASE/"Recovery", BASE/"Network", BASE/"Protocol Interface", CRYPTO,
 ):
     sys.path.insert(0,str(p))
 
