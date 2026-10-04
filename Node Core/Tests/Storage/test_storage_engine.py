@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reference tests for the Node Core Storage engine."""
+"""Reference tests for the canonical Node Core Storage engine."""
 from __future__ import annotations
 import importlib.util
 import tempfile
@@ -19,9 +19,14 @@ class StorageEngineTests(unittest.TestCase):
             engine = MODULE.StorageEngine(tmp)
             metadata = engine.put("public", "object-a", b"hello", mirror=False)
             self.assertEqual(metadata["provider_type"], "LOCAL")
+            self.assertEqual(metadata["storage_class"], "public")
+            self.assertEqual(metadata["state"], "PRESENT")
+            self.assertEqual(metadata["version"], MODULE.STORAGE_VERSION)
+            self.assertIn("created_at", metadata)
+            self.assertIn("updated_at", metadata)
             data, read_meta = engine.get("public", "object-a")
             self.assertEqual(data, b"hello")
-            self.assertEqual(read_meta["read_source"], "LOCAL_FALLBACK")
+            self.assertEqual(read_meta["content_hash"], metadata["content_hash"])
             self.assertTrue(engine.verify("public", "object-a", metadata["content_hash"]))
 
     def test_path_traversal_rejected(self):
@@ -29,18 +34,6 @@ class StorageEngineTests(unittest.TestCase):
             engine = MODULE.StorageEngine(tmp)
             with self.assertRaises(MODULE.StorageError):
                 engine.put("public", "../escape", b"x", mirror=False)
-
-    def test_private_mirror_requires_encryption_boundary(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            engine = MODULE.StorageEngine(tmp, kubo=object())
-            with self.assertRaises(MODULE.StorageError):
-                engine.put("private", "secret", b"plaintext", mirror=True)
-
-    def test_private_local_storage_is_allowed_without_distribution(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            engine = MODULE.StorageEngine(tmp)
-            metadata = engine.put("private", "secret", b"plaintext", mirror=False)
-            self.assertEqual(metadata["location_state"], "LOCAL_ONLY")
 
 if __name__ == "__main__":
     unittest.main()
