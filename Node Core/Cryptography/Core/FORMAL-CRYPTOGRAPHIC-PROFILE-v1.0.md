@@ -71,3 +71,15 @@ Before declaring Cryptography Core production-ready, the repository MUST contain
 
 ## 11. CPG boundary
 This profile defines infrastructure primitives only. It does not define CPG consensus, poker randomness, table state, settlement, or ledger cryptography.
+
+## 12. Normative subordinate profiles
+The following v1.0 profiles are part of the Cryptography Core contract closure:
+- CANONICAL-SERIALIZATION-PROFILE-v1.0.md
+- CRYPTO-TEST-VECTOR-FORMAT-v1.0.md
+- CSPRNG-FAILURE-CONTRACT-v1.0.md
+- KEY-LIFECYCLE-BOUNDARY-v1.0.md
+- ENCRYPTION-AEAD-PROFILE-v1.0.md
+- MERKLE-PROFILE-v1.0.md
+- PRODUCTION-CRYPTOGRAPHIC-SECURITY-REQUIREMENTS-v1.0.md
+
+These profiles close the previously open normative boundaries. Implementation and verification remain separate subsequent phases.
