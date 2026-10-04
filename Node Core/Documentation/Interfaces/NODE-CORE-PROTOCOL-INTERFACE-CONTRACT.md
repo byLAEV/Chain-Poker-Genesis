@@ -1,7 +1,7 @@
 # Node Core Protocol Interface Contract
 
 **Status:** CANONICAL  
-**Version:** 1.1.0  
+**Version:** 1.2.0  
 **Scope:** Minimal administrative boundary between protocol-neutral Node Core and independently installed protocols
 
 ## 1. Purpose
@@ -69,7 +69,37 @@ A remote catalog entry is **not** itself an installed protocol.
 
 An unverified downloaded package MUST NOT be treated as an installed or active protocol.
 
-## 5. Canonical protocol storage boundary
+## 5. Protocol Catalog, Source Resolver and Download Boundary
+
+The protocol catalog is the remote discovery layer for available protocol packages. It MUST support the following source classes:
+
+- `CID`;
+- `GitHub`.
+
+A catalog entry MUST expose:
+
+- protocol identity;
+- version when available;
+- source type;
+- source/reference;
+- usable download URL;
+- package integrity evidence when published.
+
+The **Source Resolver** validates that the catalog entry can be resolved through its declared source class. It MUST NOT install, activate or register the protocol.
+
+The **Download Boundary** performs transport only. It writes a downloaded package into:
+
+`Node Core/Protocols/`
+
+The download boundary MUST NOT mark the package as installed or active.
+
+For the baseline implementation, HTTP(S) is the transport boundary for downloadable catalog links. A CID source may resolve through an approved HTTP(S) gateway or equivalent configured source; the CID remains the content-addressed source identity.
+
+The local package then enters:
+
+`Local Protocol Package → Verification → Protocol Interface Installation`
+
+## 6. Canonical protocol storage boundary
 
 Node Core provides one local protocol area for downloaded protocol packages and installed protocol associations:
 
@@ -93,7 +123,7 @@ Installing a protocol MUST result in an installed protocol association represent
 
 Node Core hosts and manages the protocol; the protocol remains a separately versioned protocol and is not part of the Node Core implementation itself.
 
-## 6. Required operations
+## 7. Required operations
 
 The reference interface provides:
 
@@ -116,13 +146,13 @@ The administrative presentation boundary additionally requires the ability to re
 
 Presentation operations MUST delegate to the Protocol Interface and MUST NOT create a second protocol registry or lifecycle.
 
-## 7. Compatibility gate
+## 8. Compatibility gate
 
 A protocol MUST NOT be treated as compatible unless its declared required capabilities are satisfied by the Node Core capability set.
 
 Compatibility is a prerequisite for registration in the canonical lifecycle.
 
-## 8. Engine association
+## 9. Engine association
 
 Required protocol engines are associated with the protocol during installation.
 
@@ -130,7 +160,7 @@ The Protocol Interface MAY request engine registration/activation through Engine
 
 Protocol Interface MUST NOT create a second engine lifecycle or engine registry.
 
-## 9. Installation and activation gates
+## 10. Installation and activation gates
 
 Installation MUST require REGISTERED state and successful installer verification.
 
@@ -140,7 +170,7 @@ Node Core MUST NOT silently activate an uninstalled protocol.
 
 Activation does not mean that protocol-specific work is being executed by Node Core itself.
 
-## 10. Minimal administrative interface
+## 11. Minimal administrative interface
 
 The Protocol Interface presentation is intentionally minimal and functional.
 
@@ -216,7 +246,7 @@ The interface MUST preserve the distinction:
 
 If a state is not implemented by the current runtime, the interface MUST NOT fabricate it.
 
-## 11. Protocol isolation
+## 12. Protocol isolation
 
 Protocol Interface MUST NOT define or implement:
 
@@ -233,7 +263,7 @@ For CPG specifically, these remain inside the separately installed Chain Poker G
 
 The interface may display protocol metadata supplied by CPG, but display MUST NOT make CPG logic part of Node Core authority.
 
-## 12. Node Core completion boundary
+## 13. Node Core completion boundary
 
 Before any protocol is installed:
 
@@ -245,13 +275,13 @@ synchronization = NOT_EVALUATED
 
 The installation boundary may report `ARMED`; this means a verified separation point exists, not that CPG is installed.
 
-## 13. Independent versioning
+## 14. Independent versioning
 
 Protocol engine versions are independent of Node Core versions.
 
 Updating Node Core MUST NOT imply an automatic update of installed protocol engines.
 
-## 14. Verification
+## 15. Verification
 
 The canonical verification suite MUST verify:
 
