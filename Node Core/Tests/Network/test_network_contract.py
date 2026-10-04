@@ -23,6 +23,11 @@ def main():
     registry=PeerRegistry()
     registry.register(Peer("peer-b","127.0.0.1",9002))
     registry.register(Peer("peer-a","127.0.0.1",9001))
+    try:
+        registry.register(Peer("peer-a","127.0.0.1",9001))
+        raise AssertionError("duplicate peer accepted")
+    except ValueError:
+        pass
     assert [p.peer_id for p in registry.all()] == ["peer-a","peer-b"]
 
     transport=FakeTransport()
@@ -30,6 +35,7 @@ def main():
     network.register_peer("peer-b","127.0.0.1",9002)
     network.connect_peer("peer-b")
     assert network.get_network_state().connected_peers == 1
+    assert network.get_network_state().status == "CONNECTED"
 
     response=network.send_message("peer-b",{"kind":"NODE_CORE_TEST"})
     assert response["type"]=="NODE_CORE_MESSAGE_ACK"
@@ -46,6 +52,8 @@ def main():
     # Frame encoding is deterministic and bounded by the transport contract.
     frame=encode_frame({"b":2,"a":1})
     assert frame[:4] == len(frame[4:]).to_bytes(4,"big")
+
+    assert network.get_network_state().status != "READY"
 
     # Protocol isolation: transport envelope is Node Core, not CPG state.
     envelope=transport.sent[-1][2]
