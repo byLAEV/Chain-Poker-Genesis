@@ -2,7 +2,6 @@
 """Executable Node Core network manager."""
 
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Any
 
@@ -13,11 +12,13 @@ except ImportError:
     from peer_registry import Peer, PeerRegistry
     from transport import TCPReferenceTransport
 
+
 @dataclass(frozen=True)
 class NetworkState:
     status: str
     peer_count: int
     connected_peers: int
+
 
 class NetworkManager:
     def __init__(self, node_id: str, transport: TCPReferenceTransport | None = None) -> None:
@@ -41,7 +42,10 @@ class NetworkManager:
             raise KeyError(peer_id)
         self.registry.update_state(peer_id, "CONNECTING")
         try:
-            response = self.transport.send(peer.host, peer.port, {"type": "NODE_CORE_HELLO", "sender": self.node_id, "recipient": peer.peer_id})
+            response = self.transport.send(
+                peer.host, peer.port,
+                {"type": "NODE_CORE_HELLO", "sender": self.node_id, "recipient": peer.peer_id},
+            )
             if response.get("type") != "NODE_CORE_HELLO_ACK":
                 raise ConnectionError("peer did not acknowledge Node Core hello")
         except Exception:
@@ -59,7 +63,12 @@ class NetworkManager:
             raise KeyError(peer_id)
         if peer.state != "CONNECTED":
             raise ConnectionError("peer is not connected")
-        envelope = {"type": "NODE_CORE_MESSAGE", "sender": self.node_id, "recipient": peer.peer_id, "payload": message}
+        envelope = {
+            "type": "NODE_CORE_MESSAGE",
+            "sender": self.node_id,
+            "recipient": peer.peer_id,
+            "payload": message,
+        }
         return self.transport.send(peer.host, peer.port, envelope)
 
     def propagate(self, message: dict[str, Any]) -> dict[str, str]:
@@ -75,4 +84,8 @@ class NetworkManager:
     def get_network_state(self) -> NetworkState:
         peers = self.registry.all()
         connected = sum(p.state == "CONNECTED" for p in peers)
-        return NetworkState("CONNECTED" if connected else ("REGISTERED" if peers else "IDLE"), len(peers), connected)
+        if connected:
+            status = "ONLINE"
+        else:
+            status = "SEARCHING_FOR_CONNECTIONS"
+        return NetworkState(status, len(peers), connected)
