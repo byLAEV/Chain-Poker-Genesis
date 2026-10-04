@@ -159,3 +159,16 @@ to:
 through a dedicated provider installation specification.
 
 This preserves the distinction between installing the node substrate and installing a protocol.
+
+## Network and Protocol Readiness
+
+The fixed installer initializes the Node Core network state with zero connected nodes and a minimum protocol threshold of five nodes.
+
+The installed Node Core reports **SEARCHING FOR CONNECTIONS** until a peer connection is established. When one or more peers are connected, the connection state is **ONLINE**.
+
+Protocol readiness is independent from connection status:
+
+- Fewer than five connected nodes: **NOT READY**
+- Five or more connected nodes: **READY**
+
+The readiness state is dynamic and must be recalculated from the current connected-node count. The bootstrap installer does not install or activate protocols.
