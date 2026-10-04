@@ -50,6 +50,9 @@ jobs:
       - name: Run monetary reference registry test
         run: python "Node Core/Tests/Integration/test_monetary_reference_registry.py"
 
+      - name: Validate Node Core external reference submodules
+        run: python "Node Core/Tests/Integration/test_core_reference_submodules.py"
+
       - name: Run Node Core installation manifest test
         run: python "Node Core/Tests/Integration/test_installation_manifest.py"
 
