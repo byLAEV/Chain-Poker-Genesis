@@ -29,7 +29,7 @@ class ArchiveSafetyTests(unittest.TestCase):
             _safe_archive_member(member, self.prefix)
 
     def test_absolute_path_is_rejected(self):
-        member = self.member("package/Node Core//etc/passwd")
+        member = self.member("/etc/passwd")
         with self.assertRaises(InstallationError):
             _safe_archive_member(member, self.prefix)
 
