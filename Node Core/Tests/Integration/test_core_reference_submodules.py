@@ -52,6 +52,31 @@ class CoreReferenceSubmoduleTests(unittest.TestCase):
             ),
         }
 
+        external_expected = {
+            "gpg/gpgme": (
+                "Node Core/Cryptography/External References/gpg--gpgme",
+                "https://github.com/gpg/gpgme.git",
+            ),
+            "gpg/poldi": (
+                "Node Core/Cryptography/External References/gpg--poldi",
+                "https://github.com/gpg/poldi.git",
+            ),
+            "openpgpjs/openpgpjs": (
+                "Node Core/Cryptography/External References/openpgpjs--openpgpjs",
+                "https://github.com/openpgpjs/openpgpjs.git",
+            ),
+            "pgpainless/pgpainless": (
+                "Node Core/Cryptography/External References/pgpainless--pgpainless",
+                "https://github.com/pgpainless/pgpainless.git",
+            ),
+        }
+
+        for repository, (path, url) in external_expected.items():
+            section = f'submodule "{path}"'
+            self.assertIn(section, config.sections())
+            self.assertEqual(config[section]["path"], path)
+            self.assertEqual(config[section]["url"], url)
+
         manifest_repositories = {
             item["repository"]: item for item in manifest["references"]
         }
