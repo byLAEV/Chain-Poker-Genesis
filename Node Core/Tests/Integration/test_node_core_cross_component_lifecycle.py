@@ -12,6 +12,7 @@ from pathlib import Path
 
 BASE=Path(__file__).resolve().parents[2]
 CRYPTO=BASE/"Cryptography"/"Core"
+# Explicit import boundary required by the existing crypto service module layout.
 for p in (
     BASE, BASE/"Bootstrap/Installer", BASE/"Runtime", BASE/"Identity",
     BASE/"Recovery", BASE/"Network", BASE/"Protocol Interface", CRYPTO,
