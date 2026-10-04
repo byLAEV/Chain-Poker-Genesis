@@ -84,6 +84,7 @@ def main():
         validate_manifest({"protocol_id":descriptor.protocol_id,"version":descriptor.version,"engine_id":descriptor.engine_id,"manifest_hash":descriptor.manifest_hash,"capabilities":list(descriptor.capabilities)})
         protocols=ProtocolInterface(engine_runtime=node.engines)
         protocols.discover(descriptor)
+        assert protocols.check_compatibility(descriptor.protocol_id, descriptor.capabilities)
         protocols.register(descriptor.protocol_id)
         protocols.install(descriptor.protocol_id)
         assert protocols.get(descriptor.protocol_id).state=="INSTALLED"
