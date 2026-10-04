@@ -40,6 +40,9 @@ jobs:
       - name: Test installer rollback behavior
         run: python -m unittest Installer/tests/test_rollback.py
 
+      - name: Test interactive CLI menu
+        run: python -m unittest Installer/tests/test_cli_interaction.py
+
       - name: Test non-interactive direct installer from current branch
         run: |
           rm -rf /tmp/cpg-direct-installer-test
