@@ -2,6 +2,7 @@ import importlib.util
 import sys
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +23,14 @@ spec.loader.exec_module(mod)
 class NodeCoreReferenceTests(unittest.TestCase):
     def setUp(self):
         self.temp_dir = tempfile.TemporaryDirectory()
+        root = Path(self.temp_dir.name) / "node-storage" / "configuration"
+        root.mkdir(parents=True)
+        (root / "node-config.json").write_text(json.dumps({
+            "node_core_version": "1.0.0",
+            "decentralized_storage": {"status": "NOT_PROVISIONED", "mode": "LOCAL"},
+            "protocol_associations": [],
+            "cpg_protocol": "NOT_INSTALLED",
+        }), encoding="utf-8")
 
     def tearDown(self):
         self.temp_dir.cleanup()
@@ -36,8 +45,8 @@ class NodeCoreReferenceTests(unittest.TestCase):
 
     def test_crypto(self):
         n = self.node()
-        self.assertEqual(len(n.crypto.hash(b"test")), 64)
-        self.assertEqual(len(n.crypto.merkle([b"a", b"b"])), 64)
+        self.assertEqual(len(n.crypto.sha256_hex(b"test")), 64)
+        self.assertEqual(len(n.crypto.hash_canonical_hex({"test": "value"})), 64)
 
     def test_time_chain(self):
         n = self.node()
