@@ -15,9 +15,28 @@ class NodeCLI:
         node_sub = node.add_subparsers(dest="command", required=True)
         for name in ("status","readiness","start","stop","recover"):
             node_sub.add_parser(name)
+        storage = sub.add_parser("storage")
+        storage_sub = storage.add_subparsers(dest="command", required=True)
+        storage_sub.add_parser("status")
+        mode = storage_sub.add_parser("mode")
+        mode_sub = mode.add_subparsers(dest="mode_command", required=True)
+        mode_sub.add_parser("get")
+        set_mode = mode_sub.add_parser("set")
+        set_mode.add_argument("value", choices=("LOCAL","DUAL_STORAGE"))
         args = parser.parse_args(argv)
         try:
-            if args.group == "node":
+            if args.group == "storage":
+                config = self.node.configuration
+                if args.command == "status":
+                    result = config.get()["decentralized_storage"]
+                elif args.mode_command == "get":
+                    result = {"mode": config.get()["decentralized_storage"].get("mode","LOCAL"), "status": config.get()["decentralized_storage"]["status"]}
+                elif args.mode_command == "set":
+                    readiness = self.node.storage_coherence.verify_all() if args.value == "DUAL_STORAGE" else {"dual_storage_ready": False}
+                    result = {"decentralized_storage": config.set_storage_mode(args.value, readiness=readiness)}["decentralized_storage"]
+                else:
+                    raise RuntimeError("unsupported storage command")
+            elif args.group == "node":
                 if args.command == "status":
                     result = self.node.snapshot()
                 elif args.command == "readiness":
