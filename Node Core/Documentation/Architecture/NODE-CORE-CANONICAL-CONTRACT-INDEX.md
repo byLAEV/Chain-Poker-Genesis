@@ -247,3 +247,35 @@ Resolved:
 The manifest remains `IMPLEMENTED_PARTIAL` because full recovery integration and broader management capabilities are not yet complete. This does not block the contract reconciliation.
 
 **Next PHASE 2 component:** Network.
+
+
+## PHASE 2 — Network reconciliation
+
+**Component:** Network  
+**Status:** PASS
+
+Reconciled chain:
+
+`Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md`
+→ `Network/NETWORK-CORE-MANIFEST.json`
+→ `Network/README.md`
+→ `Network/network_manager.py`
+→ `Network/peer_registry.py`
+→ `Network/transport.py`
+→ synchronization state
+→ Network API documentation
+→ Network contract tests.
+
+Resolved:
+- Network manifest version aligned from 0.1.0 to canonical contract version 1.0.0.
+- Duplicate peer registration is now rejected deterministically.
+- Network state no longer reports `READY`, avoiding collision with Node Core Runtime readiness.
+- Network state uses transport semantics: `IDLE`, `REGISTERED`, `CONNECTED`.
+- Network API documentation distinguishes implemented reference operations from declared/future operations.
+- Synchronization remains separate from connectivity and requires provider readiness plus threshold evidence.
+- Protocol isolation is preserved; transport envelopes cannot imply CPG consensus, table state, ledger or synchronization.
+- Production authenticated transport, live decentralized discovery and live state synchronization remain explicitly unimplemented in the manifest.
+
+The absence of `message_envelope.py` is not treated as a missing authority: envelope construction is currently implemented in `network_manager.py`; the contract does not require a separate file/module.
+
+**Next PHASE 2 component:** Protocol Interface.
