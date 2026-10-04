@@ -62,6 +62,8 @@ The subsequent Node Core verification runs closed the current negative-path matr
 
 These runs also passed the complete Node Core verification workflow, including the final Node Core audit. The negative-path suite therefore strengthens the acceptance evidence but does not convert explicitly PARTIAL production components into fully verified production implementations.
 
+Configuration fail-closed verification was subsequently confirmed by GitHub Actions Run #640 (commit `48234fc6f1178fd8577b949b6945dc737e32aa1c`), covering required-field, invalid-state, duplicate-association, fresh-node CPG activation, invalid storage-mode, and Dual Storage coherence-gate rejection cases. The complete Node Core audit workflow passed.
+
 ## Verified baseline boundary
 
 The following are now verified invariants:
