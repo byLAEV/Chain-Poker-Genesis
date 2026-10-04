@@ -720,3 +720,32 @@ Provider state separates lifecycle, health and synchronization state. READY is s
 The test vectors establish fail-closed behavior for package integrity, paths, executable/version mismatch, initialization, process failure, synchronization, coherence, Dual Storage gating, restart and upgrade.
 
 Implementation may now begin for Linux only, subject to the canonical contracts.
+
+
+## PHASE 4 — Kubo Linux implementation foundation
+
+**Status:** IMPLEMENTED_PARTIAL / FOUNDATION PASS
+
+Implemented:
+- release resolution from supplied official metadata;
+- stable/exact-version selection policy;
+- Linux architecture normalization;
+- canonical Node Core Kubo path derivation;
+- absolute IPFS_PATH generation;
+- path containment validation;
+- atomic provider-state persistence;
+- READY gating on health + synchronization state;
+- foundation test vectors.
+
+Not yet implemented:
+- live upstream metadata retrieval;
+- package download;
+- package integrity verification;
+- extraction/install;
+- repository initialization;
+- Kubo process manager;
+- health manager;
+- initial synchronization;
+- Dual Storage activation.
+
+The implementation deliberately stops before executing external Kubo code.
