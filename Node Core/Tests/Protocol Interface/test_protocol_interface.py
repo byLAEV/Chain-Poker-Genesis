@@ -12,6 +12,16 @@ def main():
     i=ProtocolInterface(); i.discover(d)
     assert i.check_compatibility(d.protocol_id,("storage","cryptography"))
     i.register(d.protocol_id); i.install(d.protocol_id); assert i.activate(d.protocol_id).state=="ACTIVE"
+    try:
+        i.activate("missing.protocol")
+        raise AssertionError("unknown protocol activated")
+    except KeyError:
+        pass
+    try:
+        i.install(d.protocol_id)
+        raise AssertionError("active protocol re-installed")
+    except RuntimeError:
+        pass
     assert i.suspend(d.protocol_id).state=="SUSPENDED"
     assert i.remove(d.protocol_id).state=="REMOVED"
     print("Node Core Protocol Interface implementation tests: PASS")
