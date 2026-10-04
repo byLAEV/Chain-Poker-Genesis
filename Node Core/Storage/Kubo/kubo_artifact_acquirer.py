@@ -4,7 +4,7 @@ from __future__ import annotations
 import hashlib, os, re, tempfile
 from pathlib import Path
 from urllib import request
-from .kubo_release_source import KuboArtifact, KuboSourceError
+from kubo_release_source import KuboArtifact, KuboSourceError
 
 class KuboDownloadError(RuntimeError):
     pass
@@ -16,8 +16,20 @@ class KuboArtifactAcquirer:
         self.opener = opener or request.urlopen
         self.timeout = timeout
 
-    def acquire(self, artifact: KuboArtifact, destination: str | Path, expected_sha512: str) -> Path:
-        if not re.fullmatch(r"[0-9a-fA-F]{128}", expected_sha512):
+    def fetch_expected_sha512(self, artifact: KuboArtifact) -> str:
+        response = self.opener(artifact.checksum_url, timeout=self.timeout)
+        try:
+            raw = response.read(1024 * 1024).decode("utf-8")
+        finally:
+            response.close()
+        match = re.search(r"([0-9a-fA-F]{128})", raw)
+        if not match:
+            raise KuboDownloadError("official SHA-512 sidecar contains no valid digest")
+        return match.group(1).lower()
+
+    def acquire(self, artifact: KuboArtifact, destination: str | Path, expected_sha512: str | None = None) -> Path:
+
+        if expected_sha512 is None:\n            expected_sha512 = self.fetch_expected_sha512(artifact)\n        if not re.fullmatch(r"[0-9a-fA-F]{128}", expected_sha512):
             raise KuboDownloadError("expected SHA-512 must be 128 hex characters")
         dest = Path(destination).resolve()
         dest.mkdir(parents=True, exist_ok=True)
