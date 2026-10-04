@@ -77,8 +77,10 @@ The architectural rule remains:
 
 Supported targets are Linux and Termux.
 
-The shell launcher installs Python through the native Termux package manager when
-Python is absent. It uses Python's standard library to retrieve the installer,
+The shell launcher installs Python and the native cryptography dependency through
+the Termux package manager when Python is absent. If Python is already present,
+the Python installer path still installs the native cryptography package before
+creating the Node Core environment. It uses Python's standard library to retrieve the installer,
 so `curl` or `wget` is not required by the launcher.
 
 ### Termux cryptography dependency
@@ -159,5 +161,10 @@ Real-environment validation remains explicitly separate:
 
 - Linux real-device/host validation: not verified in the release environment used for this repository review.
 - Termux real-device validation: not verified.
+
+The Termux installer path is implemented, including native Python and
+`python-cryptography` dependency handling, system-site-packages environment
+creation, cryptography primitive verification, and the Node Core network
+readiness baseline. Physical Termux-device certification remains pending.
 
 Therefore this status means **implementation and CI verification**, not a claim of physical Termux certification.
