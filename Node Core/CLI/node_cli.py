@@ -26,7 +26,7 @@ class NodeCLI:
         args = parser.parse_args(argv)
         try:
             if args.group == "storage":
-                config = self.node.configuration
+                config = self.node.configuration_manager
                 if args.command == "status":
                     result = config.get()["decentralized_storage"]
                 elif args.mode_command == "get":
