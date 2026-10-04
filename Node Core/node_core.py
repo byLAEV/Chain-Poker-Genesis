@@ -1,7 +1,7 @@
 """Unified protocol-neutral Node Core reference composition."""
 from __future__ import annotations
 from pathlib import Path
-import importlib.util, sys
+import importlib.util, json, sys
 
 ROOT=Path(__file__).resolve().parent
 CRYPTO_CORE_ROOT=ROOT/"Cryptography"/"Core"
@@ -30,6 +30,8 @@ time_service=_load("node_core_time","Time/time_service.py")
 security=_load("node_core_security","Security/security_service.py")
 kubo_health=_load("node_core_kubo_health","Storage/Kubo/kubo_health_manager.py")
 kubo_coherence=_load("node_core_kubo_coherence","Storage/Kubo/kubo_coherence_verifier.py")
+network=_load("node_core_network","Network/network_manager.py")
+protocol_readiness=_load("node_core_protocol_readiness","Runtime/Readiness/protocol_readiness.py")
 
 
 class NodeCore:
@@ -56,6 +58,15 @@ class NodeCore:
         )
         self.time=time_service.TimeService()
         self.security=security.SecurityService()
+        self.network=network.NetworkManager(self._load_node_id())
+
+    def _load_node_id(self):
+        path=self.root/"node-storage/identity/node-identity.json"
+        try:
+            data=json.loads(path.read_text(encoding="utf-8"))
+            return data.get("node_id") or "node-core"
+        except (OSError, json.JSONDecodeError):
+            return "node-core"
 
     @property
     def configuration(self):
@@ -68,10 +79,30 @@ class NodeCore:
     def activate(self):
         return self.manager.start().state
 
+    def network_state(self):
+        return self.network.get_network_state()
+
+    def protocol_readiness(self):
+        return protocol_readiness.evaluate_protocol_readiness(
+            self.network.get_network_state().connected_peers
+        )
+
+    def menu_state(self):
+        network_state=self.network.get_network_state()
+        readiness=self.protocol_readiness()
+        return {
+            "connection_status": network_state.status,
+            "connected_nodes": network_state.connected_peers,
+            "protocol_readiness": readiness["status"],
+            "minimum_nodes_required": readiness["minimum_nodes_required"],
+        }
+
     def snapshot(self):
         return {
             "node_core_version":self.VERSION,
             "node":self.manager.snapshot(),
+            "network":self.network_state().__dict__,
+            "protocol_readiness":self.protocol_readiness(),
             "engines":self.engines.snapshot(),
             "storage":self.storage.status(),
             "time_sequence":self.time.sequence,
