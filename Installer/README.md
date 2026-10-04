@@ -1,50 +1,62 @@
-# Chain Poker Genesis — Direct Node Core Installer
+# Chain Poker Genesis — Node Core CLI Installer
 
-This directory contains the direct remote installer for the protocol-neutral
-Node Core.
+This directory contains the minimal command-line installer for the
+protocol-neutral Node Core.
 
-## Purpose
+## Interface
 
-The installer allows a Linux or Termux user to start installation from a
-single repository-hosted link.
+The installer is designed for a command window, POSIX shell, or Termux.
 
-The installer:
+The interactive menu intentionally has only two options:
 
-1. obtains the installer bootstrap;
-2. detects Linux or Termux;
-3. downloads the repository archive;
-4. extracts the Node Core component;
-5. stages the component locally;
-6. creates the local Node Core Python environment;
-7. installs the dependency set declared by Node Core;
-8. executes the canonical Node Core Bootstrap installer;
-9. verifies the resulting Node Core installation;
-10. commits the verified installation to the local target.
+```
+1. Install Node Core
+2. Exit
+```
 
-## Entry point
+It is not a GUI and it is not a Node Manager.
 
-The shell launcher is:
+## Entry points
 
-`Installer/install.sh`
+- `Installer/install.sh` — shell/Termux launcher.
+- `Installer/install.py` — CLI and installation engine.
 
-It is intentionally small. The installation logic lives in:
+When launched from an interactive terminal, `install.py` presents the
+minimal menu. CI and automation use `--non-interactive`.
 
-`Installer/install.py`
+## Installation flow
 
-## Direct execution
+The user-facing flow is:
 
-Linux or Termux can obtain the launcher from the repository and execute it
-with a POSIX shell.
+```
+Menu
+  ↓
+Install Node Core
+  ↓
+Confirm
+  ↓
+Download
+  ↓
+Prepare local environment
+  ↓
+Node Core Bootstrap
+  ↓
+Node Core Verification
+  ↓
+NODE_CORE_READY
+```
 
-The installer requires Python 3. On Termux, when Python is absent, the
-launcher attempts to install it through the native Termux package manager.
-Node Core Python dependencies are installed into the local `.node-core-python`
-environment inside the final Node Core installation; the installer does not
-modify the system Python environment.
+The installer engine keeps the existing installation boundary:
 
-## Installation boundary
+- downloads only the Node Core component;
+- creates the local `.node-core-python` environment when Node Core declares Python dependencies;
+- invokes the canonical Node Core Bootstrap;
+- verifies the resulting installation;
+- does not overwrite an existing Node Core installation.
 
-This installer installs Node Core only.
+## Architectural boundary
+
+This installer installs **Node Core only**.
 
 It does not:
 
@@ -52,19 +64,45 @@ It does not:
 - create a CPG ledger;
 - create CPG table state;
 - install poker rules;
-- associate a protocol with the node.
+- create protocol associations;
+- create cryptographic player identity;
+- act as Node Manager;
+- update an existing Node Core installation.
 
 The architectural rule remains:
 
 **Node Core provides the node. Protocols provide their protocols.**
 
-## Existing installations
+## Platform behavior
 
-The installer does not overwrite an existing Node Core installation. A
-future repair/recovery command can be introduced separately without turning
-the direct installer into an updater.
+Supported targets are Linux and Termux.
 
-## Current status
+The shell launcher installs Python through the native Termux package manager when
+Python is absent. It uses Python's standard library to retrieve the installer,
+so `curl` or `wget` is not required by the launcher.
 
-This is the first direct installer implementation and must be exercised on
-real Linux and Termux environments before being promoted to a stable release.
+Default installation targets:
+
+- Linux: `~/.local/share/chain-poker-genesis/node-core`
+- Termux: `~/.chain-poker-genesis/node-core`
+
+## Automation
+
+For CI or scripts:
+
+```sh
+python Installer/install.py --non-interactive --ref <ref> --target <target>
+```
+
+The non-interactive mode uses the same installation engine as the interactive
+menu.
+
+## No Preflight subsystem
+
+The installer intentionally has no Preflight subsystem. Required validation
+belongs to the installation, Bootstrap, and Verification stages.
+
+## Status
+
+This CLI implementation must be exercised on real Linux and Termux
+environments before promotion to a stable installer release.
