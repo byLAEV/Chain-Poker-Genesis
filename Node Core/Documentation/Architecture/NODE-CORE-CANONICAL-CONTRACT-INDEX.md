@@ -29,13 +29,13 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL | `Identity/identity_core.py`, schema, binding, manager, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Evidence mapped; semantic reconciliation remains |
 | Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL | `crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Evidence mapped; AEAD/Merkle remain profile-dependent |
 | Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL | `Storage/storage_engine.py`, `storage_api.py`, `Storage Manager/storage_manager.py`, `storage_locator.py` | `Tests/Storage/test_storage_locator.py`, `test_storage_complete.py` | Evidence mapped |
-| Runtime | Existing runtime/lifecycle specification; exact canonical path requires final audit | CANONICAL CANDIDATE | `Runtime/runtime_manager.py`, `node_runtime.py` | `Tests/Runtime/test_runtime_implementation.py`, `Tests/Engine Runtime/test_runtime_lifecycle.py` | Resolve one authority |
+| Runtime | `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md` | CANONICAL | `Runtime/State/runtime_state.py`, `Runtime/runtime_manager.py`, `Runtime/node_runtime.py` | Existing runtime tests plus lifecycle tests; dedicated contract coverage remains to be expanded | Lifecycle source and implementation state machine reconciled; readiness bug corrected |
 | Recovery | `Documentation/Interfaces/NODE-CORE-RECOVERY-CONTRACT.md` | CANONICAL | `Recovery/recovery_manager.py` | `Tests/Recovery/test_recovery_implementation.py`, `Tests/Engine Runtime/test_health_recovery.py` | Evidence mapped |
 | Network | `Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md` | CANONICAL CANDIDATE | `Network/network_manager.py` | Dedicated Network contract test not identified | Test mapping blocks PASS |
 | Node Manager | `Documentation/Interfaces/NODE-MANAGER-CONTRACT.md` | CANONICAL CANDIDATE | `Node Manager/node_manager.py` | Dedicated Node Manager test not identified | Verification mapping required |
 | Security | `Documentation/Security Model/NODE-CORE-SECURITY-BOUNDARY.md` | CANONICAL CANDIDATE | `Security/SECURITY-CORE-MANIFEST.json` plus enforcement | Dedicated Security test mapping not confirmed | Conformance open |
 | Time | `Documentation/Time/NODE-CORE-TIME-SERVICE-CONTRACT.md` | CANONICAL CANDIDATE | `Time/`, `TIME-CORE-MANIFEST.json`, external references | Dedicated Time conformance test not identified | Test mapping blocks PASS |
-| Engine Runtime | No single canonical contract | CANONICAL REQUIRED | `Engine Runtime/` | lifecycle/health tests exist | Define boundary with Runtime |
+| Engine Runtime | `Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md` | CANONICAL | `Engine Runtime/engine_runtime.py` | `Tests/Engine Runtime/test_engine_runtime_contract.py` | Boundary and baseline implementation/test now mapped |
 | API | No single consolidated canonical API contract | CANONICAL REQUIRED | `API/`, including `node_core_api.py` | API contract mapping incomplete | Consolidate semantics |
 | CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL CANDIDATE | Explicit implementation path requires mapping | Dedicated CLI test not identified | Mapping blocks PASS |
 | Protocol Interface | Existing protocol installation boundary; exact canonical source requires final audit | CANONICAL CANDIDATE | `Protocol Interface/` | `Tests/Protocol Interface/test_protocol_interface.py` | Test-backed; source authority to confirm |
@@ -50,6 +50,8 @@ These currently have a named normative profile/contract plus mapped implementati
 - Cryptography
 - Storage
 - Recovery
+- Runtime
+- Engine Runtime
 
 This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
@@ -82,7 +84,7 @@ Every Node Core capability must have:
 
 `ONE CANONICAL SOURCE + IMPLEMENTATION MAPPING + TEST MAPPING`
 
-and Runtime/Engine Runtime, API, Consensus Infrastructure and manifest authority must be explicitly resolved.
+and API, Consensus Infrastructure and manifest authority must be explicitly resolved.
 
 ## 7. Current status
 
