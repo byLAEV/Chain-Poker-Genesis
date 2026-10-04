@@ -1,6 +1,6 @@
 {
   "$schema":"https://json-schema.org/draft/2020-12/schema",
-  "$id":"cpg://node-core/schema/configuration/0.1.0",
+  "$id":"cpg://node-core/schema/configuration/1.0.0",
   "title":"Node Core Configuration",
   "type":"object",
   "additionalProperties":false,
