@@ -2,7 +2,23 @@
 
 **Project:** Chain Poker Genesis by LAEV  
 **Component:** Node Core  
-**Status:** Formal Completion Audit
+**Status:** Formal Completion Audit — VERIFIED BASELINE
+
+## Current Verification Evidence
+
+- Workflow: **Node Core Verification**
+- Run: **#561**
+- Run ID: `37180213168`
+- Verified commit: `794aa43f2561a252efbb851fbf51ff7ea2e94296`
+- Result: **SUCCESS**
+- Structural audit: PASS
+- Python compilation: PASS
+- Verification tests: PASS
+- Installation manifest test: PASS
+- End-to-end test: PASS
+- Final audit: PASS
+
+This evidence verifies the current protocol-neutral Node Core implementation baseline. It does not certify every subsystem as production-complete.
 
 ## Audit Scope
 
