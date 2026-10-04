@@ -1,26 +1,37 @@
 #!/usr/bin/env python3
-"""Tests for the Node Core runtime lifecycle."""
+"""Canonical Node Core Runtime lifecycle tests."""
 
 from __future__ import annotations
-import subprocess
-import sys
 import tempfile
 from pathlib import Path
+import sys
 
+BASE = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(BASE / "Bootstrap/Installer"))
+sys.path.insert(0, str(BASE / "Runtime"))
+sys.path.insert(0, str(BASE / "Runtime/State"))
+
+from bootstrap_node import bootstrap_node
 from node_runtime import evaluate_readiness, initialize_and_verify
 from runtime_state import Readiness, Runtime, RuntimeState
 
 
 def test_valid_lifecycle() -> None:
     runtime = Runtime()
-    runtime.transition(RuntimeState.INITIALIZING)
-    runtime.transition(RuntimeState.VERIFYING)
-    ready = Readiness(True, True, True, True, True, True)
-    runtime.transition(RuntimeState.READY, ready)
+    ready = Readiness(
+        True, True, True, True, True, True, True, True, True, True, True
+    )
+    runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED, ready)
+    runtime.transition(RuntimeState.IDENTITY_INITIALIZED, ready)
+    runtime.transition(RuntimeState.STORAGE_INITIALIZED, ready)
+    runtime.transition(RuntimeState.STORAGE_STRUCTURE_VERIFIED, ready)
+    runtime.transition(RuntimeState.INTEGRITY_VERIFIED, ready)
+    runtime.transition(RuntimeState.RECOVERY_READY, ready)
+    runtime.transition(RuntimeState.NODE_CORE_READY, ready)
     runtime.transition(RuntimeState.RUNNING, ready)
     runtime.transition(RuntimeState.DEGRADED)
     runtime.transition(RuntimeState.RECOVERY)
-    runtime.transition(RuntimeState.READY, ready)
+    runtime.transition(RuntimeState.NODE_CORE_READY, ready)
     runtime.transition(RuntimeState.SHUTTING_DOWN)
     runtime.transition(RuntimeState.STOPPED)
     assert runtime.snapshot()["cpg_protocol"] == "NOT_INSTALLED"
@@ -38,23 +49,26 @@ def test_invalid_transition() -> None:
 
 def test_running_requires_readiness() -> None:
     runtime = Runtime()
-    runtime.transition(RuntimeState.INITIALIZING)
-    runtime.transition(RuntimeState.VERIFYING)
     incomplete = Readiness(True, True, True, False, True, True)
+    runtime.transition(RuntimeState.ENVIRONMENT_VALIDATED, incomplete)
     try:
-        runtime.transition(RuntimeState.READY, incomplete)
+        runtime.transition(RuntimeState.IDENTITY_INITIALIZED, incomplete)
+        runtime.transition(RuntimeState.STORAGE_INITIALIZED, incomplete)
+        runtime.transition(RuntimeState.STORAGE_STRUCTURE_VERIFIED, incomplete)
+        runtime.transition(RuntimeState.INTEGRITY_VERIFIED, incomplete)
+        runtime.transition(RuntimeState.RECOVERY_READY, incomplete)
+        runtime.transition(RuntimeState.NODE_CORE_READY, incomplete)
     except ValueError:
-        pass
-    else:
-        raise AssertionError("incomplete readiness was accepted")
+        return
+    raise AssertionError("incomplete readiness was accepted")
 
 
 def test_clean_node_reaches_ready_without_cpg() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp) / "node"
-        subprocess.run([sys.executable, "bootstrap_node.py", str(root)], check=True)
+        bootstrap_node(root)
         runtime = initialize_and_verify(root)
-        assert runtime.state == RuntimeState.READY
+        assert runtime.state == RuntimeState.NODE_CORE_READY
         assert runtime.snapshot()["cpg_protocol"] == "NOT_INSTALLED"
         assert evaluate_readiness(root).is_ready()
 
