@@ -8,16 +8,23 @@ def _load(name,path):
 crypto=_load("node_core_crypto","Cryptography/Core/crypto_service.py")
 identity=_load("node_core_identity","Identity/identity_core.py")
 manager=_load("node_core_manager","Node Manager/node_manager.py")
+protocol=_load("node_core_protocol_interface","Protocol Interface/protocol_interface.py")
 runtime=_load("node_core_engine_runtime","Engine Runtime/engine_runtime.py")
 time_service=_load("node_core_time","Time/time_service.py")
 security=_load("node_core_security","Security/security_service.py")
 class NodeCore:
     VERSION="1.0.0"
-    def __init__(self):
+    def __init__(self, node_root):
+        self.root=Path(node_root).resolve()
         self.crypto=crypto.CryptoService()
         self.identity=identity.IdentityManager()
-        self.manager=manager.NodeManager()
         self.engines=runtime.EngineRuntime()
+        self.protocol_interface=protocol.ProtocolInterface()
+        self.manager=manager.NodeManager(
+            protocol_interface=self.protocol_interface,
+            configuration_path=self.root/"node-storage/configuration/node-config.json",
+            engine_runtime=self.engines,
+        )
         self.time=time_service.TimeService()
         self.security=security.SecurityService()
     def initialize(self):
