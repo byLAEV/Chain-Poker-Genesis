@@ -38,8 +38,35 @@ def default_target(platform_name: str) -> Path:
     return DEFAULT_TERMUX_TARGET if platform_name == "TERMUX" else DEFAULT_LINUX_TARGET
 
 
-def download_archive(destination: Path, source_ref: str) -> None:
-    archive_url = f"https://github.com/{REPOSITORY}/archive/{source_ref}.tar.gz"
+def resolve_commit_sha(source_ref: str) -> str:
+    """Resolve a branch/tag/ref to an immutable commit SHA before downloading."""
+    if len(source_ref) == 40 and all(c in "0123456789abcdefABCDEF" for c in source_ref):
+        return source_ref.lower()
+
+    api_url = f"https://api.github.com/repos/{REPOSITORY}/commits/{source_ref}"
+    request = urllib.request.Request(
+        api_url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "Chain-Poker-Genesis-Node-Core-Installer/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            import json
+            payload = json.load(response)
+        sha = payload.get("sha")
+    except Exception as exc:
+        raise InstallationError(f"Unable to resolve installer source reference: {exc}") from exc
+
+    if not isinstance(sha, str) or len(sha) != 40:
+        raise InstallationError("GitHub did not return a valid commit SHA for the requested source")
+    return sha.lower()
+
+
+def download_archive(destination: Path, source_ref: str) -> str:
+    resolved_sha = resolve_commit_sha(source_ref)
+    archive_url = f"https://github.com/{REPOSITORY}/archive/{resolved_sha}.tar.gz"
     request = urllib.request.Request(
         archive_url,
         headers={"User-Agent": "Chain-Poker-Genesis-Node-Core-Installer/1.0"},
@@ -49,6 +76,7 @@ def download_archive(destination: Path, source_ref: str) -> None:
             shutil.copyfileobj(response, output)
     except Exception as exc:
         raise InstallationError(f"Unable to download Node Core package: {exc}") from exc
+    return resolved_sha
 
 
 def _safe_archive_member(member: tarfile.TarInfo, node_core_prefix: Path) -> Path:
@@ -175,7 +203,8 @@ def install(target: Path, source_ref: str = "main") -> None:
             extracted.mkdir()
 
             print("[1/5] Downloading Node Core...", flush=True)
-            download_archive(archive, source_ref)
+            resolved_sha = download_archive(archive, source_ref)
+            print(f"Source commit: {resolved_sha}", flush=True)
             extract_node_core(archive, extracted, staging)
 
         staging.rename(target)
