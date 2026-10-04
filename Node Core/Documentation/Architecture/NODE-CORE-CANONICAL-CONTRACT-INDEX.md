@@ -25,7 +25,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | Capability | Canonical source | Status | Implementation mapped | Test mapped | Decision |
 |---|---|---|---|---|---|
 | Bootstrap / Installation | Existing Bootstrap contract/specification; exact authoritative path requires final audit | CANONICAL CANDIDATE | `Node Core/Bootstrap/` | `Tests/Bootstrap/test_bootstrap.py` | Confirm exact normative source |
-| Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL CANDIDATE | Runtime/Node Manager consumers; dedicated implementation mapping open | Dedicated configuration test not confirmed | Mapping blocks PASS |
+| Configuration | `Documentation/Interfaces/NODE-CORE-CONFIGURATION-CONTRACT.md` | CANONICAL / IMPLEMENTED_PARTIAL | `Configuration/Schemas/node-configuration.schema.json`, Bootstrap, Runtime readiness | `Tests/Configuration/test_configuration_contract.py`, installation E2E | Schema/default/integrity/runtime boundary mapped; centralized manager and full negative matrix remain |
 | Identity | `Identity/FORMAL-IDENTITY-PROFILE-v1.0.md` | CANONICAL | `Identity/identity_core.py`, schema, binding, manager, verification, recovery | `Tests/Identity/test_identity_core.py`, `test_identity_implementation.py`, `test_identity_completion.py` | Evidence mapped; semantic reconciliation remains |
 | Cryptography | `Cryptography/Core/FORMAL-CRYPTOGRAPHIC-PROFILE-v1.0.md` | CANONICAL | `crypto_core.py`, `crypto_service.py`, `primitives.py`, `signatures.py` | `Tests/Cryptography/test_crypto_core.py`, `test_crypto_implementation.py`, `test_signatures.py` | Evidence mapped; AEAD/Merkle remain profile-dependent |
 | Storage | `Documentation/Interfaces/NODE-CORE-STORAGE-CONTRACT.md` | CANONICAL | `Storage/storage_engine.py`, `storage_api.py`, `Storage Manager/storage_manager.py`, `storage_locator.py` | `Tests/Storage/test_storage_locator.py`, `test_storage_complete.py` | Evidence mapped |
@@ -59,6 +59,7 @@ These currently have a named normative profile/contract plus mapped implementati
 - Security
 - Time
 - CLI
+- Configuration
 
 This is **not** a global PHASE 1 PASS; semantic contract-to-code-to-test reconciliation remains.
 
