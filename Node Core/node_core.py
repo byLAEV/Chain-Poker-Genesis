@@ -23,6 +23,8 @@ crypto=_load("node_core_crypto","Cryptography/Core/crypto_service.py")
 identity=_load("node_core_identity","Identity/identity_core.py")
 manager=_load("node_core_manager","Node Manager/node_manager.py")
 protocol=_load("node_core_protocol_interface","Protocol Interface/protocol_interface.py")
+storage=_load("node_core_storage_api","Storage/API/storage_api.py")
+recovery=_load("node_core_recovery","Recovery/recovery_manager.py")
 runtime=_load("node_core_engine_runtime","Engine Runtime/engine_runtime.py")
 time_service=_load("node_core_time","Time/time_service.py")
 security=_load("node_core_security","Security/security_service.py")
@@ -39,12 +41,15 @@ class NodeCore:
         self.protocol_interface=protocol.ProtocolInterface(
             protocols_root=self.root/"protocols",
             engine_runtime=self.engines,
+            recovery=self.recovery,
         )
         self.manager=manager.NodeManager(
             protocol_interface=self.protocol_interface,
             configuration_path=self.root/"node-storage/configuration/node-config.json",
             engine_runtime=self.engines,
         )
+        self.storage=storage.StorageAPI(self.root)
+        self.recovery=recovery.RecoveryManager(self.root)
         self.time=time_service.TimeService()
         self.security=security.SecurityService()
 
@@ -60,5 +65,6 @@ class NodeCore:
             "node_core_version":self.VERSION,
             "node":self.manager.snapshot(),
             "engines":self.engines.snapshot(),
+            "storage":self.storage.status(),
             "time_sequence":self.time.sequence,
         }
