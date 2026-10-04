@@ -124,9 +124,9 @@ See:
 - [Node Core Installation Baseline](INSTALLATION-BASELINE.md)
 - [Node Core Bootstrap Specification](NODE-CORE-BOOTSTRAP-SPECIFICATION.md)
 - [Node Readiness State Model](NODE-READINESS-STATE-MODEL.md)
-- [Node Installation Manifest Schema](node-installation-manifest.schema.json)
+- [Node Installation Manifest Schema](Configuration/Schemas/node-core-installation-manifest.schema.json)
 - [Node Installation Test Vector](test-vectors/NODE-INSTALL-0001.json)
-- [Node Installation Reference Implementation](../../reference-implementation/node-installation/README.md)
+- [Node Installation Reference Implementation](Reference%20Implementation/README.md)
 
 The acceptance boundary is:
 
