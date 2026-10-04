@@ -798,3 +798,12 @@ The installer does not initialize the Kubo repository, configure the daemon, sta
 The installed Kubo executable is invoked with an explicit absolute IPFS_PATH. The initializer verifies the generated repository config, Kubo PeerID and repository version marker. Kubo repository identity is explicitly separate from Node Core cryptographic identity.
 
 The initializer does not start the daemon, perform initial synchronization or activate Dual Storage.
+
+
+## PHASE 4 — Kubo coherence and Dual Storage readiness
+
+**Status:** IMPLEMENTED_PARTIAL / COHERENCE PASS
+
+The Kubo mirror is now independently verified against the canonical local Storage Manager registry, local content hash, distributed content hash, CID and provider integrity result. Dual Storage readiness is an evidence-based gate and cannot be asserted merely because Kubo is running.
+
+The persistent configuration/UI preference is intentionally still separate: the readiness gate proves the provider pair is coherent; configuration may only activate Dual Storage after that evidence exists.
