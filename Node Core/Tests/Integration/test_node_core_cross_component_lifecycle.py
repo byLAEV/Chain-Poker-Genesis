@@ -58,7 +58,6 @@ def main():
         identity=IdentityManager()
         node_identity,_=identity.create_identity(1)
         identity.validate_identity()
-        identity.register("CROSS_COMPONENT_TEST")
         identity.initialize(2,"CROSS_COMPONENT_TEST")
         identity.activate(3,node_core_ready=True)
         assert identity.node_life.state=="ACTIVE"
