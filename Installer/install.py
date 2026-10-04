@@ -235,8 +235,15 @@ def install(target: Path, source_ref: str = "main") -> None:
 
 def print_menu() -> None:
     print()
-    print("Chain Poker Genesis by LAEV")
-    print("Node Core Installer")
+    print("Trilema Project Presents")
+    print("Node Core Network by LAEV")
+    print("& The Chain Poker Genesis Protocol")
+    print()
+    print("[In Memory of Satoshi Nakamoto's Legacy,")
+    print(" Trilema.com (MP), Hannah Wiggins (Hanbot),")
+    print(" Lerry Alexander (LAEV) & The Bitcoin Network]")
+    print()
+    print("--------------------------------------------------")
     print()
     print("1. Install Node Core")
     print("2. Exit")
