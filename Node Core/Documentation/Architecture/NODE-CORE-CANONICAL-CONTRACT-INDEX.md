@@ -308,5 +308,34 @@ Resolved:
 
 Implementation remains partial because the repository does not yet implement the complete persistent installer/installed directory workflow, installer verification execution, engine-association execution and a rendered administrative UI.
 
-**Next PHASE 2 action:** implement the protocol installation filesystem boundary and installer verification against the canonical contract before declaring Protocol Interface PASS.
+**Next PHASE 2 action:** integrate the catalog/download boundary with Protocol Interface verification and persistent installation before declaring Protocol Interface PASS.
 
+
+
+## PHASE 2 — Protocol Catalog / Source Resolver / Download Boundary
+
+**Component:** Protocol Catalog + Source Resolver + Download Boundary  
+**Status:** PASS / SUPPORTING SUBCOMPONENT
+
+Implemented:
+
+- `Protocol Interface/PROTOCOL-CATALOG-MANIFEST.json`;
+- `Protocol Interface/protocol_catalog.py`;
+- `Protocol Interface/protocol_source_resolver.py`;
+- `Protocol Interface/protocol_download.py`;
+- `Tests/Protocol Interface/test_protocol_catalog.py`.
+
+Canonical flow:
+
+`Remote Catalog → Source Resolver → Download → Node Core/Protocols/ → Verification → Protocol Interface Installation`
+
+Supported catalog source classes:
+
+- CID;
+- GitHub.
+
+The remote source is not itself an installed protocol. Download transport does not activate or install the protocol.
+
+The download boundary currently uses HTTP(S) as the transport mechanism. CID remains the content-addressed source identity and may resolve through an approved HTTP(S) gateway or configured equivalent.
+
+The remaining Protocol Interface gap is integration of these components with persistent package verification, protocol registration/installation and engine association.
