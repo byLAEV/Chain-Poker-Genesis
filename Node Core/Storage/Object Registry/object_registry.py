@@ -15,9 +15,9 @@ class RegistryError(Exception):
 
 class ObjectRegistry:
     REQUIRED_FIELDS = {
-        "object_id", "object_class", "relative_path", "content_hash",
-        "storage_version", "provider_type", "location_state",
-        "object_state", "synchronization_state",
+        "object_id", "object_class", "storage_class", "relative_path", "location", "content_hash",
+        "storage_version", "version", "provider_type", "location_state",
+        "state", "object_state", "synchronization_state", "created_at", "updated_at",
     }
     LOCATION_STATES = {
         "LOCAL_ONLY","LOCAL_AND_DISTRIBUTED","DISTRIBUTED_ONLY",
@@ -49,6 +49,8 @@ class ObjectRegistry:
     def validate(cls, metadata):
         if not cls._valid_id(metadata.get("object_id")):
             raise RegistryError("invalid object_id")
+        if metadata.get("object_class") != metadata.get("storage_class"):
+            raise RegistryError("object_class and storage_class must match")
         if metadata.get("object_class") == "protocol-reserved":
             raise RegistryError("protocol-reserved objects cannot be registered by Node Core")
         if not re.fullmatch(r"[a-f0-9]{64}", metadata.get("content_hash", "")):
@@ -59,6 +61,8 @@ class ObjectRegistry:
             raise RegistryError("invalid location_state")
         if metadata.get("synchronization_state") not in cls.SYNC_STATES:
             raise RegistryError("invalid synchronization_state")
+        if metadata.get("state") != metadata.get("object_state"):
+            raise RegistryError("state and object_state must match")
         if metadata.get("object_state") not in {"PRESENT","MISSING","INVALID","QUARANTINED"}:
             raise RegistryError("invalid object_state")
         return True
