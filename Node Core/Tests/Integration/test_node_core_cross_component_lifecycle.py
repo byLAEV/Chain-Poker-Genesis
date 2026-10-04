@@ -95,7 +95,7 @@ def main():
         assert node.recovery is not None
         assert node.manager.recovery is node.recovery
         assert node.protocol_interface.engine_runtime is node.engines
-        assert node.engines.snapshot() == []
+        assert node.engines.snapshot() == {}
 
         print("Node Core cross-component lifecycle validation: PASS")
         print("runtime_identity_storage_recovery = PASS")
