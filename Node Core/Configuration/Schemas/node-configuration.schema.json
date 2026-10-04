@@ -10,7 +10,7 @@
     "decentralized_storage":{
       "type":"object",
       "required":["status"],
-      "properties":{"status":{"type":"string","enum":["NOT_PROVISIONED","READY","FAILED","DUAL_STORAGE_READY"]}},
+      "properties":{"status":{"type":"string","enum":["NOT_PROVISIONED","READY","FAILED","DUAL_STORAGE_READY"]},"mode":{"type":"string","enum":["LOCAL","DUAL_STORAGE"]}},
       "additionalProperties":false
     },
     "protocol_associations":{"type":"array","items":{"type":"string"},"uniqueItems":true},
