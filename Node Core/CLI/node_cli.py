@@ -4,17 +4,43 @@ import argparse
 import json
 import sys
 
+
 class NodeCLI:
     def __init__(self, node):
         self.node = node
 
+    def menu_state(self) -> dict:
+        return self.node.menu_state()
+
+    def render_menu(self) -> str:
+        state = self.menu_state()
+        return (
+            "==================================================\n"
+            "                 NODE CORE MENU\n"
+            "==================================================\n\n"
+            f"Connection Status: {state['connection_status'].replace('_', ' ')}\n"
+            f"Connected Nodes: {state['connected_nodes']}\n\n"
+            f"Protocol Readiness: {state['protocol_readiness'].replace('_', ' ')}\n"
+            f"Minimum Nodes Required: {state['minimum_nodes_required']}\n\n"
+            "--------------------------------------------------\n\n"
+            "1. Node Core\n"
+            "2. Protocols\n"
+            "3. Admin\n\n"
+            "0. Exit\n"
+        )
+
     def run(self, argv: list[str]) -> int:
         parser = argparse.ArgumentParser(prog="node-core")
         sub = parser.add_subparsers(dest="group", required=True)
+
+        menu = sub.add_parser("menu")
+        menu.set_defaults(action="menu")
+
         node = sub.add_parser("node")
         node_sub = node.add_subparsers(dest="command", required=True)
         for name in ("status","readiness","start","stop","recover"):
             node_sub.add_parser(name)
+
         storage = sub.add_parser("storage")
         storage_sub = storage.add_subparsers(dest="command", required=True)
         storage_sub.add_parser("status")
@@ -23,8 +49,13 @@ class NodeCLI:
         mode_sub.add_parser("get")
         set_mode = mode_sub.add_parser("set")
         set_mode.add_argument("value", choices=("LOCAL","DUAL_STORAGE"))
+
         args = parser.parse_args(argv)
         try:
+            if args.group == "menu":
+                print(self.render_menu(), end="")
+                return 0
+
             if args.group == "storage":
                 config = self.node.configuration_manager
                 if args.command == "status":
@@ -54,7 +85,7 @@ class NodeCLI:
                 if args.command == "status":
                     result = self.node.snapshot()
                 elif args.command == "readiness":
-                    result = {"ready": self.node.manager.readiness()}
+                    result = {"ready": self.node.manager.readiness(), "protocol_readiness": self.node.protocol_readiness()}
                 elif args.command == "start":
                     result = {"state": self.node.manager.start().state}
                 elif args.command == "stop":
@@ -69,10 +100,12 @@ class NodeCLI:
             print(json.dumps({"error": str(exc)}, sort_keys=True, separators=(",", ":")), file=sys.stderr)
             return 1
 
+
 def main(argv=None, node=None) -> int:
     if node is None:
         raise RuntimeError("Node Core instance is required")
     return NodeCLI(node).run(list(argv or []))
+
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv[1:]))
