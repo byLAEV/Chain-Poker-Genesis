@@ -31,7 +31,7 @@ def test_canonical_serialization_is_utf8() -> None:
 def test_canonicalization_rejects_nan() -> None:
     try:
         canonicalize({"value": float("nan")})
-    except ValueError:
+    except TypeError:
         return
     raise AssertionError("NaN must be rejected")
 
@@ -100,3 +100,12 @@ def test_canonical_serialization_rejects_unsupported_type() -> None:
 
 def test_canonical_serialization_preserves_large_integer() -> None:
     assert canonicalize({"n": 9007199254740993}) == b'{"n":9007199254740993}'
+
+
+def test_sha256_empty_vector() -> None:
+    from crypto_core import sha256_hex
+    assert sha256_hex(b"") == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+
+
+def test_canonical_hash_empty_object_vector() -> None:
+    assert hash_canonical_hex({}) == "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
