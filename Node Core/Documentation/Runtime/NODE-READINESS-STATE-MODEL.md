@@ -2,8 +2,8 @@
 
 **Project:** Chain Poker Genesis by LAEV  
 **Layer:** Node Core  
-**Version:** 0.1.0  
-**Status:** Active implementation baseline
+**Version:** 1.0.0  
+**Status:** SUPPORTING / RECONCILED
 
 ## States
 
@@ -63,3 +63,8 @@ Future specifications may add:
 - cryptographic trust-anchor readiness.
 
 Such states must not change the current meaning of `NODE_CORE_READY` without a versioned specification change.
+
+
+**Authority:** `Documentation/Runtime/NODE-CORE-RUNTIME-LIFECYCLE.md`.
+
+This document is a supporting state/readiness reference and does not define a second lifecycle vocabulary.
