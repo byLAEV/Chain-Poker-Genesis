@@ -38,7 +38,8 @@
     "storage": {
       "type": "object",
       "required": [
-        "storage_structure_version"
+        "storage_structure_version",
+        "required_paths"
       ],
       "properties": {
         "storage_structure_version": {
