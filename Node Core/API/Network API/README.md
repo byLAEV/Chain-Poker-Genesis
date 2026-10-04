@@ -1,17 +1,25 @@
 # Network API
 
-Defines the Node Core network service boundary.
+**Status:** SUPPORTING / RECONCILED
 
-## Contract
+The canonical Network authority is:
+`Documentation/Interfaces/NODE-CORE-NETWORK-CONTRACT.md`.
+
+## Implemented reference surface
 
 - discoverPeers
 - connectPeer
 - disconnectPeer
-- getPeerState
 - sendMessage
-- receiveMessage
 - propagate
 - getNetworkState
+
+The following remain declared/future unless separately implemented and tested:
+
+- getPeerState
+- receiveMessage
 - getNetworkCapabilities
 
-Network API does not contain application-specific poker messaging.
+Network state is transport/network state. It MUST NOT be interpreted as Node Core readiness, Runtime state, protocol synchronization, or CPG consensus.
+
+Network API carries Node Core transport envelopes only; application-specific poker semantics remain behind Protocol Interface.
