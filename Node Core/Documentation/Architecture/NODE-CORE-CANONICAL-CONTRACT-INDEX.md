@@ -217,3 +217,33 @@ Resolved:
 - Protocol isolation is preserved; CPG-specific application semantics remain outside Node Core API.
 
 **Next PHASE 2 component:** Node Manager.
+
+
+## PHASE 2 — Node Manager reconciliation
+
+**Component:** Node Manager  
+**Status:** PASS
+
+Reconciled chain:
+
+`Documentation/Interfaces/NODE-MANAGER-CONTRACT.md`
+→ `Node Manager/NODE-MANAGER-MANIFEST.json`
+→ `Node Manager/README.md`
+→ `Node Manager/node_manager.py`
+→ Configuration Manager / Runtime Manager / Engine Runtime / Protocol Interface / Recovery boundaries
+→ `Tests/Node Manager/test_node_manager_contract.py`.
+
+Resolved:
+- Node Manager now requires canonical configuration before reaching READY.
+- Runtime readiness is delegated to Runtime Manager; Node Manager no longer creates an independent readiness interpretation.
+- Engine registration is delegated to Engine Runtime instead of maintaining a second engine registry.
+- Protocol installation remains delegated to Protocol Interface.
+- Recovery is explicitly delegated to Recovery rather than implemented as a local state shortcut.
+- Management events are recorded as an auditable control-plane record.
+- Node Core composition now injects the single Engine Runtime instance into Node Manager, eliminating duplicate engine authority.
+- Node Manager README now identifies itself as supporting documentation and states the subsystem boundaries.
+- CPG protocol, ledger, consensus, settlement and Table Wallet remain outside Node Manager.
+
+The manifest remains `IMPLEMENTED_PARTIAL` because full recovery integration and broader management capabilities are not yet complete. This does not block the contract reconciliation.
+
+**Next PHASE 2 component:** Network.
