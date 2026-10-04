@@ -40,7 +40,7 @@ Implementation may not silently create behavior that contradicts a canonical con
 | CLI | `Documentation/Interfaces/NODE-CORE-CLI-CONTRACT.md` | CANONICAL / PARTIAL | `CLI/node_cli.py` | `Tests/CLI/test_cli_contract.py` | Lifecycle subset mapped; deterministic JSON/error/exit boundary established |
 | Protocol Interface | `Documentation/Interfaces/NODE-CORE-PROTOCOL-INTERFACE-CONTRACT.md` | CANONICAL | `Protocol Interface/protocol_interface.py`, protocol installation boundary | `Tests/Protocol Interface/test_protocol_interface.py` | Single installation/activation boundary established; invalid transitions tested |
 | Consensus Infrastructure | No single canonical contract | CANONICAL REQUIRED | `Consensus/` | Explicit state/evidence mapping required | Protocol-neutral scope only |
-| Manifests | `NODE-CORE-MANIFEST.json` plus subsystem manifests | CANONICAL CANDIDATE | `*MANIFEST*` | Audit/verification tooling exists | Hierarchy reconciled in PHASE 2 |
+| Manifest Authority | `Documentation/Interfaces/NODE-CORE-MANIFEST-AUTHORITY-CONTRACT.md` | CANONICAL | `NODE-CORE-MANIFEST.json`, `Configuration/Schemas/node-core-installation-manifest.schema.json`, installation-manifest generation/validation | `Tools/Validation/validate_manifest_authority.py`, `Tests/Test Vectors/NODE-MANIFEST-AUTHORITY-0001.json`, installation manifest tests | Component manifest vs instance installation manifest separated; legacy duplicate schema explicitly classified; conflict rules established |
 
 ## 3. Evidence-mapped canonical candidates
 
@@ -97,13 +97,13 @@ and Consensus Infrastructure and manifest authority must be explicitly resolved.
 
 ## 7. Current status
 
-**PHASE 1 — RECONCILIATION IN PROGRESS**
+**PHASE 1 — CANONICAL CONTRACTS / PASS**
 
-Identity, Cryptography, Storage and Recovery have reached the evidence-mapping stage.
+All currently scoped Node Core capabilities have a named canonical authority, implementation mapping and verification mapping. Manifest authority is explicitly resolved.
 
-Remaining blockers are missing dedicated verification mappings, unresolved single-source authority, or unresolved subsystem boundaries.
+**PHASE 1 PASS CONDITION: SATISFIED.**
 
-**PHASE 2 — MANIFEST ↔ README ↔ CODE must not begin until this gate passes.**
+**PHASE 2 — MANIFEST ↔ README ↔ CODE may now begin.**
 
 ## 8. Governing principle
 
