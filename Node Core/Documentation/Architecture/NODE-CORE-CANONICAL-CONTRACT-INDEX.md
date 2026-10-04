@@ -164,3 +164,32 @@ Boundary:
 `Node Core Runtime → Engine Runtime → protocol/application engines`.
 
 **Next PHASE 2 component:** Engine Runtime.
+
+
+## PHASE 2 — Engine Runtime reconciliation
+
+**Component:** Engine Runtime  
+**Status:** PASS
+
+Reconciled chain:
+
+`NODE-CORE-ENGINE-RUNTIME-CONTRACT.md`
+→ `ENGINE-RUNTIME-MANIFEST.json`
+→ `Engine Runtime/engine_runtime.py`
+→ Engine API supporting documentation
+→ `Tests/Engine Runtime/test_engine_runtime_contract.py`.
+
+Resolved:
+- Engine Runtime implementation now rejects duplicate registration and invalid engine identity/version.
+- Engine lifecycle transitions are explicit: `REGISTERED → ACTIVE → STOPPED`.
+- Unknown-engine and invalid-state operations fail deterministically.
+- Active engines cannot be unregistered.
+- STOPPED engines may be restarted according to the canonical baseline.
+- Engine API documentation no longer implies that unimplemented operations are part of the implemented baseline.
+- Node Core Runtime remains the owner of Node lifecycle; Engine Runtime cannot redefine it.
+- Protocol installation/activation remains owned by Protocol Interface.
+- CPG-specific semantics remain outside Engine Runtime.
+
+The manifest remains `IMPLEMENTED_PARTIAL` because sandbox/resource-limit controls are not yet implemented; this is an implementation-status fact, not a contract-authority conflict.
+
+**Next PHASE 2 component:** API.
