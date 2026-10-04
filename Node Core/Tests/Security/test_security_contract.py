@@ -8,6 +8,10 @@ from security_service import SecurityService
 def main():
     s=SecurityService()
     assert not s.validate_path("../escape").allowed
+    assert not s.validate_path("").allowed
+    assert not s.validate_path(None).allowed
+    assert not s.validate_path("/absolute").allowed
+    assert not s.validate_path("\\\\absolute").allowed
     assert not s.validate_path("a/../../escape").allowed
     assert not s.validate_path("CPG/ledger").allowed
     assert not s.validate_path("Protocol/private").allowed
@@ -20,6 +24,9 @@ def main():
         pass
 
     s.require(True,"authorized")
+
+    # Protocol boundary cannot be bypassed by path normalization.
+    assert not s.validate_path("foo/../Protocol/private").allowed
     print("Node Core Security contract tests: PASS")
 
 if __name__=="__main__":
