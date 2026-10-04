@@ -1,18 +1,31 @@
 # Engine API
 
-Defines the boundary between Node Core and executable engines.
+**Status:** SUPPORTING interface documentation
 
-## Contract
+The canonical internal execution boundary is:
+`Documentation/Interfaces/NODE-CORE-ENGINE-RUNTIME-CONTRACT.md`.
+
+The Engine Runtime implementation is `Engine Runtime/engine_runtime.py`.
+
+## Implemented baseline
 
 - register
 - unregister
+- start
+- stop
+- snapshot
+
+## API surface classification
+
+The following operations may exist at the broader API boundary but are **not** part of the current canonical Engine Runtime baseline unless separately implemented and tested:
+
 - discover
 - describe
 - initialize
-- start
-- stop
 - health
 - capabilities
 - invoke
 
-Execution must occur within the Node Core engine runtime and its capability restrictions.
+Execution remains subordinate to Node Core Runtime and must not bypass Protocol Interface for protocol installation or activation.
+
+CPG-specific ledger, table state, poker rules, Table Wallet, settlement, rake and consensus are outside this boundary.
