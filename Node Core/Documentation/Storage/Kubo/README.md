@@ -143,3 +143,8 @@ Kubo owns:
 - Kubo-specific configuration.
 
 Node Core must integrate these capabilities through an adapter rather than reimplementing them.
+
+
+## Kubo Node Installer / Manager
+
+The complete design is defined by `Documentation/Storage/Kubo/KUBO-NODE-INSTALLER-MANAGER-DESIGN-v1.0.md`. No installation code is authorized until its release, state, path and verification contracts are frozen.
