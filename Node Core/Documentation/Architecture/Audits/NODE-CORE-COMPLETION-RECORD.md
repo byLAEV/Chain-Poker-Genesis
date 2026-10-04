@@ -35,7 +35,7 @@ Several areas remain partial, specification-only, or structural. They are tracke
 
 `Node Core/Documentation/Development/NODE-CORE-IMPLEMENTATION-GAP-INVENTORY-v2.md`
 
-In particular, production cryptographic and identity profiles, live distributed synchronization, Node Manager, CLI, API, Security, Time, and other structural subsystems remain outside the verified implementation baseline.
+In particular, production cryptographic and identity integration, live distributed synchronization, and the remaining partial operational surfaces of Node Manager, CLI, API, Security, Time, Engine Runtime, and Protocol Interface remain outside full production completion. These components are no longer classified as merely structural where executable implementations and contract/test mappings now exist.
 
 ## Network Implementation Update
 
