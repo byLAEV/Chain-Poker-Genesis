@@ -21,12 +21,12 @@
 | Configuration | canonical contract + schema + Configuration Manager + readiness integration + tests + CI | IMPLEMENTED / PARTIAL | complete broader policy/negative-path coverage |
 | Identity | executable Identity Core + canonical profile + lifecycle/tamper tests + CI; production trust/registration remains open | IMPLEMENTED / PARTIAL | complete credential adapters, registration, persistence, propagation and recovery |
 | Cryptography Core | executable core primitives/service + canonical profile + crypto tests + CI; AEAD boundary and vectors are IMPLEMENTED_VERIFIED; Merkle and production security remain open | IMPLEMENTED / PARTIAL | complete Merkle specification/vectors and production security review |
-| Storage | executable local storage, registry, locator, synchronization/recovery boundaries + storage tests + CI; live Kubo operation remains environment-dependent | IMPLEMENTED / PARTIAL | expand failure/fallback matrix and live-provider evidence |
-| Runtime | canonical lifecycle + readiness implementation + cross-component lifecycle + full Node lifecycle + final audit; GitHub Actions Run #631 | IMPLEMENTED + VERIFIED | expand transition-negative coverage |
+| Storage | executable local storage, registry, locator, synchronization/recovery boundaries + provider-failure fallback test + CI; live Kubo operation remains environment-dependent | IMPLEMENTED / PARTIAL | live-provider evidence and broader reconciliation/failure matrix |
+| Runtime | canonical lifecycle + readiness implementation + cross-component lifecycle + full Node lifecycle + invalid-transition matrix + final audit; GitHub Actions Runs #631/#634 | IMPLEMENTED + VERIFIED | broaden mutation/environmental coverage where justified |
 | Health / Readiness | executable evaluator + installation/E2E verification + final audit | IMPLEMENTED + VERIFIED | expand failure-state coverage |
-| Recovery | executable recovery manager + recovery tests + cross-component/full lifecycle coverage + final audit; GitHub Actions Run #631 | IMPLEMENTED / PARTIAL | expand interruption/corruption/reconciliation scenarios |
+| Recovery | executable recovery manager + recovery tests + cross-component/full lifecycle coverage + invalid-transition matrix + final audit; GitHub Actions Runs #631/#635 | IMPLEMENTED / PARTIAL | expand interruption/corruption/reconciliation scenarios |
 | Network / Synchronization | executable peer registry, reference transport, framing, handshake, envelopes, propagation and synchronization state + tests + CI | IMPLEMENTED / PARTIAL | authenticated production transport, decentralized discovery and live synchronization |
-| Protocol Interface | executable catalog/download/package verification/installation boundary + protocol tests + E2E isolation + CI | IMPLEMENTED / PARTIAL | complete persistent administrative/install lifecycle and broader compatibility cases |
+| Protocol Interface | executable catalog/download/package verification/installation boundary + E2E isolation + manifest-tamper and compatibility/lifecycle negative tests + CI | IMPLEMENTED / PARTIAL | complete persistent administrative/install lifecycle and broader compatibility cases |
 | Node Manager | canonical contract + executable manager + lifecycle integration + contract tests + GitHub Actions Run #631 | IMPLEMENTED / PARTIAL | complete broader management surface |
 | API | canonical API contract + executable facade + API tests + CI | IMPLEMENTED / PARTIAL | expand service/command surface |
 | CLI | canonical CLI contract + executable command subset + CLI tests + CI | IMPLEMENTED / PARTIAL | expand operational command catalog |
@@ -48,6 +48,19 @@ UNINITIALIZED → READY → RUNNING → DEGRADED → RECOVERY → READY → STOP
 ```
 
 The lifecycle evidence does not constitute completion of the entire Node Core implementation. Subsystems explicitly marked PARTIAL remain partial, and Merkle implementation/vectors plus production cryptographic security review remain open.
+
+## Negative-Path Verification Closure
+
+The subsequent Node Core verification runs closed the current negative-path matrix without changing the positive lifecycle baseline:
+
+| Gate | Evidence | Result |
+|---|---|---|
+| Runtime invalid transitions | GitHub Actions Run #634, commit `d4de4fedd5069cbd03f9ab8473b79093139bae15` | PASS |
+| Recovery invalid transitions | GitHub Actions Run #635, commit `94a65ceac0ba0c8bf772feefd7a5357775b43c55` | PASS |
+| Kubo unavailable → local fallback | GitHub Actions Run #636, commit `be117dd9d6394f3f109ae8effa964f415e1d7c1d` | PASS |
+| Protocol compatibility/lifecycle negatives | GitHub Actions Run #637, commit `e9c17577fa5dde699981020f21e41b829e203f88` | PASS |
+
+These runs also passed the complete Node Core verification workflow, including the final Node Core audit. The negative-path suite therefore strengthens the acceptance evidence but does not convert explicitly PARTIAL production components into fully verified production implementations.
 
 ## Verified baseline boundary
 
