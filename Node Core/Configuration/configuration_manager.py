@@ -7,6 +7,8 @@ a second schema.
 """
 from __future__ import annotations
 import json
+import os
+import tempfile
 from pathlib import Path
 
 REQUIRED=("node_core_version","decentralized_storage","protocol_associations","cpg_protocol")
@@ -65,4 +67,27 @@ class ConfigurationManager:
         return dict(self._configuration)
 
     def validate(self, config: dict) -> dict:
-        return validate_configuration(config,fresh_node=False)
+        return validate_configuration(config, fresh_node=False)
+
+    def update(self, changes: dict) -> dict:
+        if not isinstance(changes, dict):
+            raise ConfigurationError("configuration changes must be an object")
+        current = self.get()
+        candidate = dict(current)
+        candidate.update(changes)
+        # Configuration Manager never installs/activates CPG.
+        validated = validate_configuration(candidate, fresh_node=True)
+        payload = json.dumps(validated, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp = tempfile.mkstemp(prefix=".node-config.", dir=self.path.parent)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                handle.write(payload)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(tmp, self.path)
+        finally:
+            if os.path.exists(tmp):
+                os.unlink(tmp)
+        self._configuration = dict(validated)
+        return dict(validated)
