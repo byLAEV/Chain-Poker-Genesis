@@ -22,7 +22,10 @@
   "overwrite_existing_installation": false,
   "dependency_model": {
     "python": "REQUIRED",
-    "python_packages": "NONE_FOR_INSTALLER",
-    "network": "REQUIRED_FOR_DOWNLOAD"
-  }
+    "python_packages": "INSTALLED_IN_NODE_CORE_LOCAL_VENV",
+    "dependency_source": "Node Core component requirements files",
+    "network": "REQUIRED_FOR_DOWNLOAD_AND_DEPENDENCY_INSTALL"
+  },
+  "installation_environment": "LOCAL_NODE_CORE_VENV",
+  "venv_location": ".node-core-python"
 }

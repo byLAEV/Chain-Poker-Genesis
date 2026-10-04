@@ -15,9 +15,11 @@ The installer:
 3. downloads the repository archive;
 4. extracts the Node Core component;
 5. stages the component locally;
-6. executes the canonical Node Core Bootstrap installer;
-7. verifies the resulting Node Core installation;
-8. commits the staged installation to the local target.
+6. creates the local Node Core Python environment;
+7. installs the dependency set declared by Node Core;
+8. executes the canonical Node Core Bootstrap installer;
+9. verifies the resulting Node Core installation;
+10. commits the verified installation to the local target.
 
 ## Entry point
 
@@ -36,6 +38,9 @@ with a POSIX shell.
 
 The installer requires Python 3. On Termux, when Python is absent, the
 launcher attempts to install it through the native Termux package manager.
+Node Core Python dependencies are installed into the local `.node-core-python`
+environment inside the final Node Core installation; the installer does not
+modify the system Python environment.
 
 ## Installation boundary
 
