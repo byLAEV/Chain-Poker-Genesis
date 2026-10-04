@@ -1,7 +1,17 @@
 {
   "component": "Chain Poker Genesis Node Core CLI Installer",
   "version": "1.1.0",
-  "status": "IMPLEMENTED_CLI",
+  "status": "IMPLEMENTED_AND_CI_VERIFIED",
+  "verification_scope": {
+    "ci": "VERIFIED",
+    "linux_real_environment": "NOT_VERIFIED_IN_THIS_RELEASE_ENVIRONMENT",
+    "termux_real_environment": "NOT_VERIFIED",
+    "interactive_cli": "VERIFIED_BY_CI",
+    "fresh_installation": "VERIFIED_BY_CI",
+    "existing_installation": "VERIFIED_BY_CI",
+    "interrupted_installation": "VERIFIED_BY_CI",
+    "node_core_verification": "VERIFIED_BY_CI"
+  },
   "source_repository": "byLAEV/Chain-Poker-Genesis",
   "source_ref": "main",
   "source_resolution": "RESOLVE_REF_TO_COMMIT_SHA_BEFORE_ARCHIVE_DOWNLOAD",
