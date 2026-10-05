@@ -358,7 +358,6 @@ def install(target: Path, source_ref: str = "main") -> None:
 
 
 def print_menu() -> None:
-    print()
     print("Trilema Project Presents")
     print("Node Core Network by LAEV")
     print("& The Chain Poker Genesis Protocol")
@@ -373,127 +372,31 @@ def print_menu() -> None:
     print("2. Node Core")
     print("3. Protocols")
     print("0. Exit")
-    print()
-
-
-def print_bios_menu() -> None:
-    print()
-    print("==================================================")
-    print("                 NODE CORE BIOS")
-    print("==================================================")
-    print()
-    print("1. Install Node Core")
-    print("0. Back")
-    print()
-
-
-def print_node_core_menu() -> None:
-    print()
-    print("==================================================")
-    print("                   NODE CORE")
-    print("==================================================")
-    print()
-    print("Node Core is the protocol-neutral node runtime.")
-    print("1. Return to Main Menu")
-    print("0. Back")
-    print()
-
-
-def print_protocols_menu() -> None:
-    print()
-    print("==================================================")
-    print("                   PROTOCOLS")
-    print("==================================================")
-    print()
-    print("Chain Poker Genesis")
-    print("Status: NOT INSTALLED")
-    print()
-    print("1. Return to Main Menu")
-    print("0. Back")
-    print()
-
-
-def confirm_install(target: Path) -> bool:
-    print("Node Core Installation")
-    print()
-    print(f"Target: {target}")
-    print("Source: Chain Poker Genesis by LAEV")
-    print()
-    answer = input("Proceed with installation? [Y/n]: ").strip().lower()
-    return answer in ("", "y", "yes")
 
 
 def interactive(source_ref: str, target: Path) -> int:
+    print_menu()
+
     while True:
-        print_menu()
-        choice = input("Select an option: ").strip()
+        choice = input().strip()
 
         if choice == "0":
             print("Exiting.")
             return 0
 
-        if choice == "1":
-            while True:
-                print_bios_menu()
-                bios_choice = input("Select an option: ").strip()
-
-                if bios_choice == "0":
-                    break
-                if bios_choice != "1":
-                    print("Please select 1 or 0.")
-                    continue
-
-                try:
-                    target = target.expanduser().resolve()
-                    if target.exists() and (target / "node-installation-manifest.json").exists():
-                        print()
-                        print("Existing Node Core installation detected.")
-                        print("The existing installation will not be overwritten.")
-                        print()
-                        input("Press Enter to return to the BIOS menu.")
-                        continue
-
-                    print()
-                    if not confirm_install(target):
-                        print("Installation cancelled.")
-                        continue
-                    print()
-                    install(target, source_ref)
-                    print()
-                    input("Press Enter to return to the BIOS menu.")
-                except (InstallationError, EOFError, KeyboardInterrupt) as exc:
-                    if isinstance(exc, InstallationError):
-                        print()
-                        print("Installation failed.")
-                        print(f"Reason: {exc}")
-                    else:
-                        print()
-                        print("Exiting.")
-                        return 0
-                    print()
-                    input("Press Enter to return to the BIOS menu.")
+        if choice in ("1", "2", "3"):
+            print()
+            print("This menu section is not implemented yet.")
+            print("Returning to the main menu.")
+            print()
+            print_menu()
             continue
 
-        if choice == "2":
-            while True:
-                print_node_core_menu()
-                node_core_choice = input("Select an option: ").strip()
-                if node_core_choice in ("0", "1"):
-                    break
-                print("Please select 1 or 0.")
-            continue
-
-        if choice == "3":
-            while True:
-                print_protocols_menu()
-                protocol_choice = input("Select an option: ").strip()
-                if protocol_choice in ("0", "1"):
-                    break
-                print("Please select 1 or 0.")
-            continue
-
+        print()
         print("Please select 1, 2, 3, or 0.")
-    return 0
+        print()
+        print_menu()
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(
