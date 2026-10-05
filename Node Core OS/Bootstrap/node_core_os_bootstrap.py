@@ -22,19 +22,15 @@ def display_main_menu() -> None:
     print("Trilema.com (MP), Hannah Wiggins (Hanbot),")
     print("Lerry Alexander (LAEV) & The Bitcoin Network]")
     print()
-    print()
-    print("---")
+    print("--------------------------------------------------")
     print()
     print("1. Node Core BIOS")
     print()
-    print()
     print("2. Node Core")
-    print()
     print()
     print("3. Protocols")
     print()
-    print()
-    print("4. Exit")
+    print("0. Exit")
 
 
 def main() -> int:
@@ -42,12 +38,13 @@ def main() -> int:
 
     while True:
         try:
-            choice = input().strip()
+            choice = input("\nSelect an option: ").strip()
         except (EOFError, KeyboardInterrupt):
             print()
             return 0
 
-        if choice == "4":
+        if choice == "0":
+            print("Exiting.")
             return 0
 
         if choice in {"1", "2", "3"}:
@@ -58,7 +55,7 @@ def main() -> int:
             continue
 
         print()
-        print("Please select 1, 2, 3, or 4.")
+        print("Please select 1, 2, 3, or 0.")
         print()
         display_main_menu()
 
