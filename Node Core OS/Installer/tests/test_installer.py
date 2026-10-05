@@ -1,12 +1,42 @@
 #!/usr/bin/env python3
+import importlib.util
 import os
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 import unittest
+from unittest import mock
 
 INSTALLER = Path(__file__).resolve().parents[1] / "install.py"
+
+
+def load_installer_module():
+    spec = importlib.util.spec_from_file_location("node_core_os_installer", INSTALLER)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Unable to load installer module for platform tests.")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+class InstallerPlatformTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.installer = load_installer_module()
+
+    def test_android_platform_is_accepted_without_version_matching(self):
+        with mock.patch.object(self.installer.sys, "platform", "android"):
+            self.installer.check_platform()
+
+    def test_linux_platform_is_accepted_without_version_matching(self):
+        with mock.patch.object(self.installer.sys, "platform", "linux"):
+            self.installer.check_platform()
+
+    def test_unsupported_platform_is_rejected(self):
+        with mock.patch.object(self.installer.sys, "platform", "win32"):
+            with self.assertRaises(self.installer.InstallerError):
+                self.installer.check_platform()
 
 
 class InstallerSmokeTests(unittest.TestCase):
