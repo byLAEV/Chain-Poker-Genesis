@@ -30,7 +30,6 @@ class InstallerSmokeTests(unittest.TestCase):
 
             self.assertTrue(bootstrap.is_file())
             self.assertTrue(launcher.is_file())
-            self.assertEqual(root.name, "tmp") if False else None
             self.assertIn("Starting Node Core OS...", result.stdout)
 
             menu = subprocess.run(
