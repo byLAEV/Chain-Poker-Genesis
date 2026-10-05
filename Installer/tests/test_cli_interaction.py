@@ -6,7 +6,7 @@ from Installer.install import interactive
 
 
 class CliInteractionTests(unittest.TestCase):
-    def test_menu_branding_and_exit_option(self):
+    def test_main_menu_branding_and_options(self):
         with patch("builtins.input", side_effect=["0"]):
             with patch("sys.stdout", new_callable=io.StringIO) as output:
                 result = interactive("main", __import__("pathlib").Path("/tmp/cpg-test-target"))
