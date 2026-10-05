@@ -11,13 +11,7 @@ import sys
 from pathlib import Path
 
 MIN_PYTHON = (3, 9)
-DEFAULT_INSTALL_ROOT = (
-    Path.home()
-    / ".local"
-    / "share"
-    / "chain-poker-genesis"
-    / "node-core-os"
-)
+DEFAULT_INSTALL_ROOT = Path.home() / "Node Core OS"
 BOOTSTRAP_RELATIVE = Path("Node Core OS") / "Bootstrap" / "node_core_os_bootstrap.py"
 INSTALLER_VERSION = "1.1.0"
 
