@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import subprocess
 import sys
 import tempfile
@@ -12,14 +13,12 @@ class InstallerSmokeTests(unittest.TestCase):
     def test_installer_creates_bootstrap_and_launcher(self):
         with tempfile.TemporaryDirectory() as temp:
             result = subprocess.run(
-                [
-                    sys.executable,
-                    str(INSTALLER),
-                ],
+                [sys.executable, str(INSTALLER)],
                 env={
-                    **__import__("os").environ,
+                    **os.environ,
                     "NODE_CORE_OS_INSTALL_ROOT": temp,
                 },
+                input="0\n",
                 text=True,
                 capture_output=True,
             )
@@ -31,10 +30,11 @@ class InstallerSmokeTests(unittest.TestCase):
 
             self.assertTrue(bootstrap.is_file())
             self.assertTrue(launcher.is_file())
+            self.assertIn("Starting Node Core OS...", result.stdout)
 
             menu = subprocess.run(
                 [sys.executable, str(bootstrap)],
-                input="4\n",
+                input="0\n",
                 text=True,
                 capture_output=True,
             )
@@ -43,7 +43,7 @@ class InstallerSmokeTests(unittest.TestCase):
             self.assertIn("1. Node Core BIOS", menu.stdout)
             self.assertIn("2. Node Core", menu.stdout)
             self.assertIn("3. Protocols", menu.stdout)
-            self.assertIn("4. Exit", menu.stdout)
+            self.assertIn("0. Exit", menu.stdout)
 
 
 if __name__ == "__main__":
