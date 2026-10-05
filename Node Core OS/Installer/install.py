@@ -13,7 +13,7 @@ from pathlib import Path
 MIN_PYTHON = (3, 9)
 DEFAULT_INSTALL_ROOT = Path.home() / "Node Core OS"
 BOOTSTRAP_RELATIVE = Path("Node Core OS") / "Bootstrap" / "node_core_os_bootstrap.py"
-INSTALLER_VERSION = "1.1.0"
+INSTALLER_VERSION = "1.1.1"
 
 
 class InstallerError(RuntimeError):
@@ -21,7 +21,7 @@ class InstallerError(RuntimeError):
 
 
 def check_platform() -> None:
-    if not sys.platform.startswith("linux"):
+    if not (sys.platform.startswith("linux") or sys.platform == "android"):
         raise InstallerError(
             "This installer currently supports Linux and Termux on Android."
         )
