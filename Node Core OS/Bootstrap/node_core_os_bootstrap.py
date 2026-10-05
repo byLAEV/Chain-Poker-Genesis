@@ -15,7 +15,7 @@ import sys
 
 def display_main_menu() -> None:
     print("Trilema Project Presents")
-    print("Node Core Network by LAEV")
+    print("Node Core Os by LAEV")
     print("& The Chain Poker Genesis Protocol")
     print()
     print("[In Memory of Satoshi Nakamoto's Legacy,")
