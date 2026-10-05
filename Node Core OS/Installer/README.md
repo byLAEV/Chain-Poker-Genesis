@@ -41,7 +41,7 @@ The installer automatically starts the Node Core OS Bootstrap after installation
 The default installation target is:
 
 ```text
-~/.local/share/chain-poker-genesis/node-core-os/
+~/Node Core OS/
 ```
 
 The installed structure is:
@@ -56,13 +56,13 @@ node-core-os/
 To start the menu again later:
 
 ```bash
-~/.local/share/chain-poker-genesis/node-core-os/node-core-os
+~/Node Core OS/node-core-os
 ```
 
 Or directly:
 
 ```bash
-python3 ~/.local/share/chain-poker-genesis/node-core-os/Bootstrap/node_core_os_bootstrap.py
+python3 "$HOME/Node Core OS/Bootstrap/node_core_os_bootstrap.py"
 ```
 
 ## Main menu
