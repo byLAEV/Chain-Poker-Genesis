@@ -7,12 +7,18 @@ protocol-neutral Node Core.
 
 The installer is designed for Linux shells and Termux.
 
-The interactive menu intentionally has only two options:
+The interactive installer follows the Node Core OS architecture:
 
 ```
-1. Install Node Core
-2. Exit
+1. Node Core BIOS
+2. Node Core
+3. Protocols
+0. Exit
 ```
+
+The BIOS menu contains the Node Core installation action. Node Core and Protocols are
+separate architectural instances and are not collapsed into the BIOS installation
+action.
 
 It is not a GUI and it is not a Node Manager.
 
