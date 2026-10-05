@@ -1,6 +1,6 @@
 {
   "component": "Chain Poker Genesis Node Core CLI Installer",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "status": "IMPLEMENTED_AND_CI_VERIFIED",
   "verification_scope": {
     "ci": "VERIFIED",
@@ -30,7 +30,9 @@
   "interface": "CLI",
   "interactive": true,
   "menu": [
-    "INSTALL_NODE_CORE",
+    "NODE_CORE_BIOS",
+    "NODE_CORE",
+    "PROTOCOLS",
     "EXIT"
   ],
   "gui": false,
@@ -58,5 +60,16 @@
   "installation_environment": "LOCAL_NODE_CORE_VENV",
   "venv_location": ".node-core-python",
   "node_core_network_readiness": "INSTALLED_AND_VERIFIED",
-  "minimum_protocol_nodes": 5
+  "minimum_protocol_nodes": 5,
+  "menu_structure": {
+    "node_core_bios": [
+      "INSTALL_NODE_CORE"
+    ],
+    "node_core": [
+      "RETURN_TO_MAIN_MENU"
+    ],
+    "protocols": [
+      "CHAIN_POKER_GENESIS_STATUS"
+    ]
+  }
 }
