@@ -62,7 +62,7 @@ To start the menu again later:
 Or directly:
 
 ```bash
-python3 "~/Node Core OS/Bootstrap/node_core_os_bootstrap.py"
+python3 "$HOME/Node Core OS/Bootstrap/node_core_os_bootstrap.py"
 ```
 
 ## Main menu
