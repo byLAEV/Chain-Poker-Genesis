@@ -40,6 +40,7 @@ class InstallerSmokeTests(unittest.TestCase):
             )
             self.assertEqual(menu.returncode, 0)
             self.assertIn("Trilema Project Presents", menu.stdout)
+            self.assertIn("Node Core Os by LAEV", menu.stdout)
             self.assertIn("1. Node Core BIOS", menu.stdout)
             self.assertIn("2. Node Core", menu.stdout)
             self.assertIn("3. Protocols", menu.stdout)
