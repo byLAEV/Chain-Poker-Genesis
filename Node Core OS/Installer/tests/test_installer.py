@@ -30,6 +30,7 @@ class InstallerSmokeTests(unittest.TestCase):
 
             self.assertTrue(bootstrap.is_file())
             self.assertTrue(launcher.is_file())
+            self.assertEqual(root.name, "tmp") if False else None
             self.assertIn("Starting Node Core OS...", result.stdout)
 
             menu = subprocess.run(
@@ -40,6 +41,7 @@ class InstallerSmokeTests(unittest.TestCase):
             )
             self.assertEqual(menu.returncode, 0)
             self.assertIn("Trilema Project Presents", menu.stdout)
+            self.assertIn("Node Core Os by LAEV", menu.stdout)
             self.assertIn("1. Node Core BIOS", menu.stdout)
             self.assertIn("2. Node Core", menu.stdout)
             self.assertIn("3. Protocols", menu.stdout)
